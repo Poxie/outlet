@@ -38,3 +38,4 @@ next-env.d.ts
 # backend
 backend/.env
 backend/node_modules
+backend/imgs
