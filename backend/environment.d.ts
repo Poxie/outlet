@@ -2,6 +2,7 @@ declare global {
     namespace NodeJS {
         interface ProcessEnv {
             PORT: string;
+            FRONTEND_ORIGIN: string;
         }
     }
 }
