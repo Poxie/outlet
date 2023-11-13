@@ -9,10 +9,21 @@ const config: Config = {
   theme: {
     extend: {
       backgroundColor: {
-        primary: '#E32413',
+        primary: '#D62717',
+        secondary: '#E32413'
       },
       textColor: {
         light: '#fff',
+        'light-secondary': '#ffdada',
+      },
+      borderColor: {
+        light: '#fff',
+      },
+      width: {
+        main: '1000px',
+      },
+      maxWidth: {
+        main: '90%',
       }
     },
   },
