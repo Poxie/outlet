@@ -2,7 +2,7 @@ import { createConnection } from "./database"
 
 const opts = '1234567890';
 const length = 8;
-export const createId: (table: 'veckans_deal') => Promise<string> = async (table) => {
+export const createId: (table: 'veckans_deal' | 'events') => Promise<string> = async (table) => {
     const db = await createConnection();
 
     let id = '';
