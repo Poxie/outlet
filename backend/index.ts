@@ -11,6 +11,7 @@ const app = express();
 app.use(cors({ 
     origin: process.env.FRONTEND_ORIGIN
 }));
+app.use(express.static(__dirname + '/imgs'));
 
 app.get('/veckans-deal', async (req, res) => {
     const db = await createConnection();
