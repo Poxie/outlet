@@ -12,30 +12,32 @@ export default function Navbar() {
     const currentPath = usePathname();
 
     return(
-        <div className="w-main max-w-main mx-auto flex items-center justify-between bg-secondary">
-            <Link href="/">
-                <Image 
-                    className="w-48 my-5"
-                    alt="Outlet logo"
-                    src="/logo.png"
-                    width={250}
-                    height={50} 
-                />
-            </Link>
-            <ul className="flex gap-4">
-                {links.map(link => (
-                    <li key={link.path}>
-                        <Link
-                            href={link.path}
-                            className={twMerge(
-                                "text-light text-sm"
-                            )}
-                        >
-                            {link.text}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <nav className="bg-secondary">
+            <div className="w-main max-w-main mx-auto flex items-center justify-between">
+                <Link href="/">
+                    <Image 
+                        className="w-48 my-5"
+                        alt="Outlet logo"
+                        src="/logo.png"
+                        width={250}
+                        height={50} 
+                    />
+                </Link>
+                <ul className="flex gap-4">
+                    {links.map(link => (
+                        <li key={link.path}>
+                            <Link
+                                href={link.path}
+                                className={twMerge(
+                                    "text-light text-sm"
+                                )}
+                            >
+                                {link.text}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </nav>
     )
 }
