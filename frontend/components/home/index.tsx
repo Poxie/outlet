@@ -3,9 +3,9 @@ import WeeklyDeals from './weekly-deals';
 
 export default function Home() {
     return (
-        <main className="h-[100vh] flex items-center justify-center">
+        <main className="flex items-center justify-center">
             <WeeklyDeals />
-            <Temp />
+            {/* <Temp /> */}
         </main>
     )
 }
