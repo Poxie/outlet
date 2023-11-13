@@ -1,9 +1,11 @@
+import fs from 'fs';
 import { createConnection } from './database';
 import cors from 'cors';
 import express from 'express';
 import fileUpload, { UploadedFile } from 'express-fileupload';
 import 'dotenv/config'
 import { createId } from './utils';
+import { getWeeklyDeal } from './controllers/deals';
 
 const app = express();
 app.use(cors({ 
@@ -36,6 +38,21 @@ app.post('/veckans-deal', fileUpload(), async (req, res) => {
     );
 
     res.send({ id, image: imageName });
+})
+app.delete('/veckans-deal/:dealId', async (req, res) => {
+    const deal = await getWeeklyDeal(req.params.dealId);
+    if(!deal) return res.status(404).send({ message: 'Weekly deal not found.' });
+
+    try {
+        fs.unlinkSync(`imgs/veckans-deal/${deal.image}`);
+    } catch(error) {
+        console.error(error);
+    }
+
+    const db = await createConnection();
+    db.execute('DELETE FROM veckans_deal WHERE ID = ?', [deal.id]);
+
+    res.send({});
 })
 
 app.listen(process.env.PORT, () => console.log(`Backend running on ${process.env.PORT}`))
