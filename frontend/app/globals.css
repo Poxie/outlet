@@ -4,6 +4,6 @@
 
 @layer components {
   body {
-    @apply bg-primary;
+    @apply bg-secondary;
   }
 }
