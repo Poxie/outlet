@@ -8,6 +8,7 @@ export type Event = {
     description: string;
     image: string;
     active: boolean;
+    images?: Image[];
 }
 export type Image = {
     id: string;

@@ -10,6 +10,7 @@ import 'dotenv/config'
 import { createId } from './utils';
 import { getWeeklyDeal } from './controllers/deals';
 import { getEvent, getImage } from './controllers/events';
+import { Event, Image } from '../types';
 
 const app = express();
 app.use(cors({ 
@@ -62,9 +63,17 @@ app.delete('/veckans-deal/:dealId', async (req, res) => {
 })
 
 app.get('/events', async (req, res) => {
-    const db = await createConnection();
+    const withImages = req.query.with_images;
     
+    const db = await createConnection();
+
     const [data] = await db.execute('SELECT * FROM events');
+    if(!Array.isArray(data)) throw new Error('Data is not an array.');
+
+    for(const event of data as Event[]) {
+        const [images] = await db.execute('SELECT * FROM images WHERE eventId = ?', [event.id]);
+        event.images = images as Image[];
+    }
 
     res.send(data);
 })
@@ -98,7 +107,7 @@ app.post('/events', async (req, res) => {
     res.send({ id, title, description, image: imageName });
 })
 app.get('/events/:eventId', async (req, res) => {
-    const event = await getEvent(req.params.eventId);
+    const event = await getEvent(req.params.eventId, true);
     if(!event) return res.status(404).send({ message: 'Event not found.' });
 
     res.send(event);
