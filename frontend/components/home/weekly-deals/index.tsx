@@ -22,7 +22,7 @@ export default async function WeeklyDeals() {
 
     return(
         <section className='py-6 bg-primary'>
-            <div className='p-4 w-main mx-auto bg-light rounded-lg'>
+            <div className='p-4 w-main max-w-main mx-auto bg-light rounded-lg'>
                 <Carousel 
                     items={deals.map(deal => ({
                         id: deal.id,

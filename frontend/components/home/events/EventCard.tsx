@@ -7,7 +7,7 @@ export const EventCard: React.FC<Event> = ({ id, title, description, image }) =>
     return(
         <li className="p-4 bg-light rounded-lg">
             <Image 
-                className="rounded-md aspect-[5/3] object-cover"
+                className="w-full rounded-md aspect-[5/3] object-cover"
                 src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${image}`}
                 width={400}
                 height={200}

@@ -2,19 +2,24 @@
 import { useState } from 'react';
 import Image from "next/image";
 import CarouselNavButton from "./CarouselNavButton";
+import { useScreenSize } from '@/hooks/useScreenSize';
 
 export default function Carousel({ items, itemsPerPage=4 }: {
     items: { id: string, image: string }[];
     itemsPerPage?: number;
 }) {
+    const screenSize = useScreenSize();
+    const columnCount = ['xs', 'sm'].includes(screenSize) ? 2 : itemsPerPage;
+    const columnPercentage = (1 / columnCount) * 100;
+
     const [index, setIndex] = useState(0);
     const [translate, setTranslate] = useState(0);
 
     const next = () => {
         setIndex(prev => prev + 1);
 
-        const start = (translate + 100) / 25;
-        const percentage = items.slice(start, start + itemsPerPage).length / itemsPerPage;
+        const start = (translate + 100) / columnPercentage;
+        const percentage = items.slice(start, start + columnCount).length / columnCount;
         
         setTranslate(prev => prev + percentage * 100);
     }
@@ -23,7 +28,7 @@ export default function Carousel({ items, itemsPerPage=4 }: {
         setTranslate(prev => prev < 100 ? 0 : prev - 100);
     }
 
-    const atEnd = (translate + 100) / 25 === items.length;
+    const atEnd = (translate + 100) / columnPercentage === items.length;
     return(
         <div className="relative">
             {index > 0 && (
@@ -34,7 +39,7 @@ export default function Carousel({ items, itemsPerPage=4 }: {
             )}
             <div className='overflow-hidden'>
                 <ul 
-                    className="[--column-count:4] [--spacing:8px] flex transition-transform -mr-[--spacing]"
+                    className="[--column-count:2] md:[--column-count:4] [--spacing:8px] flex transition-transform -mr-[--spacing]"
                     style={{
                         transform: `translateX(${-1 * translate}%)`,
                     }}
@@ -43,7 +48,7 @@ export default function Carousel({ items, itemsPerPage=4 }: {
                         return(
                             <li 
                                 key={item.id}
-                                className="min-w-[25%] border-r-[8px] border-r-transparent"
+                                className="min-w-[calc(100%/var(--column-count))] border-r-[8px] border-r-transparent"
                             >
                                 <Image 
                                     alt=""
