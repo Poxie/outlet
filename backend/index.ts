@@ -74,6 +74,7 @@ app.post('/events', async (req, res) => {
     const title = req.body.title;
     const description = req.body.description;
     const image = req.body.image;
+    
     if(!title) return res.status(400).send({ message: 'Title is required.' });
     if(!description) return res.status(400).send({ message: 'Description is required.' });
     if(!image) return res.status(400).send({ message: 'Image is required.' });

@@ -13,7 +13,7 @@ export default async function WeeklyDeals() {
     const deals = await getWeeklyDeals();
 
     return(
-        <section className='w-main mx-auto'>
+        <section className='w-main mx-auto py-6'>
             <div className='p-4 bg-light rounded-lg'>
                 <Carousel 
                     items={deals.map(deal => ({
