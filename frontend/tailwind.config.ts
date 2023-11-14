@@ -23,12 +23,15 @@ const config: Config = {
       borderColor: {
         light: '#fff',
       },
+      boxShadow: {
+        navbar: '0px 1px 2px 0px rgb(0 0 0 / 15%)',
+      },
       width: {
         main: '1100px',
       },
       maxWidth: {
         main: '90%',
-      }
+      },
     },
   },
   plugins: [],
