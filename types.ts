@@ -9,3 +9,8 @@ export type Event = {
     image: string;
     active: boolean;
 }
+export type Image = {
+    id: string;
+    eventId: string;
+    image: string;
+}

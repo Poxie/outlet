@@ -9,7 +9,7 @@ import fileUpload, { UploadedFile } from 'express-fileupload';
 import 'dotenv/config'
 import { createId } from './utils';
 import { getWeeklyDeal } from './controllers/deals';
-import { getEvent } from './controllers/events';
+import { getEvent, getImage } from './controllers/events';
 
 const app = express();
 app.use(cors({ 
@@ -74,7 +74,7 @@ app.post('/events', async (req, res) => {
     const title = req.body.title;
     const description = req.body.description;
     const image = req.body.image;
-    
+
     if(!title) return res.status(400).send({ message: 'Title is required.' });
     if(!description) return res.status(400).send({ message: 'Description is required.' });
     if(!image) return res.status(400).send({ message: 'Image is required.' });
@@ -114,7 +114,44 @@ app.delete('/events/:eventId', async (req, res) => {
     }
 
     const db = await createConnection();
-    db.execute('DELETE FROM events WHERE ID = ?', [event.id]);
+    db.execute('DELETE FROM events WHERE id = ?', [event.id]);
+
+    res.send({});
+})
+app.post('/events/:eventId/images', async (req, res) => {
+    const event = await getEvent(req.params.eventId);
+    if(!event) return res.status(404).send({ message: 'Event not found.' });
+    
+    const image = req.body.image;
+    if(!image) return res.status(400).send({ message: 'Image is required.' });
+
+    const id = await createId('images');
+
+    let imageResponse: string;
+    try {
+        imageResponse = await imageDataURI.outputFile(image, `imgs/events/${id}`);
+    } catch {
+        throw new Error('Unable to save image.');
+    }
+    const imageName = imageResponse.split('/').at(-1);
+
+    const db = await createConnection();
+    await db.execute(`INSERT INTO images (id, eventId, image) VALUES (?,?,?)`, [id, event.id, imageName]);
+
+    res.send({ id, eventId: event.id, image: imageName });
+})
+app.delete('/events/:eventId/images/:imageId', async (req, res) => {
+    const image = await getImage(req.params.imageId);
+    if(!image) return res.status(404).send({ message: 'Image not found.' });
+
+    try {
+        fs.unlinkSync(`imgs/events/${image.image}`);
+    } catch(error) {
+        console.error(error);
+    }
+
+    const db = await createConnection();
+    db.execute('DELETE FROM images WHERE id = ?', [image.id]);
 
     res.send({});
 })
