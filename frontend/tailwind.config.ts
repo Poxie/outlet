@@ -24,7 +24,7 @@ const config: Config = {
         light: '#fff',
       },
       width: {
-        main: '1000px',
+        main: '1100px',
       },
       maxWidth: {
         main: '90%',
