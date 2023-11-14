@@ -9,8 +9,16 @@ const getWeeklyDeals = async () => {
     return data as WeeklyDeal[];
 }
 
+const DAYS_OF_WEEK = 7;
 export default async function WeeklyDeals() {
     const deals = await getWeeklyDeals();
+
+    const date = new Date();
+    const daysUntilEnd = DAYS_OF_WEEK - date.getDay();
+    date.setDate(date.getDate() + daysUntilEnd);
+
+    const month = date.toLocaleString('default', { month: 'short' }).toLowerCase();
+    const endString = `${date.getDate()} ${month}`;
 
     return(
         <section className='py-6 bg-primary'>
@@ -23,7 +31,7 @@ export default async function WeeklyDeals() {
                 />
                 <div className="flex items-center justify-between text-sm pt-3">
                     <span className="text-secondary">
-                        Gäller t.o.m. 12 nov. Risk för utsäljning.
+                        Gäller t.o.m. {endString}. Risk för utsäljning.
                     </span>
                     <Link 
                         className="text-c-primary"
