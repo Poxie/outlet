@@ -12,6 +12,7 @@ const config: Config = {
         primary: '#D62717',
         secondary: '#E32413',
         light: '#fff',
+        'light-secondary': '#F1F1F5',
       },
       textColor: {
         'c-primary': '#FF5151',
