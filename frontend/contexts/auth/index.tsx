@@ -4,6 +4,7 @@ import React from "react";
 const AuthContext = React.createContext<null | {
     get: <T>(query: string) => Promise<T>;
     post: <T>(query: string, body?: Record<string, any>) => Promise<T>;
+    _delete: <T>(query: string, body?: Record<string, any>) => Promise<T>;
 }>(null);
 
 export const useAuth = () => {
@@ -35,10 +36,15 @@ export default function AuthProvider({ children }: {
         const data = await request('POST', query, body);
         return data as T;
     }
+    async function _delete<T>(query: string, body?: Record<string, any>) {
+        const data = await request('DELETE', query, body);
+        return data as T;
+    }
 
     const value = {
         get,
         post,
+        _delete,
     }
     return(
         <AuthContext.Provider value={value}>
