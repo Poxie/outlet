@@ -4,6 +4,8 @@ import WeeklyDealHeader from "./WeeklyDealHeader";
 import { useRef } from "react";
 import { useAuth } from "@/contexts/auth";
 import { WeeklyDeal } from "../../../../types";
+import Image from "next/image";
+import { getWeeklyDealImage } from "@/utils";
 
 const HOURS_IN_A_WEEK = 60*60*24*7;
 export default function WeeklyDealRow({ date, images, label }: {
@@ -32,7 +34,16 @@ export default function WeeklyDealRow({ date, images, label }: {
     return(
         <div>
             <WeeklyDealHeader text={label || date} />
-            <div className="mt-2 grid grid-cols-6">
+            <div className="mt-2 grid items-start grid-cols-6">
+                {images.map(image => (
+                    <Image 
+                        alt=""
+                        width={250}
+                        height={250}
+                        src={getWeeklyDealImage(image.id, image.date)}
+                        key={image.id}
+                    />
+                ))}
                 <Button 
                     className="block"
                     onClick={() => imageInput.current?.click()}

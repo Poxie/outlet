@@ -1,6 +1,8 @@
 export type WeeklyDeal = {
     id: string;
     image: string;
+    date: string;
+    timestamp: string;
 }
 export type Event = {
     id: string;
