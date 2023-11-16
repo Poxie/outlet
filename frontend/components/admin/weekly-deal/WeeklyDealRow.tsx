@@ -7,6 +7,7 @@ import { WeeklyDeal } from "../../../../types";
 import Image from "next/image";
 import { getWeeklyDealImage } from "@/utils";
 import { useRouter } from "next/navigation";
+import { BinIcon } from "@/assets/icons/BinIcon";
 
 const HOURS_IN_A_WEEK = 60*60*24*7;
 export default function WeeklyDealRow({ date, images, label }: {
@@ -40,14 +41,22 @@ export default function WeeklyDealRow({ date, images, label }: {
         <div>
             <WeeklyDealHeader text={label || date} />
             <div className="grid items-start grid-cols-6">
-                {images.map(image => (
-                    <Image 
-                        alt=""
-                        width={250}
-                        height={250}
-                        src={getWeeklyDealImage(image.id, image.date)}
-                        key={image.id}
-                    />
+                {images.map((image, index) => (
+                    <div className="group h-full relative rounded-md overflow-hidden">
+                        <Image 
+                            alt={`Weekly deal ${index + 1}.`}
+                            width={250}
+                            height={250}
+                            src={getWeeklyDealImage(image.id, image.date)}
+                            key={image.id}
+                        />
+                        <button 
+                            className="shadow opacity-0 group-hover:opacity-100 p-1 absolute top-3 right-3 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
+                            aria-label="Delete image"
+                        >
+                            <BinIcon className="w-5 text-primary" />
+                        </button>
+                    </div>
                 ))}
                 <Button 
                     className="block"

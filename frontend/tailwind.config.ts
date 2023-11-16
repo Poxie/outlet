@@ -20,6 +20,7 @@ const config: Config = {
         secondary: '#606060',
         light: '#fff',
         'light-secondary': '#ffdada',
+        danger: '#D62717',
       },
       borderColor: {
         light: '#fff',
