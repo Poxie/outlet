@@ -39,7 +39,7 @@ export default function WeeklyDealRow({ date, images, label }: {
     return(
         <div>
             <WeeklyDealHeader text={label || date} />
-            <div className="mt-2 grid items-start grid-cols-6">
+            <div className="grid items-start grid-cols-6">
                 {images.map(image => (
                     <Image 
                         alt=""
