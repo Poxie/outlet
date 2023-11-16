@@ -15,7 +15,8 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.2",
     "image-data-uri": "^2.0.1",
-    "mysql2": "^3.6.3"
+    "mysql2": "^3.6.3",
+    "typeorm": "^0.3.17"
   },
   "devDependencies": {
     "@types/cors": "^2.8.16",
