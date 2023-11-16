@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/auth";
 import { WeeklyDeal } from "../../../../types";
 import Image from "next/image";
 import { getWeeklyDealImage } from "@/utils";
+import { useRouter } from "next/navigation";
 
 const HOURS_IN_A_WEEK = 60*60*24*7;
 export default function WeeklyDealRow({ date, images, label }: {
@@ -13,6 +14,7 @@ export default function WeeklyDealRow({ date, images, label }: {
     images: WeeklyDeal[];
     label?: 'This week' | 'Next week';
 }) {
+    const router = useRouter();
     const { post } = useAuth();
 
     const imageInput = useRef<HTMLInputElement>(null);
@@ -24,10 +26,13 @@ export default function WeeklyDealRow({ date, images, label }: {
         fileReader.readAsDataURL(e.target.files[0]);
 
         fileReader.onload = async () => {
-            const timestamp = new Date(date);
-            await post(`/weekly-deals/${timestamp.getTime().toString()}/images`, {
+            const parts = date.split('-');
+            const timestamp = new Date(Number(parts.at(-1)), Number(parts.at(1)) - 1, Number(parts.at(0)));
+            console.log(timestamp);
+            const deal = await post<WeeklyDeal>(`/weekly-deals/${timestamp.getTime().toString()}/images`, {
                 image: fileReader.result,
             });
+            router.refresh();
         }
     }
 

@@ -2,7 +2,7 @@ import { WeeklyDeal as WeeklyDealType } from "../../../../types";
 import WeeklyDealRow from "./WeeklyDealRow";
 
 const getWeeklyDeals = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/weekly-deals/all`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/weekly-deals/all`, { next: { revalidate: 0 } });
     const deals = await res.json();
     return deals as {[date: string]: WeeklyDealType[]};
 }
