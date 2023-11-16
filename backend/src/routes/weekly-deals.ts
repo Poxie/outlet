@@ -31,11 +31,11 @@ router.get('/weekly-deals', async (req, res) => {
     res.send(deals);
 })
 
-const HALF_A_DAY = 1000 * 60 * 60 * 12;
+const DAY_IN_MS = 1000 * 60 * 60 * 24;
 router.get('/weekly-deals/all', async (req, res) => {
     const currentDealDate = getCurrentWeeklyDealDate();
     const weeklyDeals = await myDataSource.getRepository(WeeklyDeal).createQueryBuilder('wd')
-        .where('wd.timestamp >= :current_date', { current_date: currentDealDate.getTime() - HALF_A_DAY })
+        .where('wd.timestamp >= :current_date', { current_date: currentDealDate.getTime() - DAY_IN_MS })
         .getMany();
 
     // Creating an object with empty arrays for each date
@@ -77,11 +77,12 @@ router.post('/weekly-deals/:timestamp/images', async (req, res, next) => {
         throw new Error('Unable to save image.');
     }
 
-    await myDataSource.getRepository(WeeklyDeal).insert({
+    const imageData = myDataSource.getRepository(WeeklyDeal).create({
         id,
         date: dateString,
         timestamp,
     })
+    await myDataSource.getRepository(WeeklyDeal).save(imageData);
 
     res.send({ id, date: dateString, timestamp });
 })
