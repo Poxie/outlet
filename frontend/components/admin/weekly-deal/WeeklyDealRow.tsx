@@ -43,7 +43,7 @@ export default function WeeklyDealRow({ date, images, label }: {
     return(
         <div>
             <WeeklyDealHeader text={label || date} />
-            <div className="grid items-start grid-cols-6">
+            <div className="grid items-start sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
                 {images.map((image, index) => (
                     <div className="group h-full relative rounded-md overflow-hidden">
                         <Image 
@@ -51,6 +51,7 @@ export default function WeeklyDealRow({ date, images, label }: {
                             width={250}
                             height={250}
                             src={getWeeklyDealImage(image.id, image.date)}
+                            className="w-full"
                             key={image.id}
                         />
                         <button 

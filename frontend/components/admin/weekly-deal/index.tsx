@@ -11,7 +11,7 @@ export default async function WeeklyDeal() {
 
     const dates = Object.keys(deals);
     return(
-        <main className="p-4 flex flex-col gap-6 w-main max-w-main mx-auto bg-light rounded-lg">
+        <main className="my-12 p-4 flex flex-col gap-6 w-main max-w-main mx-auto bg-light rounded-lg">
             {dates.map((date, index) => {
                 const images = deals[date];
 
