@@ -2,9 +2,10 @@ import Image from 'next/image';
 import { WeeklyDeal } from '../../../../types';
 import Link from 'next/link';
 import Carousel from '@/components/carousel';
+import { getWeeklyDealImage } from '@/utils';
 
 const getWeeklyDeals = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/veckans-deal`, { next: { revalidate: 0 } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/weekly-deals`, { next: { revalidate: 0 } });
     const data = await res.json();
     return data as WeeklyDeal[];
 }
@@ -12,6 +13,7 @@ const getWeeklyDeals = async () => {
 const DAYS_OF_WEEK = 7;
 export default async function WeeklyDeals() {
     const deals = await getWeeklyDeals();
+    console.log(deals);
 
     const date = new Date();
     const daysUntilEnd = DAYS_OF_WEEK - date.getDay();
@@ -26,7 +28,7 @@ export default async function WeeklyDeals() {
                 <Carousel 
                     items={deals.map(deal => ({
                         id: deal.id,
-                        image: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/veckans-deal/${deal.image}`
+                        image: getWeeklyDealImage(deal.id, deal.date),
                     }))}
                 />
                 <div className="flex items-center justify-between text-sm pt-3">

@@ -9,7 +9,7 @@ const getEvents = async () => {
 }
 
 export default async function Events() {
-    const events = await getEvents();
+    // const events = await getEvents();
     return(
         <section className="py-6">
             <div className="w-main max-w-main mx-auto">
@@ -21,11 +21,11 @@ export default async function Events() {
                         Våra rekommendationer
                     </span>
                 </div>
-                <ul className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+                {/* <ul className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
                     {events.map(event => (
                         <EventCard {...event} key={event.id} />
                     ))}
-                </ul>
+                </ul> */}
             </div>
         </section>
     )
