@@ -48,15 +48,17 @@ export default function EventsTable() {
                             className="border-b-[1px] border-b-light-secondary/80 last:border-b-0"
                             key={key}
                         >
-                            <td className="p-[--spacing] flex items-center gap-2 text-primary font-semibold">
-                                <Image 
-                                    width={75}
-                                    height={60}
-                                    src={getEventImage(event.id, event.image, event.timestamp)}
-                                    className="aspect-video object-cover rounded-md"
-                                    alt=""
-                                />
-                                {event.title}
+                            <td className="p-[--spacing]">
+                                <div className="flex items-center gap-2 text-primary font-semibold">
+                                    <Image 
+                                        width={75}
+                                        height={60}
+                                        src={getEventImage(event.id, event.image, event.timestamp)}
+                                        className="aspect-video object-cover rounded-md"
+                                        alt=""
+                                    />
+                                    {event.title}
+                                </div>
                             </td>
                             <td className="p-[--spacing] text-secondary lg:w-[50%]">
                                 {event.description}
