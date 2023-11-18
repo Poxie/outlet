@@ -6,6 +6,7 @@ import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
 import { myDataSource } from '../app-data-source';
 import { Events } from '../entity/events.entity';
+import { APINotFoundError } from '../errors/apiNotFoundError';
 
 const router = express.Router();
 
@@ -43,6 +44,23 @@ router.post('/events', async (req, res, next) => {
     await myDataSource.getRepository(Events).save(event);
 
     res.send(event);
+})
+
+router.delete('/events/:eventId', async (req, res, next) => {
+    const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
+    if(!event) return next(new APINotFoundError('Event not found.'));
+
+    await myDataSource.getRepository(Events).delete(event);
+
+    const date = new Date(Number(event.timestamp));
+    try {
+        fs.rmSync(`src/imgs/events/${date.getFullYear()}/${event.id}`, { recursive: true });
+    } catch(error) {
+        console.error(error);
+        throw new Error('Unable to remove images.');
+    }
+
+    res.send({});
 })
 
 export default router;
