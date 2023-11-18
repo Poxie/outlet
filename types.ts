@@ -9,8 +9,7 @@ export type Event = {
     title: string;
     description: string;
     image: string;
-    active: boolean;
-    images?: Image[];
+    timestamp: string;
 }
 export type Image = {
     id: string;

@@ -9,6 +9,11 @@ import { Events } from '../entity/events.entity';
 
 const router = express.Router();
 
+router.get('/events/all', async (req, res, next) => {
+    const events = await myDataSource.getRepository(Events).find();
+    res.send(events);
+})
+
 const EVENT_IMAGE_ID = 'image';
 router.post('/events', async (req, res, next) => {
     const { title, description, image } = req.body;
