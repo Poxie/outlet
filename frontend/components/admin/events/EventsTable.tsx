@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Event } from "../../../../types";
 import { getDateFromString, getEventImage, getReadableDateFromTimestamp, getWeeklyDealImage } from "@/utils";
 import Image from "next/image";
+import EventTableOptions from "./EventTableOptions";
 
 const getEvents = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/all`, { next: { revalidate: 0 } });
@@ -30,6 +31,7 @@ export default function EventsTable() {
                         <th className="p-[--spacing]">
                             Date
                         </th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,11 +50,16 @@ export default function EventsTable() {
                                 />
                                 {event.title}
                             </td>
-                            <td className="p-[--spacing] text-secondary">
+                            <td className="p-[--spacing] text-secondary lg:w-[50%]">
                                 {event.description}
                             </td>
                             <td className="p-[--spacing] text-secondary">
                                 {getReadableDateFromTimestamp(event.timestamp)}
+                            </td>
+                            <td className="p-[--spacing]">
+                                <div className="flex justify-end">
+                                    <EventTableOptions />
+                                </div>
                             </td>
                         </tr>
                     ))}
