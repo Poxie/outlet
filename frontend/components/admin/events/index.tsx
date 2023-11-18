@@ -29,20 +29,16 @@ export default function Events() {
 
     }
     return(
-        <main className="my-12 w-main max-w-main mx-auto rounded-lg overflow-hidden bg-light">
+        <main className="relative my-12 max-h-[750px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
             <EventsTable />
 
-            <form 
-                className="flex p-4"
-                onSubmit={onSubmit}
-            >
-                <input type="file" ref={image} />
-                <input placeholder="event title" ref={title} />
-                <input placeholder="event description" ref={description} />
-                <Button>
-                    Create event
-                </Button>
-            </form>
+            <div className="p-2 w-full sticky bottom-0 bg-light">
+                <div className="p-4 flex justify-end bg-light-secondary rounded-lg">
+                    <Button>
+                        Create event
+                    </Button>
+                </div>
+            </div>
         </main>
     )
 }

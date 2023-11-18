@@ -29,7 +29,7 @@ export default function EventsTable() {
         !events.length ? null : (
             <table className="[--spacing:12px_16px] w-full text-sm">
                 <thead>
-                    <tr className="text-left bg-light-secondary">
+                    <tr className="sticky top-0 text-left bg-light-secondary">
                         <th className="p-[--spacing]">
                             Nuvarande event
                         </th>
