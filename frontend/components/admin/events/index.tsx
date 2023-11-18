@@ -36,7 +36,7 @@ export default function Events() {
     )
 
     return(
-        <main className="relative my-12 max-h-[750px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
+        <main className="relative my-12 flex flex-col justify-between max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
             <EventsTable />
 
             <div className="p-2 w-full sticky bottom-0 bg-light">
