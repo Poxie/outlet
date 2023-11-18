@@ -5,10 +5,16 @@ import Input from "@/components/input";
 import Button from "@/components/button";
 import { useAuth } from "@/contexts/auth";
 import Image from "next/image";
+import { useModal } from "@/contexts/modal";
+import { Event } from "../../../types";
 
-export default function AddEventModal() {
+export default function AddEventModal({ onEventAdd }: {
+    onEventAdd?: (event: Event) => void;
+}) {
     const { post } = useAuth();
+    const { close } = useModal();
 
+    const [loading, setLoading] = useState(false);
     const [event, setEvent] = useState<{
         image: string | null;
         title: string;
@@ -23,14 +29,17 @@ export default function AddEventModal() {
 
     const createEvent = async (e: React.FormEvent) => {
         e.preventDefault();
+        if(loading) return;
 
         const { title, description, image } = event;
-        const createdEvent = await post(`/events`, {
+        const createdEvent = await post<Event>(`/events`, {
             title,
             description,
             image,
         });
-        console.log(createdEvent);
+
+        close();
+        if(onEventAdd) onEventAdd(createdEvent);
     }
 
     const updateProperty = (property: keyof typeof event, value: string | File | null) => {
@@ -139,8 +148,10 @@ export default function AddEventModal() {
                     />
                 </div>
                 <div className="flex justify-end">
-                    <Button>
-                        Create event
+                    <Button
+                        disabled={loading}
+                    >
+                        {!loading ? 'Create event' : 'Creating event...'}
                     </Button>
                 </div>
             </form>

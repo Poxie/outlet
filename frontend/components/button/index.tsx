@@ -2,13 +2,14 @@ import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 
 export default function Button({
-    icon, className, onClick, href, children
+    icon, className, onClick, href, disabled, children
 }: {
     children: React.ReactNode;
     href?: string;
     onClick?: () => void;
     icon?: React.ReactNode;
     className?: string;
+    disabled?: boolean;
 }) {
     className = twMerge(
         "flex items-center justify-center gap-1.5 py-3 px-4 text-xs font-bold text-light bg-secondary rounded-md transition-colors hover:bg-opacity-80",
@@ -33,6 +34,7 @@ export default function Button({
         <button 
             className={className}
             onClick={onClick}
+            disabled={disabled}
         >
             {children}
             {icon}
