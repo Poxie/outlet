@@ -5,6 +5,8 @@ const config: Config = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './contexts/**/*.{js,ts,jsx,tsx,mdx}',
+    './modals/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -13,6 +15,7 @@ const config: Config = {
         secondary: '#E32413',
         light: '#fff',
         'light-secondary': '#F1F1F5',
+        'light-tertiary': '#DDDDDD',
       },
       textColor: {
         'c-primary': '#FF5151',
@@ -25,6 +28,7 @@ const config: Config = {
       borderColor: {
         light: '#fff',
         'light-secondary': '#F1F1F5',
+        'light-tertiary': '#DDDDDD',
       },
       boxShadow: {
         navbar: '0px 1px 2px 0px rgb(0 0 0 / 15%)',
