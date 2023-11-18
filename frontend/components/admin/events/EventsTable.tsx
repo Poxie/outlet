@@ -3,6 +3,7 @@ import { Event } from "../../../../types";
 import { getDateFromString, getEventImage, getReadableDateFromTimestamp, getWeeklyDealImage } from "@/utils";
 import Image from "next/image";
 import EventTableOptions from "./EventTableOptions";
+import { useAuth } from "@/contexts/auth";
 
 const getEvents = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/all`, { next: { revalidate: 0 } });
@@ -11,11 +12,18 @@ const getEvents = async () => {
 }
 
 export default function EventsTable() {
+    const { _delete } = useAuth();
+
     const [events, setEvents] = useState<Event[]>([]);
 
     useEffect(() => {
         getEvents().then(setEvents);
     }, []);
+    
+    const removeEvent = async (eventId: string) => {
+        await _delete(`/events/${eventId}`);
+        setEvents(prev => prev.filter(event => event.id !== eventId));
+    }
 
     return(
         !events.length ? null : (
@@ -58,7 +66,9 @@ export default function EventsTable() {
                             </td>
                             <td className="p-[--spacing]">
                                 <div className="flex justify-end">
-                                    <EventTableOptions />
+                                    <EventTableOptions 
+                                        onRemoveClick={() => removeEvent(event.id)}
+                                    />
                                 </div>
                             </td>
                         </tr>
