@@ -2,6 +2,7 @@ import { EntityTarget, ObjectLiteral } from "typeorm";
 import { myDataSource } from "../app-data-source";
 import { WeeklyDeal } from "../entity/weekly-deal.entity";
 import { DEAL_DAY_ID } from "./constants";
+import { Events } from "../entity/events.entity";
 
 export const dateToReadableString = (date: Date) => `${String(date.getDate()).padStart(2,'0')}-${String(date.getMonth() + 1).padStart(2,'0')}-${date.getFullYear()}`
 
@@ -11,7 +12,7 @@ export const getCurrentWeeklyDealDate = () => {
     return currentDealDate;
 }
 
-export const createId = async (table: 'weekly_deal') => {
+export const createId = async (table: 'weekly_deal' | 'events') => {
     const length = 8;
     const opts = '1234567890';
     
@@ -24,6 +25,10 @@ export const createId = async (table: 'weekly_deal') => {
     switch(table) {
         case 'weekly_deal': {
             repository = WeeklyDeal;
+            break;
+        }
+        case 'events': {
+            repository = Events;
             break;
         }
         default:
