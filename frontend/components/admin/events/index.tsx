@@ -12,6 +12,7 @@ const EventContext = React.createContext<null | {
     addEvent: (event: Event) => void;
     search: string;
     setSearch: (query: string) => void;
+    loading: boolean;
 }>(null);
 export const useEvents = () => {
     const context = React.useContext(EventContext);
@@ -24,10 +25,14 @@ export default function Events() {
     const search = useSearchParams().get('search') || '';
 
     const [events, setEvents] = useState<Event[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getEvents = async () => await get<Event[]>(`/events/all`);
-        getEvents().then(setEvents);
+        getEvents().then(events => {
+            setEvents(events);
+            setLoading(false);
+        });
     }, []);
 
     const addEvent = (event: Event) => setEvents(prev => [...[event], ...prev]);
@@ -51,6 +56,7 @@ export default function Events() {
         removeEvent,
         search,
         setSearch,
+        loading,
     }
     return(
         <main className="relative my-12 flex flex-col max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">

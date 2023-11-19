@@ -1,12 +1,11 @@
 import React from "react";
-import { Event } from "../../../../types";
 import { getEventImage, getReadableDateFromTimestamp, getWeeklyDealImage } from "@/utils";
 import Image from "next/image";
 import EventTableOptions from "./EventTableOptions";
 import { useEvents } from ".";
 
 export default function EventsTable() {
-    const { events, removeEvent, search } = useEvents();
+    const { events, removeEvent, search, loading } = useEvents();
 
     const hasFilters = !!search;
     return(
@@ -65,7 +64,11 @@ export default function EventsTable() {
             </table>
         ) : (
             <span className="-mt-4 flex-1 flex items-center justify-center text-secondary/80">
-                {hasFilters ? 'Found no results matching filters.' : 'Create an event to get started.'}
+                {loading ? (
+                    'Loading events...'
+                ) : (
+                    hasFilters ? 'Found no results matching filters.' : 'Create an event to get started.'
+                )}
             </span>
         )
     )

@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/auth";
 import Image from "next/image";
 import { useModal } from "@/contexts/modal";
 import { Event } from "../../../types";
+import { TimeSelector } from "./TimeSelector";
+import { ClockIcon } from "@/assets/icons/ClockIcon";
 
 export default function AddEventModal({ onEventAdd }: {
     onEventAdd?: (event: Event) => void;
@@ -19,10 +21,12 @@ export default function AddEventModal({ onEventAdd }: {
         image: string | null;
         title: string;
         description: string;
+        timestamp: string;
     }>({
         image: null,
         title: '',
         description: '',
+        timestamp: new Date().getTime().toString(),
     });
 
     const image = useRef<HTMLInputElement>(null);
@@ -62,6 +66,7 @@ export default function AddEventModal({ onEventAdd }: {
         }}))
     }
 
+    const date = new Date(Number(event.timestamp));
     return(
         <Modal>
             <ModalHeader>
@@ -146,6 +151,18 @@ export default function AddEventModal({ onEventAdd }: {
                         value={event.description}
                         textArea
                     />
+                </div>
+                <div className="grid">
+                    <span className="mb-0.5 block text-sm text-secondary">
+                        Event start
+                    </span>
+                    <div className="relative">
+                        <button className="p-3 flex items-center gap-2 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary">
+                            <ClockIcon className="w-5" />
+                            {date.toLocaleDateString('default', { dateStyle: 'medium' })}
+                        </button>
+                        <TimeSelector className="w-[350px] absolute left-0 -bottom-12" onChange={console.log} />
+                    </div>
                 </div>
                 <div className="flex justify-end">
                     <Button
