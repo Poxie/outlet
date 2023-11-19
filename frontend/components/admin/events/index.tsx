@@ -6,6 +6,7 @@ import EventsTable from "./EventsTable";
 import { useModal } from "@/contexts/modal";
 import AddEventModal from "@/modals/add-event";
 import { Event } from "../../../../types";
+import Input from "@/components/input";
 
 const getEvents = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/all`, { next: { revalidate: 0 } });
@@ -40,19 +41,26 @@ export default function Events() {
     )
 
     return(
-        <main className="relative my-12 flex flex-col justify-between max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
+        <main className="relative my-12 max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
+            <div className="p-4 flex items-center justify-between rounded-lg bg-light shadow-centered">
+                <Input 
+                    className="px-2 py-2 w-[300px] max-w-full"
+                    placeholder={'Search'}
+                    onChange={console.log}
+                    value={''}
+                />
+                <Button 
+                    onClick={openAddEventModal}
+                    className="p-3"
+                >
+                    Create event
+                </Button>
+            </div>
+
             <EventsTable 
                 events={events}
                 removeEvent={removeEvent}
             />
-
-            <div className="p-2 w-full sticky bottom-0 bg-light">
-                <div className="p-4 flex justify-end bg-light-secondary rounded-lg">
-                    <Button onClick={openAddEventModal}>
-                        Create event
-                    </Button>
-                </div>
-            </div>
         </main>
     )
 }

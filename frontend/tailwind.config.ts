@@ -32,6 +32,7 @@ const config: Config = {
       },
       boxShadow: {
         navbar: '0px 1px 2px 0px rgb(0 0 0 / 15%)',
+        centered: '0px 0px 4px 1px rgb(0 0 0 / 10%)',
       },
       width: {
         main: '1100px',

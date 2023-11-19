@@ -17,7 +17,7 @@ const Input = forwardRef<HTMLInputElement, {
         type,
         ref: ref as any,
         autoComplete: 'off',
-        className: "p-3 bg-tertiary border-[1px] bg-light-secondary border-light-tertiary outline-none rounded-md w-full text-sm " + className,
+        className: "p-3 bg-tertiary border-[1px] bg-light-secondary border-light-tertiary outline-none rounded-md text-sm " + className,
         onChange: (e: React.ChangeEvent<any>) => onChange(e.target.value),
         'aria-placeholder': placeholder,
     }

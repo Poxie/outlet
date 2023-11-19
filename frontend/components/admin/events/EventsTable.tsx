@@ -10,19 +10,19 @@ export default function EventsTable({ events, removeEvent }: {
 }) {
     return(
         !events.length ? null : (
-            <table className="[--spacing:12px_16px] w-full text-sm">
+            <table className="[--spacing:.75rem] block p-4 pt-0 w-full text-sm border-spacing-2">
                 <thead>
-                    <tr className="sticky top-0 text-left bg-light-secondary">
-                        <th className="p-[--spacing]">
+                    <tr className="sticky -top-[1px] text-left rounded-lg border-b-[1px] border-b-light-secondary bg-light">
+                        <th className="py-[--spacing] rounded-l-lg">
                             Nuvarande event
                         </th>
-                        <th className="p-[--spacing]">
+                        <th className="py-[--spacing]">
                             Description
                         </th>
-                        <th className="p-[--spacing]">
+                        <th className="py-[--spacing]">
                             Date
                         </th>
-                        <th></th>
+                        <th className="rounded-r-lg"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,25 +31,27 @@ export default function EventsTable({ events, removeEvent }: {
                             className="border-b-[1px] border-b-light-secondary/80 last:border-b-0"
                             key={key}
                         >
-                            <td className="p-[--spacing]">
+                            <td className="py-4">
                                 <div className="flex items-center gap-2 text-primary font-semibold">
                                     <Image 
                                         width={75}
                                         height={60}
                                         src={getEventImage(event.id, event.image, event.timestamp)}
-                                        className="aspect-video object-cover rounded-md"
+                                        className="aspect-video object-cover rounded"
                                         alt=""
                                     />
                                     {event.title}
                                 </div>
                             </td>
-                            <td className="p-[--spacing] text-secondary lg:w-[50%]">
-                                {event.description}
+                            <td className="py-4 text-secondary w-[50%]">
+                                <span className="line-clamp-2">
+                                    {event.description}
+                                </span>
                             </td>
-                            <td className="p-[--spacing] text-secondary">
+                            <td className="py-4 text-secondary">
                                 {getReadableDateFromTimestamp(event.timestamp)}
                             </td>
-                            <td className="p-[--spacing]">
+                            <td className="py-4">
                                 <div className="flex justify-end">
                                     <EventTableOptions 
                                         onRemoveClick={() => removeEvent(event.id)}
