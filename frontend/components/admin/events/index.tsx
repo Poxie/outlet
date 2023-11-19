@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/contexts/auth";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import EventsTable from "./EventsTable";
 import { Event } from "../../../../types";
 import EventPanel from "./EventPanel";
@@ -35,8 +35,12 @@ export default function Events() {
         setEvents(prev => prev.filter(event => event.id !== eventId));
     }
 
+    const filteredEvents = useMemo(() => events.filter(event => (
+        event.title.toLowerCase().includes(search.toLowerCase())
+    )), [search, events])
+
     const value = {
-        events,
+        events: filteredEvents,
         addEvent,
         removeEvent,
         search,
