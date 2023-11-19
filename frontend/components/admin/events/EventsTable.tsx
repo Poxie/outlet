@@ -6,7 +6,7 @@ import EventTableOptions from "./EventTableOptions";
 import { useEvents } from ".";
 
 export default function EventsTable() {
-    const { events, removeEvent } = useEvents();
+    const { events, removeEvent, search } = useEvents();
 
     return(
         !events.length ? null : (
@@ -14,7 +14,7 @@ export default function EventsTable() {
                 <thead>
                     <tr className="sticky -top-[1px] text-left rounded-lg border-b-[1px] border-b-light-secondary bg-light">
                         <th className="py-[--spacing] rounded-l-lg">
-                            Nuvarande event
+                            {!search ? 'On-going events' : `Found ${events.length} results based on filters`}
                         </th>
                         <th className="py-[--spacing]">
                             Description
