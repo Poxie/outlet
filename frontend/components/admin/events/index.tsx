@@ -1,28 +1,29 @@
 "use client";
-import Button from "@/components/button";
 import { useAuth } from "@/contexts/auth";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EventsTable from "./EventsTable";
-import { useModal } from "@/contexts/modal";
-import AddEventModal from "@/modals/add-event";
 import { Event } from "../../../../types";
-import Input from "@/components/input";
+import EventPanel from "./EventPanel";
 
-const getEvents = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/all`, { next: { revalidate: 0 } });
-    const events = await res.json();
-    return events as Event[];
+const EventContext = React.createContext<null | {
+    events: Event[];
+    removeEvent: (eventId: string) => Promise<void>;
+    addEvent: (event: Event) => void;
+    search: string;
+    setSearch: (query: string) => void;
+}>(null);
+export const useEvents = () => {
+    const context = React.useContext(EventContext);
+    if(!context) throw new Error('Component is not wrapped in events provider.');
+    return context;
 }
-
 export default function Events() {
-    const { post, _delete } = useAuth();
-    const { setModal } = useModal();
+    const { get, post, _delete } = useAuth();
 
     const [events, setEvents] = useState<Event[]>([]);
+    const [search, setSearch] = useState('');
 
-    const title = useRef<HTMLInputElement>(null);
-    const description = useRef<HTMLInputElement>(null);
-    const image = useRef<HTMLInputElement>(null);
+    const getEvents = async () => await get<Event[]>(`/events/all`);
 
     useEffect(() => {
         getEvents().then(setEvents);
@@ -34,33 +35,19 @@ export default function Events() {
         setEvents(prev => prev.filter(event => event.id !== eventId));
     }
 
-    const openAddEventModal = () => setModal(
-        <AddEventModal 
-            onEventAdd={addEvent}
-        />
-    )
-
+    const value = {
+        events,
+        addEvent,
+        removeEvent,
+        search,
+        setSearch,
+    }
     return(
         <main className="relative my-12 max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
-            <div className="p-4 flex items-center justify-between rounded-lg bg-light shadow-centered mb-[2px]">
-                <Input 
-                    className="px-2 py-2 w-[300px] max-w-full"
-                    placeholder={'Search'}
-                    onChange={console.log}
-                    value={''}
-                />
-                <Button 
-                    onClick={openAddEventModal}
-                    className="p-3"
-                >
-                    Create event
-                </Button>
-            </div>
-
-            <EventsTable 
-                events={events}
-                removeEvent={removeEvent}
-            />
+            <EventContext.Provider value={value}>
+                <EventPanel />
+                <EventsTable />
+            </EventContext.Provider>
         </main>
     )
 }

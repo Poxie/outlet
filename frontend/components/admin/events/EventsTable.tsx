@@ -3,11 +3,11 @@ import { Event } from "../../../../types";
 import { getEventImage, getReadableDateFromTimestamp, getWeeklyDealImage } from "@/utils";
 import Image from "next/image";
 import EventTableOptions from "./EventTableOptions";
+import { useEvents } from ".";
 
-export default function EventsTable({ events, removeEvent }: {
-    events: Event[];
-    removeEvent: (eventId: string) => void;
-}) {
+export default function EventsTable() {
+    const { events, removeEvent } = useEvents();
+
     return(
         !events.length ? null : (
             <table className="[--spacing:.75rem] block p-4 pt-0 w-full text-sm border-spacing-2">
