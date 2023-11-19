@@ -42,7 +42,7 @@ export default function Events() {
 
     return(
         <main className="relative my-12 max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
-            <div className="p-4 flex items-center justify-between rounded-lg bg-light shadow-centered">
+            <div className="p-4 flex items-center justify-between rounded-lg bg-light shadow-centered mb-[2px]">
                 <Input 
                     className="px-2 py-2 w-[300px] max-w-full"
                     placeholder={'Search'}
