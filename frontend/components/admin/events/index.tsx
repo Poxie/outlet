@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import EventsTable from "./EventsTable";
 import { Event } from "../../../../types";
 import EventPanel from "./EventPanel";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const EventContext = React.createContext<null | {
     events: Event[];
@@ -18,14 +19,14 @@ export const useEvents = () => {
     return context;
 }
 export default function Events() {
+    const router = useRouter();
     const { get, post, _delete } = useAuth();
+    const search = useSearchParams().get('search') || '';
 
     const [events, setEvents] = useState<Event[]>([]);
-    const [search, setSearch] = useState('');
-
-    const getEvents = async () => await get<Event[]>(`/events/all`);
 
     useEffect(() => {
+        const getEvents = async () => await get<Event[]>(`/events/all`);
         getEvents().then(setEvents);
     }, []);
 
@@ -33,6 +34,11 @@ export default function Events() {
     const removeEvent = async (eventId: string) => {
         await _delete(`/events/${eventId}`);
         setEvents(prev => prev.filter(event => event.id !== eventId));
+    };
+
+    const setSearch = (query: string) => {
+        if(!query) return router.replace(`/admin/events`);
+        router.replace(`/admin/events?search=${query}`);
     }
 
     const filteredEvents = useMemo(() => events.filter(event => (
@@ -47,7 +53,7 @@ export default function Events() {
         setSearch,
     }
     return(
-        <main className="relative my-12 max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
+        <main className="relative my-12 flex flex-col max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
             <EventContext.Provider value={value}>
                 <EventPanel />
                 <EventsTable />

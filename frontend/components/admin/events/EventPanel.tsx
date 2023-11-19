@@ -20,7 +20,6 @@ export default function EventPanel() {
                 className="px-2 py-2 w-[300px] max-w-full"
                 placeholder={'Search'}
                 onChange={setSearch}
-                value={search}
             />
             <Button 
                 onClick={openAddEventModal}

@@ -8,8 +8,9 @@ import { useEvents } from ".";
 export default function EventsTable() {
     const { events, removeEvent, search } = useEvents();
 
+    const hasFilters = !!search;
     return(
-        !events.length ? null : (
+        events.length ? (
             <table className="[--spacing:.75rem] block p-4 pt-0 w-full text-sm border-spacing-2">
                 <thead>
                     <tr className="sticky -top-[1px] text-left rounded-lg border-b-[1px] border-b-light-secondary bg-light">
@@ -62,6 +63,10 @@ export default function EventsTable() {
                     ))}
                 </tbody>
             </table>
+        ) : (
+            <span className="-mt-4 flex-1 flex items-center justify-center text-secondary/80">
+                {hasFilters ? 'Found no results matching filters.' : 'Create an event to get started.'}
+            </span>
         )
     )
 }

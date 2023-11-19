@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 
 const Input = forwardRef<HTMLInputElement, {
     onChange: (value: string) => void;
-    value: string | number;
+    value?: string | number;
     placeholder?: string;
     autoFocus?: boolean;
     type?: 'text' | 'password' | 'number';
