@@ -17,13 +17,15 @@ router.get('/events/all', async (req, res, next) => {
 
 const EVENT_IMAGE_ID = 'image';
 router.post('/events', async (req, res, next) => {
-    const { title, description, image } = req.body;
+    const { title, description, image, timestamp } = req.body;
     
     if(!title) return next(new APIBadRequestError("Title is required."));
     if(!description) return next(new APIBadRequestError("Description is required."));
     if(!image) return next(new APIBadRequestError("Image is required."));
+    if(!timestamp) return next(new APIBadRequestError("Timestamp is required."));
 
-    const date = new Date();
+    const date = new Date(Number(timestamp));
+    if(!date.getTime()) return next(new APIBadRequestError("Invalid timestamp was provided."));
 
     const id = await createId('events');
     let imageResponse: string;

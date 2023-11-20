@@ -38,11 +38,12 @@ export default function AddEventModal({ onEventAdd }: {
         e.preventDefault();
         if(loading) return;
 
-        const { title, description, image } = event;
+        const { title, description, image, timestamp } = event;
         const createdEvent = await post<Event>(`/events`, {
             title,
             description,
             image,
+            timestamp,
         });
 
         closeModal();
