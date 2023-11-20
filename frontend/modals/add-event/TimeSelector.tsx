@@ -207,7 +207,7 @@ export const TimeSelector: React.FC<{
                     </span>
                 ))}
             </div>
-            <div className="flex justify-between gap-3 mt-3 pb-5 border-b-[1px] border-b-light-secondary">
+            <div className="flex justify-between gap-3 mt-3 pb-4 border-b-[1px] border-b-light-secondary">
                 <input 
                     className="outline-none py-3 flex-1 border-[1px] border-light-secondary bg-light text-lg text-center rounded"
                     onChange={e => onTimeChange('hour', e.target.valueAsNumber)}
@@ -231,7 +231,7 @@ export const TimeSelector: React.FC<{
                 />
             </div>
             <button
-                className="block mx-auto mt-2.5 pt-2.5 px-5 text-sm text-center text-c-primary"
+                className="block mx-auto mt-2 pt-2 px-4 text-sm text-center text-c-primary"
                 onClick={reset}
             >
                 Reset date
