@@ -9,12 +9,14 @@ import { useModal } from "@/contexts/modal";
 import { Event } from "../../../types";
 import { TimeSelector } from "./TimeSelector";
 import { ClockIcon } from "@/assets/icons/ClockIcon";
+import { usePopout } from "@/contexts/popout";
 
 export default function AddEventModal({ onEventAdd }: {
     onEventAdd?: (event: Event) => void;
 }) {
     const { post } = useAuth();
-    const { close } = useModal();
+    const { close: closeModal } = useModal();
+    const { setPopout, close: closePopout } = usePopout();
 
     const [loading, setLoading] = useState(false);
     const [event, setEvent] = useState<{
@@ -30,6 +32,7 @@ export default function AddEventModal({ onEventAdd }: {
     });
 
     const image = useRef<HTMLInputElement>(null);
+    const openPopoutButton = useRef<HTMLButtonElement>(null);
 
     const createEvent = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,7 +45,7 @@ export default function AddEventModal({ onEventAdd }: {
             image,
         });
 
-        close();
+        closeModal();
         if(onEventAdd) onEventAdd(createdEvent);
     }
 
@@ -64,6 +67,18 @@ export default function AddEventModal({ onEventAdd }: {
         setEvent(prev => ({...prev, ...{
             [property]: value,
         }}))
+    }
+
+    const openTimeSelector = () => {
+        const onChange = (date: Date | null) => {
+            closePopout();
+            if(!date) return updateProperty('timestamp', new Date().getTime().toString());
+            updateProperty('timestamp', date.getTime().toString());
+        }
+        setPopout({
+            popout: <TimeSelector onChange={onChange} />,
+            ref: openPopoutButton,
+        })
     }
 
     const date = new Date(Number(event.timestamp));
@@ -157,11 +172,15 @@ export default function AddEventModal({ onEventAdd }: {
                         Event start
                     </span>
                     <div className="relative">
-                        <button className="p-3 flex items-center gap-2 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary">
-                            <ClockIcon className="w-5" />
-                            {date.toLocaleDateString('default', { dateStyle: 'medium' })}
+                        <button 
+                            type="button"
+                            className="p-3 flex items-center gap-1.5 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary"
+                            onClick={openTimeSelector}
+                            ref={openPopoutButton}
+                        >
+                            <ClockIcon className="w-4" />
+                            {date.toLocaleDateString('default', { dateStyle: 'long' })}
                         </button>
-                        <TimeSelector className="w-[350px] absolute left-0 -bottom-12" onChange={console.log} />
                     </div>
                 </div>
                 <div className="flex justify-end">

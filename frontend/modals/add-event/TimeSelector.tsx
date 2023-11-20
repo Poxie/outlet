@@ -153,7 +153,7 @@ export const TimeSelector: React.FC<{
             "p-4 bg-light border-[1px] border-light-secondary rounded-md",
             className,
         )}>
-            <div className="uppercase font-semibold text-secondary text-sm p-6 text-center flex items-center justify-between">
+            <div className="uppercase font-semibold text-secondary text-sm pb-4 text-center flex items-center justify-between">
                 <button
                     type="button"
                     onClick={prevMonth}
@@ -173,7 +173,7 @@ export const TimeSelector: React.FC<{
             <div className="grid grid-cols-7 border-t-[1px] border-t-light-secondary">
                 {DAYS.map(day => (
                     <span 
-                        className="p-3 flex items-center justify-center text-xs aspect-square text-center"
+                        className="p-3 flex items-center justify-center text-xs aspect-square text-center first:border-l-[1px] first:border-l-light-secondary last:border-r-[1px] last:border-r-light-secondary"
                         key={day}
                     >
                         {day.slice(0,2)}
@@ -207,7 +207,7 @@ export const TimeSelector: React.FC<{
                     </span>
                 ))}
             </div>
-            <div className="flex justify-between gap-3 mt-3 pb-3 border-b-[1px] border-b-light-secondary">
+            <div className="flex justify-between gap-3 mt-3 pb-5 border-b-[1px] border-b-light-secondary">
                 <input 
                     className="outline-none py-3 flex-1 border-[1px] border-light-secondary bg-light text-lg text-center rounded"
                     onChange={e => onTimeChange('hour', e.target.valueAsNumber)}
@@ -230,12 +230,12 @@ export const TimeSelector: React.FC<{
                     max={DEFAULT_MINUTE}
                 />
             </div>
-            <Button 
-                className="w-full mt-6 bg-light-tertiary text-xs"
+            <button
+                className="block mx-auto mt-2.5 pt-2.5 px-5 text-sm text-center text-c-primary"
                 onClick={reset}
             >
-                Reset
-            </Button>
+                Reset date
+            </button>
         </div>
     )
 }
