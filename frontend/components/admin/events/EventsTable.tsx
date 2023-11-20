@@ -5,6 +5,7 @@ import EventTableOptions from "./EventTableOptions";
 import { useEvents } from ".";
 import { ClockIcon } from "@/assets/icons/ClockIcon";
 import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
+import Button from "@/components/button";
 
 export default function EventsTable() {
     const { events, removeEvent, search, loading } = useEvents();
@@ -118,10 +119,13 @@ export default function EventsTable() {
                                     {getReadableDateFromTimestamp(event.timestamp)}
                                 </td>
                                 <td className="px-4 py-4">
-                                    <div className="flex justify-end">
+                                    <div className="flex justify-end gap-2">
                                         <EventTableOptions 
                                             onRemoveClick={() => removeEvent(event.id)}
                                         />
+                                        <Button className="px-2 py-1.5">
+                                            Start early
+                                        </Button>
                                     </div>
                                 </td>
                             </tr>
