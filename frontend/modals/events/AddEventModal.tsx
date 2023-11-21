@@ -7,7 +7,7 @@ import { Event } from "../../../types";
 import EventModalContent from "./EventModalContent";
 
 export default function AddEventModal({ onEventAdd }: {
-    onEventAdd?: (event: Event) => void;
+    onEventAdd: (event: Event) => void;
 }) {
     const { post } = useAuth();
     const { close: closeModal } = useModal();
@@ -27,7 +27,7 @@ export default function AddEventModal({ onEventAdd }: {
         });
 
         closeModal();
-        if(onEventAdd) onEventAdd(createdEvent);
+        onEventAdd(createdEvent);
     }
 
     return(
