@@ -15,10 +15,10 @@ export default function EditEventModal({ onConfirm, event }: {
 
     const [loading, setLoading] = useState(false);
 
-    const editEvent = async (event: Event) => {
+    const editEvent = async (event: Event, changes: Partial<Event>) => {
         setLoading(true);
 
-        const updatedEvent = await patch<Event>(`/events/${event.id}`, event);
+        const updatedEvent = await patch<Event>(`/events/${event.id}`, changes);
         onConfirm(updatedEvent);
 
         closeModal();

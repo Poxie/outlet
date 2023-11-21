@@ -12,7 +12,7 @@ export default function EventModalContent({ buttonText, buttonLoadingText, onSub
     loading: boolean;
     buttonText: string;
     buttonLoadingText: string;
-    onSubmit: (eventInfo: Event) => void;
+    onSubmit: (eventInfo: Event, changes: Partial<Event>) => void;
     event?: Event;
 }) {
     const { setPopout, close: closePopout } = usePopout();
@@ -41,16 +41,16 @@ export default function EventModalContent({ buttonText, buttonLoadingText, onSub
             return setError(`${firstLetterUppercase} ${invalidProps.length > 1 ? 'are' : 'is'} required.`);
         }
 
-        let isDifferent = false;
+        const changes: {[property: string]: Event[keyof Event]} = {};
         Object.keys(eventInfo).forEach(key => {
-            if(!event) return isDifferent = true;
+            if(!event) return;
 
             const property = key as keyof typeof eventInfo;
-            if(event[property] !== eventInfo[property]) isDifferent = true;
+            if(event[property] !== eventInfo[property]) changes[property] = eventInfo[property];
         })
-        if(!isDifferent) return setError('No changes have been made.');
+        if(!Object.keys(changes).length) return setError('No changes have been made.');
 
-        onSubmit(eventInfo);
+        onSubmit(eventInfo, changes);
     }
     const updateProperty = (property: keyof typeof eventInfo, value: string | File | null) => {
         setError('');
