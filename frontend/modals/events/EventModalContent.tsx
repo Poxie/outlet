@@ -41,14 +41,21 @@ export default function EventModalContent({ buttonText, buttonLoadingText, onSub
             return setError(`${firstLetterUppercase} ${invalidProps.length > 1 ? 'are' : 'is'} required.`);
         }
 
-        const changes: {[property: string]: Event[keyof Event]} = {};
+        let changes: {[property: string]: Event[keyof Event]} = {};
         Object.keys(eventInfo).forEach(key => {
             if(!event) return;
 
             const property = key as keyof typeof eventInfo;
             if(event[property] !== eventInfo[property]) changes[property] = eventInfo[property];
         })
-        if(!Object.keys(changes).length) return setError('No changes have been made.');
+
+        // If event is not undefined, i.e., user is editing an event, throw no changes error.
+        // Else set changes as event object, since user is creating an event, meaning everything is a change.
+        if(event) {
+            if(!Object.keys(changes).length) return setError('No changes have been made.');
+        } else {
+            changes = eventInfo;
+        }
 
         onSubmit(eventInfo, changes);
     }
