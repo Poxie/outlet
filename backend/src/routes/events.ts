@@ -49,7 +49,6 @@ router.post('/events', async (req, res, next) => {
     res.send(event);
 })
 router.patch('/events/:eventId', async (req, res, next) => {
-    console.log('testy');
     const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
     if(!event) return next(new APINotFoundError('Event was not found.'));
 
@@ -60,6 +59,16 @@ router.patch('/events/:eventId', async (req, res, next) => {
     for(const key of Object.keys(props)) {
         if(!ALLOWED_EVENT_PROPERTIES.includes(key)) continue;
         if(key === 'image') {
+            const image = props[key];
+            const date = new Date(Number(event.timestamp));
+            try {
+                const imageId = `${event.image}-${Math.floor(Math.random() * 10000)}`;
+                await imageDataURI.outputFile(image, `src/imgs/events/${date.getFullYear()}/${event.id}/${imageId}.png`);
+                propsToUpdate[key] = imageId;
+            } catch(error) {
+                console.error(error);
+                throw new Error('Unable to save image.');
+            }
             continue;
         }
         propsToUpdate[key] = props[key];
