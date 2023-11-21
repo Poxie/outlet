@@ -63,11 +63,11 @@ router.patch('/events/:eventId', async (req, res, next) => {
             const image = props[key];
             const date = new Date(Number(event.timestamp));
 
+            const prevImagePath = `src/imgs/events/${date.getFullYear()}/${event.id}/${event.image}.png`;
             try {
-                fs.unlinkSync(`src/imgs/events/${date.getFullYear()}/${event.id}/${event.image}.png`);
+                fs.unlinkSync(prevImagePath);
             } catch(error) {
-                console.error(error);
-                return next(new APIInternalServerError('Unable to remove previous image.'));
+                console.error(`Unable to remove previous image: ${prevImagePath}.`);
             }
 
             const imageId = `${EVENT_IMAGE_ID}-${Math.floor(Math.random() * 1000000)}`;
