@@ -7,6 +7,7 @@ import { createId } from '../utils';
 import { myDataSource } from '../app-data-source';
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
+import { ALLOWED_EVENT_PROPERTIES } from '../utils/constants';
 
 const router = express.Router();
 
@@ -47,7 +48,32 @@ router.post('/events', async (req, res, next) => {
 
     res.send(event);
 })
+router.patch('/events/:eventId', async (req, res, next) => {
+    console.log('testy');
+    const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
+    if(!event) return next(new APINotFoundError('Event was not found.'));
 
+    const props = req.body;
+    if(!Object.keys(props).length) return next(new APIBadRequestError('No properties to update were provided.'));
+
+    const propsToUpdate: {[property: string]: string} = {};
+    for(const key of Object.keys(props)) {
+        if(!ALLOWED_EVENT_PROPERTIES.includes(key)) continue;
+        if(key === 'image') {
+            continue;
+        }
+        propsToUpdate[key] = props[key];
+    }    
+
+    if(!Object.keys(propsToUpdate).length) return next(new APIBadRequestError('No valid properties to update were provided.'));
+
+    const updatedEvent = await myDataSource.getRepository(Events).save({
+        ...event,
+        ...propsToUpdate,
+    })
+
+    res.send(updatedEvent);
+})
 router.delete('/events/:eventId', async (req, res, next) => {
     const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
     if(!event) return next(new APINotFoundError('Event not found.'));
