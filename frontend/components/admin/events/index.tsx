@@ -5,10 +5,13 @@ import EventsTable from "./EventsTable";
 import { Event } from "../../../../types";
 import EventPanel from "./EventPanel";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useModal } from "@/contexts/modal";
+import EditEventModal from "@/modals/events/EditEventModal";
 
 const EventContext = React.createContext<null | {
     events: Event[];
     removeEvent: (eventId: string) => Promise<void>;
+    editEvent: (eventId: string) => void;
     addEvent: (event: Event) => void;
     search: string;
     setSearch: (query: string) => void;
@@ -21,6 +24,7 @@ export const useEvents = () => {
 }
 export default function Events() {
     const router = useRouter();
+    const { setModal } = useModal();
     const { get, post, _delete } = useAuth();
     const search = useSearchParams().get('search') || '';
 
@@ -40,6 +44,21 @@ export default function Events() {
         await _delete(`/events/${eventId}`);
         setEvents(prev => prev.filter(event => event.id !== eventId));
     };
+    const editEvent = (eventId: string) => {
+        const event = events.find(event => event.id === eventId);
+        if(!event) return;
+
+        const onConfirm = (event: Event) => setEvents(prev => prev.map(e => {
+            if(e.id !== event.id) return e;
+            return event;
+        }));
+        setModal(
+            <EditEventModal 
+                onConfirm={onConfirm}
+                event={event}
+            />
+        );
+    }
 
     const setSearch = (query: string) => {
         if(!query) return router.replace(`/admin/events`);
@@ -53,6 +72,7 @@ export default function Events() {
     const value = {
         events: filteredEvents,
         addEvent,
+        editEvent,
         removeEvent,
         search,
         setSearch,

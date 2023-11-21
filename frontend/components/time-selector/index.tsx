@@ -1,5 +1,4 @@
 import { ArrowIcon } from '@/assets/icons/ArrowIcon';
-import Button from '@/components/button';
 import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 

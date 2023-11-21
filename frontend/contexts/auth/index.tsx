@@ -4,6 +4,7 @@ import React from "react";
 const AuthContext = React.createContext<null | {
     get: <T>(query: string) => Promise<T>;
     post: <T>(query: string, body?: Record<string, any>) => Promise<T>;
+    patch: <T>(query: string, body?: Record<string, any>) => Promise<T>;
     _delete: <T>(query: string, body?: Record<string, any>) => Promise<T>;
 }>(null);
 
@@ -36,6 +37,10 @@ export default function AuthProvider({ children }: {
         const data = await request('POST', query, body);
         return data as T;
     }
+    async function patch<T>(query: string, body?: Record<string, any>) {
+        const data = await request('PATCH', query, body);
+        return data as T;
+    }
     async function _delete<T>(query: string, body?: Record<string, any>) {
         const data = await request('DELETE', query, body);
         return data as T;
@@ -44,6 +49,7 @@ export default function AuthProvider({ children }: {
     const value = {
         get,
         post,
+        patch,
         _delete,
     }
     return(

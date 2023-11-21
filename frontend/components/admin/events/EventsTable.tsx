@@ -8,7 +8,7 @@ import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
 import Button from "@/components/button";
 
 export default function EventsTable() {
-    const { events, removeEvent, search, loading } = useEvents();
+    const { events, removeEvent, editEvent, search, loading } = useEvents();
 
     const onGoingEvents = events.filter(event => (
         Number(event.timestamp) <= new Date().getTime()
@@ -71,6 +71,7 @@ export default function EventsTable() {
                                     <div className="flex justify-end">
                                         <EventTableOptions 
                                             onRemoveClick={() => removeEvent(event.id)}
+                                            onEditClick={() => editEvent(event.id)}
                                         />
                                     </div>
                                 </td>
@@ -122,6 +123,7 @@ export default function EventsTable() {
                                     <div className="flex justify-end gap-2">
                                         <EventTableOptions 
                                             onRemoveClick={() => removeEvent(event.id)}
+                                            onEditClick={() => editEvent(event.id)}
                                         />
                                         <Button className="px-2 py-1.5">
                                             Start early

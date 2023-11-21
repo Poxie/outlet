@@ -29,6 +29,8 @@ const config: Config = {
         light: '#fff',
         'light-secondary': '#F1F1F5',
         'light-tertiary': '#DDDDDD',
+        'c-primary': '#D62717',
+        'c-secondary': '#E32413',
       },
       boxShadow: {
         navbar: '0px 1px 2px 0px rgb(0 0 0 / 15%)',
