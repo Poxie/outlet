@@ -8,6 +8,7 @@ import { myDataSource } from '../app-data-source';
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { ALLOWED_EVENT_PROPERTIES } from '../utils/constants';
+import { APIInternalServerError } from '../errors/apiInternalServerError';
 
 const router = express.Router();
 
@@ -61,14 +62,22 @@ router.patch('/events/:eventId', async (req, res, next) => {
         if(key === 'image') {
             const image = props[key];
             const date = new Date(Number(event.timestamp));
+
             try {
-                const imageId = `${event.image}-${Math.floor(Math.random() * 10000)}`;
-                await imageDataURI.outputFile(image, `src/imgs/events/${date.getFullYear()}/${event.id}/${imageId}.png`);
-                propsToUpdate[key] = imageId;
+                fs.unlinkSync(`src/imgs/events/${date.getFullYear()}/${event.id}/${event.image}.png`);
             } catch(error) {
                 console.error(error);
-                throw new Error('Unable to save image.');
+                return next(new APIInternalServerError('Unable to remove previous image.'));
             }
+
+            const imageId = `${EVENT_IMAGE_ID}-${Math.floor(Math.random() * 1000000)}`;
+            try {
+                await imageDataURI.outputFile(image, `src/imgs/events/${date.getFullYear()}/${event.id}/${imageId}.png`);
+            } catch(error) {
+                console.error(error);
+                return next(new APIInternalServerError('Unable to save image.'));
+            }
+            propsToUpdate[key] = imageId;
             continue;
         }
         propsToUpdate[key] = props[key];
