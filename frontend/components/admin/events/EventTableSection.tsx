@@ -1,17 +1,16 @@
-import { ClockIcon } from "@/assets/icons/ClockIcon";
 import { useEvents } from "."
 import { Event } from "../../../../types";
 import Image from "next/image";
 import { getEventImage, getReadableDateFromTimestamp } from "@/utils";
 import EventTableOptions from "./EventTableOptions";
-import Button from "@/components/button";
 import { ArrowIcon } from "@/assets/icons/ArrowIcon";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-export default function EventTableSection({ events, header }: {
+export default function EventTableSection({ events, header, headerIcon }: {
     events: Event[];
-    header: React.ReactNode;
+    header: string;
+    headerIcon: React.ReactNode;
 }) {
     const { search, removeEvent, editEvent } = useEvents();
 
@@ -26,7 +25,19 @@ export default function EventTableSection({ events, header }: {
             onClick={toggleExpanded}
         >
             <td className="px-4 py-[--spacing] font-bold">
-                {!search ? header : `Found ${events.length} results based on filters`}
+                <div className="flex items-start gap-2">
+                    <div className="mt-[.06rem]">
+                        {headerIcon}
+                    </div>
+                    <div className="grid">
+                        <span>
+                            {header}
+                        </span>
+                        <span className="text-xs font-normal text-secondary">
+                            {events.length} events {search && '(based on filters)'}
+                        </span>
+                    </div>
+                </div>
             </td>
             <td className="w-[50%] px-4 py-[--spacing] font-bold">
                 Description

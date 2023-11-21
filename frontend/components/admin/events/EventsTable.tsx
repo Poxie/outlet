@@ -20,26 +20,18 @@ export default function EventsTable() {
 
     const hasFilters = !!search;
     return(
-        events.length ? (
+        !loading ? (
             <div>
                 <table className="[--spacing:.75rem] w-full text-sm border-spacing-2">
                     <tbody>
                         <EventTableSection 
-                            header={
-                                <div className="flex gap-2">
-                                    <MegaphoneIcon className="w-4" />
-                                    On-going events
-                                </div>
-                            }
+                            header={'On-going events'}
+                            headerIcon={<MegaphoneIcon className="w-4" />}
                             events={onGoingEvents}
                         />
-                        <EventTableSection 
-                            header={
-                                <div className="flex gap-2">
-                                    <ClockIcon className="w-4" />
-                                    Scheduled events
-                                </div>
-                            }
+                        <EventTableSection
+                            header={'Scheduled events'}
+                            headerIcon={<ClockIcon className="w-4" />}
                             events={scheduledEvents}
                         />
                     </tbody>
@@ -47,11 +39,7 @@ export default function EventsTable() {
             </div>
         ) : (
             <span className="-mt-4 flex-1 flex items-center justify-center text-secondary/80">
-                {loading ? (
-                    'Loading events...'
-                ) : (
-                    hasFilters ? 'Found no results matching filters.' : 'Create an event to get started.'
-                )}
+                Loading events...
             </span>
         )
     )
