@@ -7,10 +7,11 @@ import EventPanel from "./EventPanel";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useModal } from "@/contexts/modal";
 import EditEventModal from "@/modals/events/EditEventModal";
+import ConfirmModal from "@/modals/confirm";
 
 const EventContext = React.createContext<null | {
     events: Event[];
-    removeEvent: (eventId: string) => Promise<void>;
+    removeEvent: (eventId: string) => void;
     editEvent: (eventId: string) => void;
     addEvent: (event: Event) => void;
     search: string;
@@ -40,10 +41,24 @@ export default function Events() {
     }, []);
 
     const addEvent = (event: Event) => setEvents(prev => [...[event], ...prev]);
-    const removeEvent = async (eventId: string) => {
-        await _delete(`/events/${eventId}`);
-        setEvents(prev => prev.filter(event => event.id !== eventId));
-    };
+    const removeEvent =  (eventId: string) => {
+        const onConfirm = () => setEvents(prev => prev.filter(e => e.id !== eventId));
+        const confirmFunction = async () => {
+            const data = await _delete<{}>(`/events/${eventId}`);
+            return data;
+        }
+
+        setModal(
+            <ConfirmModal<{}> 
+                header={'Are you sure you want to delete this event?'}
+                subHeader='All information associated with this event will be deleted and unretrievable. This action cannot be undone.'
+                confirmFunction={confirmFunction}
+                onConfirm={onConfirm}
+                confirmText={'Delete event'}
+                confirmLoadingText={'Deleting event...'}
+            />
+        )
+    }
     const editEvent = (eventId: string) => {
         const event = events.find(event => event.id === eventId);
         if(!event) return;
