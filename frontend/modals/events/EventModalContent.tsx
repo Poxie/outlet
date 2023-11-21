@@ -150,7 +150,7 @@ export default function EventModalContent({ buttonText, buttonLoadingText, onSub
             </div>
             <div className="grid">
                 <span className="mb-0.5 block text-sm text-secondary">
-                    Title
+                    Event title
                 </span>
                 <Input 
                     placeholder={'Title...'}
@@ -160,7 +160,7 @@ export default function EventModalContent({ buttonText, buttonLoadingText, onSub
             </div>
             <div className="grid">
                 <span className="mb-0.5 block text-sm text-secondary">
-                    Description
+                    Event description
                 </span>
                 <Input 
                     placeholder={'Description...'}
