@@ -56,6 +56,7 @@ export default function Events() {
                 onConfirm={onConfirm}
                 confirmText={'Delete event'}
                 confirmLoadingText={'Deleting event...'}
+                closeOnCancel
             />
         )
     }

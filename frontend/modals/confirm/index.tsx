@@ -4,7 +4,7 @@ import ModalHeader from "../ModalHeader";
 import { useState } from "react";
 import { useModal } from "@/contexts/modal";
 
-export default function ConfirmModal<T>({ header, subHeader, cancelText='Cancel', confirmText='Confirm', confirmLoadingText='Confirming...', confirmFunction, onConfirm }: {
+export default function ConfirmModal<T>({ header, subHeader, cancelText='Cancel', confirmText='Confirm', confirmLoadingText='Confirming...', confirmFunction, onConfirm, closeOnCancel=false }: {
     header: string;
     subHeader?: string;
     cancelText?: string;
@@ -12,6 +12,7 @@ export default function ConfirmModal<T>({ header, subHeader, cancelText='Cancel'
     confirmLoadingText?: string;
     confirmFunction: () => Promise<T>;
     onConfirm: (data: T) => void;
+    closeOnCancel?: boolean;
 }) {
     const { close } = useModal();
 
@@ -36,6 +37,10 @@ export default function ConfirmModal<T>({ header, subHeader, cancelText='Cancel'
                 <Button 
                     className="bg-transparent text-secondary"
                     disabled={loading}
+                    onClick={() => {
+                        if(!closeOnCancel) return;
+                        close();
+                    }}
                 >
                     {cancelText}
                 </Button>
