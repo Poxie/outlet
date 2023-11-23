@@ -77,8 +77,11 @@ export default function Events() {
         );
     }
     const archiveEvent = async (eventId: string) => {
-        const arcivedEvent = await patch<Event>(`/events/${eventId}`, { archived: true });
-        console.log(archiveEvent);
+        const archivedEvent = await patch<Event>(`/events/${eventId}`, { archived: true });
+        setEvents(prev => prev.map(event => {
+            if(event.id !== archivedEvent.id) return event;
+            return archivedEvent;
+        }));
     }
 
     const setSearch = (query: string) => {

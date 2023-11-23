@@ -7,16 +7,20 @@ import { ClockIcon } from "@/assets/icons/ClockIcon";
 import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
 import Button from "@/components/button";
 import EventTableSection from "./EventTableSection";
+import { ArchiveIcon } from "@/assets/icons/ArchiveIcon";
 
 export default function EventsTable() {
     const { events, removeEvent, editEvent, search, loading } = useEvents();
 
     const onGoingEvents = events.filter(event => (
+        !event.archived &&
         Number(event.timestamp) <= new Date().getTime()
     ))
     const scheduledEvents = events.filter(event => (
+        !event.archived &&
         Number(event.timestamp) > new Date().getTime()
     ))
+    const archivedEvents = events.filter(event => event.archived);
 
     const hasFilters = !!search;
     return(
@@ -33,6 +37,11 @@ export default function EventsTable() {
                             header={'Scheduled events'}
                             headerIcon={<ClockIcon className="w-4" />}
                             events={scheduledEvents}
+                        />
+                        <EventTableSection
+                            header={'Archived events'}
+                            headerIcon={<ArchiveIcon className="w-4" />}
+                            events={archivedEvents}
                         />
                     </tbody>
                 </table>

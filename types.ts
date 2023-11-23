@@ -10,6 +10,7 @@ export type Event = {
     description: string;
     image: string;
     timestamp: string;
+    archived: boolean;
 }
 export type Image = {
     id: string;
