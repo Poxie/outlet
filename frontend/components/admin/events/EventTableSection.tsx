@@ -90,6 +90,7 @@ export default function EventTableSection({ events, header, headerIcon }: {
                             onRemoveClick={() => removeEvent(event.id)}
                             onEditClick={() => editEvent(event.id)}
                             onArchiveClick={() => archiveEvent(event.id)}
+                            isArchived={event.archived}
                         />
                     </div>
                 </td>
