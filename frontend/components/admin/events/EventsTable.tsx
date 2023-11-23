@@ -1,16 +1,12 @@
 import React from "react";
-import { getEventImage, getReadableDateFromTimestamp, getWeeklyDealImage } from "@/utils";
-import Image from "next/image";
-import EventTableOptions from "./EventTableOptions";
 import { useEvents } from ".";
 import { ClockIcon } from "@/assets/icons/ClockIcon";
 import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
-import Button from "@/components/button";
 import EventTableSection from "./EventTableSection";
 import { ArchiveIcon } from "@/assets/icons/ArchiveIcon";
 
 export default function EventsTable() {
-    const { events, removeEvent, editEvent, search, loading } = useEvents();
+    const { events, loading } = useEvents();
 
     const onGoingEvents = events.filter(event => (
         !event.archived &&
@@ -22,7 +18,6 @@ export default function EventsTable() {
     ))
     const archivedEvents = events.filter(event => event.archived);
 
-    const hasFilters = !!search;
     return(
         !loading ? (
             <div>
