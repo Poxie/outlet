@@ -9,12 +9,27 @@ import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { ALLOWED_EVENT_PROPERTIES } from '../utils/constants';
 import { APIInternalServerError } from '../errors/apiInternalServerError';
+import { LessThan } from 'typeorm';
 
 const router = express.Router();
 
+router.get('/events', async (req, res, next) => {
+    const events = await myDataSource.getRepository(Events).createQueryBuilder()
+        .where(`timestamp <= ? AND archived = 0`, [Date.now()])
+        .select()
+        .getMany();
+
+    res.send(events);
+})
 router.get('/events/all', async (req, res, next) => {
     const events = await myDataSource.getRepository(Events).find();
     res.send(events);
+})
+router.get('/events/:eventId', async (req, res, next) => {
+    const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
+    if(!event || event.archived) return next(new APINotFoundError("Event not found."));
+    
+    return res.send(event);
 })
 
 const EVENT_IMAGE_ID = 'image';
