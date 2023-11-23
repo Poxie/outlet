@@ -1,11 +1,12 @@
 import Image from "next/image";
-import { Event } from "../../../types";
+import { Event as EventType } from "../../../types";
 import { twMerge } from "tailwind-merge";
+import { getEventImage } from "@/utils";
 
 const getEvent = async (eventId: string) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${eventId}`, { next: { revalidate: 0 } });
     const event = await res.json();
-    return event as Event;
+    return event as EventType;
 }
 
 export default async function Event({ params: { eventId } }: {
@@ -18,7 +19,7 @@ export default async function Event({ params: { eventId } }: {
             <div className="[--padding:16px] relative p-[--padding] flex flex-col gap-3 rounded-lg bg-light sm:flex-row">
                 <Image 
                     className="w-full max-h-[200px] aspect-[1.7/1] rounded-md object-cover sm:w-60 sm:h-[unset]"
-                    src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${event.image}`}
+                    src={getEventImage(event.id, event.image, event.timestamp)}
                     width={400}
                     height={200}
                     alt=""
@@ -44,7 +45,7 @@ export default async function Event({ params: { eventId } }: {
                 </div>
             </div>
             <ul className="mt-2 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {event.images?.map(image => (
+                {/* {event.images?.map(image => (
                     <li 
                         key={image.id}
                     >
@@ -56,7 +57,7 @@ export default async function Event({ params: { eventId } }: {
                             alt=""
                         />
                     </li>
-                ))}
+                ))} */}
             </ul>
         </div>
     )
