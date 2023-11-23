@@ -12,7 +12,7 @@ export default function EventTableSection({ events, header, headerIcon }: {
     header: string;
     headerIcon: React.ReactNode;
 }) {
-    const { search, removeEvent, editEvent } = useEvents();
+    const { search, removeEvent, editEvent, archiveEvent } = useEvents();
 
     const [expanded, setExpanded] = useState(true);
 
@@ -89,6 +89,7 @@ export default function EventTableSection({ events, header, headerIcon }: {
                         <EventTableOptions 
                             onRemoveClick={() => removeEvent(event.id)}
                             onEditClick={() => editEvent(event.id)}
+                            onArchiveClick={() => archiveEvent(event.id)}
                         />
                     </div>
                 </td>

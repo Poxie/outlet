@@ -13,6 +13,7 @@ const EventContext = React.createContext<null | {
     events: Event[];
     removeEvent: (eventId: string) => void;
     editEvent: (eventId: string) => void;
+    archiveEvent: (eventId: string) => void;
     addEvent: (event: Event) => void;
     search: string;
     setSearch: (query: string) => void;
@@ -26,7 +27,7 @@ export const useEvents = () => {
 export default function Events() {
     const router = useRouter();
     const { setModal } = useModal();
-    const { get, post, _delete } = useAuth();
+    const { get, post, patch, _delete } = useAuth();
     const search = useSearchParams().get('search') || '';
 
     const [events, setEvents] = useState<Event[]>([]);
@@ -75,6 +76,10 @@ export default function Events() {
             />
         );
     }
+    const archiveEvent = async (eventId: string) => {
+        const arcivedEvent = await patch<Event>(`/events/${eventId}`, { archived: true });
+        console.log(archiveEvent);
+    }
 
     const setSearch = (query: string) => {
         if(!query) return router.replace(`/admin/events`);
@@ -87,6 +92,7 @@ export default function Events() {
 
     const value = {
         events: filteredEvents,
+        archiveEvent,
         addEvent,
         editEvent,
         removeEvent,
