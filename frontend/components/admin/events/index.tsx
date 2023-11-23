@@ -77,11 +77,26 @@ export default function Events() {
         );
     }
     const archiveEvent = async (eventId: string) => {
-        const archivedEvent = await patch<Event>(`/events/${eventId}`, { archived: true });
-        setEvents(prev => prev.map(event => {
-            if(event.id !== archivedEvent.id) return event;
-            return archivedEvent;
+        const onConfirm = (event: Event) => setEvents(prev => prev.map(e => {
+            if(e.id !== eventId) return e;
+            return event;
         }));
+        const confirmFunction = async () => {
+            const data = await patch<Event>(`/events/${eventId}`, { archived: true });
+            return data;
+        }
+
+        setModal(
+            <ConfirmModal 
+                header={'Are you sure you want to archive this event?'}
+                subHeader={`Archiving this event will leave it here in the event panel, but will be hidden from visitors to the site. Don't worry, this can be undone.`}
+                confirmFunction={confirmFunction}
+                onConfirm={onConfirm}
+                confirmText={'Archive event'}
+                confirmLoadingText={'Archiving event...'}
+                closeOnCancel
+            />
+        )
     }
 
     const setSearch = (query: string) => {
