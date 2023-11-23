@@ -16,4 +16,7 @@ export class Events {
 
     @Column()
     image: string;
+
+    @Column({ default: false })
+    archived: boolean;
 }

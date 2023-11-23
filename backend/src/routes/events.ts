@@ -80,6 +80,9 @@ router.patch('/events/:eventId', async (req, res, next) => {
             propsToUpdate[key] = imageId;
             continue;
         }
+        if(key === 'archived') {
+            if(!(typeof props[key] === 'boolean')) return next(new APIBadRequestError("Archived property must be a boolean."));
+        }
         propsToUpdate[key] = props[key];
     }    
 
