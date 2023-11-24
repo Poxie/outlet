@@ -1,9 +1,9 @@
 import React from "react";
-import { useEvents } from ".";
 import { ClockIcon } from "@/assets/icons/ClockIcon";
 import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
 import EventTableSection from "./EventTableSection";
 import { ArchiveIcon } from "@/assets/icons/ArchiveIcon";
+import { useEvents } from "@/hooks/useEvents";
 
 export default function EventsTable() {
     const { events, loading } = useEvents();

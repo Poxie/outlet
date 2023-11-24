@@ -5,12 +5,14 @@ import { useAuth } from "@/contexts/auth";
 import { useModal } from "@/contexts/modal";
 import { Event } from "../../../types";
 import EventModalContent from "./EventModalContent";
+import { useEvents } from "@/hooks/useEvents";
 
 export default function AddEventModal({ onEventAdd }: {
     onEventAdd: (event: Event) => void;
 }) {
     const { post } = useAuth();
     const { close: closeModal } = useModal();
+    const { addEvent } = useEvents();
 
     const [loading, setLoading] = useState(false);
     
@@ -18,16 +20,9 @@ export default function AddEventModal({ onEventAdd }: {
         if(loading) return;
         setLoading(true);
 
-        const { title, description, image, timestamp } = event;
-        const createdEvent = await post<Event>(`/events`, {
-            title,
-            description,
-            image,
-            timestamp,
-        });
+        await addEvent(event);
 
         closeModal();
-        onEventAdd(createdEvent);
     }
 
     return(

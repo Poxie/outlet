@@ -17,7 +17,7 @@ export default function EventModalContent({ buttonText, buttonLoadingText, onSub
 }) {
     const { setPopout, close: closePopout } = usePopout();
 
-    const [eventInfo, setEventInfo] = useState<Event>({
+    const [eventInfo, setEventInfo] = useState<Omit<Event, 'archived'>>({
         id: event?.id || Math.random().toString(),
         title: event?.title || '',
         description: event?.description || '',
@@ -57,7 +57,7 @@ export default function EventModalContent({ buttonText, buttonLoadingText, onSub
             changes = eventInfo;
         }
 
-        onSubmit(eventInfo, changes);
+        onSubmit({...eventInfo, archived: false}, changes);
     }
     const updateProperty = (property: keyof typeof eventInfo, value: string | File | null) => {
         setError('');

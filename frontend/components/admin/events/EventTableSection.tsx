@@ -1,4 +1,3 @@
-import { useEvents } from "."
 import { Event } from "../../../../types";
 import Image from "next/image";
 import { getEventImage, getReadableDateFromTimestamp } from "@/utils";
@@ -6,6 +5,7 @@ import EventTableOptions from "./EventTableOptions";
 import { ArrowIcon } from "@/assets/icons/ArrowIcon";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { useEvents } from "@/hooks/useEvents";
 
 export default function EventTableSection({ events, header, headerIcon }: {
     events: Event[];
@@ -91,6 +91,7 @@ export default function EventTableSection({ events, header, headerIcon }: {
                             onEditClick={() => editEvent(event.id)}
                             onArchiveClick={() => archiveEvent(event.id)}
                             isArchived={event.archived}
+                            eventId={event.id}
                         />
                     </div>
                 </td>

@@ -5,6 +5,7 @@ import Navbar from '@/components/navbar'
 import { ModalProvider } from '@/contexts/modal';
 import AuthProvider from '@/contexts/auth';
 import { PopoutProvider } from '@/contexts/popout';
+import StoreProvider from '@/store/StoreProvider';
 
 const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
@@ -21,14 +22,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <AuthProvider>
-          <PopoutProvider>
-            <ModalProvider>
-              <Navbar />
-              {children}
-            </ModalProvider>
-          </PopoutProvider>
-        </AuthProvider>
+        <StoreProvider>
+          <AuthProvider>
+            <PopoutProvider>
+              <ModalProvider>
+                <Navbar />
+                {children}
+              </ModalProvider>
+            </PopoutProvider>
+          </AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   )

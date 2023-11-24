@@ -1,12 +1,12 @@
 import Button from "@/components/button";
 import Input from "@/components/input";
-import { useEvents } from ".";
 import { useModal } from "@/contexts/modal";
+import { useEvents } from "@/hooks/useEvents";
 import AddEventModal from "@/modals/events/AddEventModal";
 
 export default function EventPanel() {
     const { setModal } = useModal();
-    const { addEvent, search, setSearch } = useEvents();
+    const { addEvent, setSearch } = useEvents();
 
     const openAddEventModal = () => setModal(
         <AddEventModal 
