@@ -2,9 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Event } from '../../../types';
 
 const initialState: {
+    search: string;
     events: Event[];
     loading: boolean;
 } = {
+    search: '',
     events: [],
     loading: true,
 }
@@ -13,6 +15,9 @@ export const eventsSlice = createSlice({
     name: 'events',
     initialState,
     reducers: {
+        setSearch: (state, action) => {
+            state.search = action.payload;
+        },
         setEvents: (state, action) => {
             state.events = action.payload;
             state.loading = false;
@@ -32,6 +37,6 @@ export const eventsSlice = createSlice({
     }
 })
 
-export const { setEvents, addEvent, removeEvent, editEvent } = eventsSlice.actions;
+export const { setEvents, addEvent, removeEvent, editEvent, setSearch } = eventsSlice.actions;
 
 export default eventsSlice.reducer;

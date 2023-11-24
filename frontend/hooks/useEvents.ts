@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from "@/store"
 import { useAuth } from '@/contexts/auth';
-import { addEvent as _addEvent, removeEvent as _removeEvent, editEvent as _editEvent } from '@/store/slices/events';
+import { addEvent as _addEvent, removeEvent as _removeEvent, editEvent as _editEvent, setSearch as _setSearch } from '@/store/slices/events';
 import { Event } from '../../types';
 
 export const useEvents = () => {
@@ -10,9 +10,9 @@ export const useEvents = () => {
     const dispatch = useAppDispatch();
     const events = useAppSelector(state => state.events.events);
     const loading = useAppSelector(state => state.events.loading);
+    const search = useAppSelector(state => state.events.search);
 
-    const [search, setSearch] = useState('');
-
+    const setSearch = (query: string) => dispatch(_setSearch(query));
     const addEvent = async (event: Event) => {
         const { title, description, image, timestamp } = event;
         const createdEvent = await post<Event>(`/events`, {
@@ -34,5 +34,7 @@ export const useEvents = () => {
 
     }
 
-    return { events, loading, addEvent, removeEvent, editEvent, archiveEvent, search, setSearch };
+    const filteredEvents = useMemo(() => events.filter(event => event.title.toLowerCase().includes(search.toLowerCase())), [events.length, search]);
+
+    return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, search, setSearch };
 }
