@@ -14,7 +14,7 @@ export default function EventTableOptions({ isArchived, eventId }: {
 }) {
     const { _delete, patch } = useAuth();
     const { setModal } = useModal();
-    const { removeEvent, editEvent } = useEvents();
+    const { removeEvent, editEvent, archiveEvent } = useEvents();
 
     const openRemoveModal = () => {
         const onConfirm = () => removeEvent(eventId, false);
@@ -40,7 +40,7 @@ export default function EventTableOptions({ isArchived, eventId }: {
         )
     }
     const openArchiveModal = () => {
-        const onConfirm = (event: Event) => editEvent(event.id, { archived: true });
+        const onConfirm = (event: Event) => archiveEvent(event.id);
         const confirmFunction = async () => {
             const data = await patch<Event>(`/events/${eventId}`, { archived: true });
             return data;

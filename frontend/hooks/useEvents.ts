@@ -30,11 +30,9 @@ export const useEvents = () => {
     const editEvent = (eventId: string, changes: Partial<Event>) => {
         dispatch(_editEvent({ eventId, changes }));
     }
-    const archiveEvent = (eventId: string) => {
+    const archiveEvent = (eventId: string) => editEvent(eventId, { archived: true });
 
-    }
-
-    const filteredEvents = useMemo(() => events.filter(event => event.title.toLowerCase().includes(search.toLowerCase())), [events.length, search]);
+    const filteredEvents = useMemo(() => events.filter(event => event.title.toLowerCase().includes(search.toLowerCase())), [events, search]);
 
     return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, search, setSearch };
 }
