@@ -23,9 +23,15 @@ export const eventsSlice = createSlice({
         removeEvent: (state, action) => {
             state.events = state.events.filter(event => event.id !== action.payload);
         },
+        editEvent: (state, action) => {
+            state.events = state.events.map(event => {
+                if(event.id !== action.payload.eventId) return event;
+                return {...event, ...action.payload.changes};
+            })
+        }
     }
 })
 
-export const { setEvents, addEvent, removeEvent } = eventsSlice.actions;
+export const { setEvents, addEvent, removeEvent, editEvent } = eventsSlice.actions;
 
 export default eventsSlice.reducer;

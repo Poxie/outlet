@@ -5,15 +5,19 @@ import { useState } from "react";
 import { Event } from "../../../types";
 import { useAuth } from "@/contexts/auth";
 import { useModal } from "@/contexts/modal";
+import { useAppSelector } from "@/store";
 
-export default function EditEventModal({ onConfirm, event }: {
+export default function EditEventModal({ onConfirm, eventId }: {
     onConfirm: (event: Event) => void;
-    event: Event;
+    eventId: string;
 }) {
     const { patch } = useAuth();
     const { close: closeModal } = useModal();
 
     const [loading, setLoading] = useState(false);
+
+    const event = useAppSelector(state => state.events.events.find(event => event.id === eventId));
+    if(!event) return null;
 
     const editEvent = async (event: Event, changes: Partial<Event>) => {
         setLoading(true);

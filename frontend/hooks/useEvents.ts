@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from "@/store"
 import { useAuth } from '@/contexts/auth';
-import { addEvent as _addEvent, removeEvent as _removeEvent } from '@/store/slices/events';
+import { addEvent as _addEvent, removeEvent as _removeEvent, editEvent as _editEvent } from '@/store/slices/events';
 import { Event } from '../../types';
 
 export const useEvents = () => {
@@ -27,8 +27,8 @@ export const useEvents = () => {
         if(fetch) await _delete<{}>(`/events/${eventId}`);
         dispatch(_removeEvent(eventId));
     }
-    const editEvent = (eventId: string) => {
-
+    const editEvent = (eventId: string, changes: Partial<Event>) => {
+        dispatch(_editEvent({ eventId, changes }));
     }
     const archiveEvent = (eventId: string) => {
 
