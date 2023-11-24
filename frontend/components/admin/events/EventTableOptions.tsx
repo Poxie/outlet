@@ -14,7 +14,7 @@ export default function EventTableOptions({ onRemoveClick, onArchiveClick, isArc
     isArchived: boolean;
     eventId: string;
 }) {
-    const { _delete } = useAuth();
+    const { _delete, patch } = useAuth();
     const { setModal } = useModal();
     const { removeEvent, editEvent } = useEvents();
 
@@ -41,13 +41,32 @@ export default function EventTableOptions({ onRemoveClick, onArchiveClick, isArc
             />
         )
     }
+    const openArchiveModal = () => {
+        const onConfirm = (event: Event) => editEvent(event.id, { archived: true });
+        const confirmFunction = async () => {
+            const data = await patch<Event>(`/events/${eventId}`, { archived: true });
+            return data;
+        }
+
+        setModal(
+            <ConfirmModal 
+                header={'Are you sure you want to archive this event?'}
+                subHeader={`Archiving this event will leave it here in the event panel, but will be hidden from visitors to the site. Don't worry, this can be undone.`}
+                confirmFunction={confirmFunction}
+                onConfirm={onConfirm}
+                confirmText={'Archive event'}
+                confirmLoadingText={'Archiving event...'}
+                closeOnCancel
+            />
+        )
+    }
 
     return(
         <div className="flex">
             {!isArchived && (
                 <button 
                     className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
-                    onClick={onArchiveClick}
+                    onClick={openArchiveModal}
                     aria-label="Edit event"
                 >
                     <ArchiveIcon className="w-4" />
