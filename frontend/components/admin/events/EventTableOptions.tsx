@@ -8,9 +8,7 @@ import ConfirmModal from "@/modals/confirm";
 import EditEventModal from "@/modals/events/EditEventModal";
 import { Event } from "../../../../types";
 
-export default function EventTableOptions({ onRemoveClick, onArchiveClick, isArchived, eventId }: {
-    onRemoveClick: () => void;
-    onArchiveClick: () => void;
+export default function EventTableOptions({ isArchived, eventId }: {
     isArchived: boolean;
     eventId: string;
 }) {
