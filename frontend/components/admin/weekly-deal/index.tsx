@@ -12,7 +12,7 @@ export default function WeeklyDeal() {
     return(
         <main className="my-12 w-main max-w-main mx-auto">
             <AdminTabs />
-            <div className="flex flex-col bg-light rounded-lg">
+            <div className="flex flex-col bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin'}
                     text={'Veckans deal'}
