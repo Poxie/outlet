@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import { addEvent, editEvent, selectEventById } from "@/store/slices/events";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Event } from "../../../../types";
 import Image from "next/image";
 import Input from "@/components/input";
@@ -34,6 +34,7 @@ export default function EditEvent({ params: { eventId } }: {
 
     const dispatch = useAppDispatch();
     const event = useAppSelector(state => selectEventById(state, eventId));
+    const eventsLoading = useAppSelector(state => state.events.loading);
     
     const [eventInfo, setEventInfo] = useState(event || createDummyEvent());
     const [loading, setLoading] = useState(false);
@@ -47,6 +48,11 @@ export default function EditEvent({ params: { eventId } }: {
     
     const date = new Date(Number(eventInfo.timestamp));
     const isCreatingEvent = !event;
+
+    useEffect(() => {
+        if(!event) return;
+        setEventInfo(event);
+    }, [event]);
 
     const onSubmit = async () => {
         if(isCreatingEvent) {
@@ -121,7 +127,11 @@ export default function EditEvent({ params: { eventId } }: {
             <AdminTabs />
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
-                    text={!isCreatingEvent ? `Event: ${event.title}` : 'Create event'}
+                    text={eventsLoading ? (
+                        'Events'
+                    ) : (
+                        !isCreatingEvent ? `Event: ${event.title}` : 'Create event'
+                    )}
                     backPath={'/admin/events'}
                 />
                 {feedback && (
@@ -133,85 +143,93 @@ export default function EditEvent({ params: { eventId } }: {
                         {feedback.text}
                     </span>
                 )}
-                <div className="p-4 flex gap-3">
-                    <div className="flex flex-col">
-                        <span className="block text-sm mb-1">
-                            Header image
-                        </span>
-                        <button 
-                            className="h-full aspect-video flex items-center justify-center bg-light-secondary/50 border-[1px] border-light-tertiary rounded-md overflow-hidden"
-                            onClick={() => headerImageInput.current?.click()}
+                {!eventsLoading ? (
+                    <>
+                    <div className="p-4 flex gap-3">
+                        <div className="flex flex-col">
+                            <span className="block text-sm mb-1">
+                                Header image
+                            </span>
+                            <button 
+                                className="h-full aspect-video flex items-center justify-center bg-light-secondary/50 border-[1px] border-light-tertiary rounded-md overflow-hidden"
+                                onClick={() => headerImageInput.current?.click()}
+                            >
+                                {eventInfo.image ? (
+                                    <Image
+                                        width={400}
+                                        height={400}
+                                        src={eventInfo.image.startsWith('data') ? eventInfo.image : getEventImage(eventInfo.id, eventInfo.image, eventInfo.timestamp)}
+                                        className="h-full object-cover"
+                                        alt=""
+                                    />
+                                ) : (
+                                    <span className="px-40">
+                                        Add image
+                                    </span>
+                                )}
+                            </button>
+                            <input 
+                                type="file"
+                                ref={headerImageInput}
+                                className="hidden"
+                                onChange={e => {
+                                    if(!e.target.files?.length) return;
+                                    updateProperty('image', e.target.files[0]);
+                                }}
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <span className="block text-sm mb-1">
+                                Title
+                            </span>
+                            <Input 
+                                value={eventInfo.title}
+                                onChange={title => updateProperty('title', title)}
+                                placeholder={'Title...'}
+                                className="w-full"
+                            />
+                            <span className="block text-sm mb-1 mt-2">
+                                Description
+                            </span>
+                            <Input 
+                                value={eventInfo.description}
+                                onChange={description => updateProperty('description', description)}
+                                placeholder={'Description...'}
+                                className="w-full"
+                                textArea
+                            />
+                            <span className="block text-sm mb-1">
+                                Event start
+                            </span>
+                            <button 
+                                type="button"
+                                className="p-3 flex items-center gap-1.5 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary"
+                                onClick={openTimeSelector}
+                                ref={openPopoutButton}
+                            >
+                                <ClockIcon className="w-4" />
+                                {date.toLocaleDateString('default', { dateStyle: 'long' })}
+                            </button>
+                        </div>
+                    </div>
+                    <div className="p-4 flex justify-end bg-light-secondary">
+                        <Button
+                            onClick={onSubmit}
+                            disabled={loading}
                         >
-                            {eventInfo.image ? (
-                                <Image
-                                    width={400}
-                                    height={400}
-                                    src={eventInfo.image.startsWith('data') ? eventInfo.image : getEventImage(eventInfo.id, eventInfo.image, eventInfo.timestamp)}
-                                    className="h-full object-cover"
-                                    alt=""
-                                />
+                            {isCreatingEvent ? (
+                                loading ? 'Creating event...' : 'Create event'
                             ) : (
-                                <span className="px-40">
-                                    Add image
-                                </span>
+                                loading ? 'Updating event...' : 'Update event'
                             )}
-                        </button>
-                        <input 
-                            type="file"
-                            ref={headerImageInput}
-                            className="hidden"
-                            onChange={e => {
-                                if(!e.target.files?.length) return;
-                                updateProperty('image', e.target.files[0]);
-                            }}
-                        />
+                        </Button>
                     </div>
-                    <div className="flex-1">
-                        <span className="block text-sm mb-1">
-                            Title
-                        </span>
-                        <Input 
-                            value={eventInfo.title}
-                            onChange={title => updateProperty('title', title)}
-                            placeholder={'Title...'}
-                            className="w-full"
-                        />
-                        <span className="block text-sm mb-1 mt-2">
-                            Description
-                        </span>
-                        <Input 
-                            value={eventInfo.description}
-                            onChange={description => updateProperty('description', description)}
-                            placeholder={'Description...'}
-                            className="w-full"
-                            textArea
-                        />
-                        <span className="block text-sm mb-1">
-                            Event start
-                        </span>
-                        <button 
-                            type="button"
-                            className="p-3 flex items-center gap-1.5 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary"
-                            onClick={openTimeSelector}
-                            ref={openPopoutButton}
-                        >
-                            <ClockIcon className="w-4" />
-                            {date.toLocaleDateString('default', { dateStyle: 'long' })}
-                        </button>
-                    </div>
-                </div>
-                <div className="p-4 flex justify-end bg-light-secondary">
-                    <Button
-                        onClick={onSubmit}
-                        disabled={loading}
-                    >
-                        {isCreatingEvent ? (
-                            loading ? 'Creating event...' : 'Create event'
-                        ) : (
-                            loading ? 'Updating event...' : 'Update event'
-                        )}
-                    </Button>
-                </div>
+                    </>
+                ) : (
+                    <span className="block py-24 text-center">
+                        Loading event...
+                    </span>
+                )}
             </div>
         </main>
     )
