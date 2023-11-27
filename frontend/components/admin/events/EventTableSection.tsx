@@ -21,7 +21,7 @@ export default function EventTableSection({ events, header, headerIcon }: {
     return(
         <>
         <tr 
-            className="sticky top-[48px] text-left rounded-lg border-b-[1px] border-b-light-secondary bg-light hover:bg-light-secondary/40 transition-colors"
+            className="sticky top-[48px] text-left rounded-lg border-b-[1px] border-b-light-secondary bg-light hover:bg-light-secondary transition-colors"
             onClick={toggleExpanded}
         >
             <td className="px-4 py-[--spacing] font-bold">
