@@ -18,7 +18,7 @@ export const dealsSlice = createSlice({
             state.loading = false;
         },
         addDeal: (state, action) => {
-            state.deals[action.payload.date].unshift(action.payload.deal);
+            state.deals[action.payload.date].unshift(action.payload);
         },
         removeDeal: (state, action) => {
             const date = action.payload.date;
