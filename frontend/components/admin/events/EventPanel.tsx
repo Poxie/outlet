@@ -22,6 +22,7 @@ export default function EventPanel() {
                 onChange={setSearch}
             />
             <Button 
+                href={'/admin/events/create'}
                 onClick={openAddEventModal}
                 className="p-3"
             >

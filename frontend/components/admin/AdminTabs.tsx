@@ -7,7 +7,7 @@ import { twMerge } from "tailwind-merge";
 export default function AdminTabs() {
     const pathname = usePathname();
     return(
-        <div className="mb-2 w-main max-w-main mx-auto flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between">
             <ul className="flex gap-2">
                 {dashboardLinks.map(link => {
                     const active = pathname.startsWith(link.path);

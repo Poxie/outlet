@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Event } from '../../../types';
+import { RootState } from '..';
 
 const initialState: {
     search: string;
@@ -38,5 +39,7 @@ export const eventsSlice = createSlice({
 })
 
 export const { setEvents, addEvent, removeEvent, editEvent, setSearch } = eventsSlice.actions;
+
+export const selectEventById = (state: RootState, eventId: string) => state.events.events.find(event => event.id === eventId);
 
 export default eventsSlice.reducer;

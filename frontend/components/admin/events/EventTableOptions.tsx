@@ -5,8 +5,8 @@ import { useAuth } from "@/contexts/auth";
 import { useModal } from "@/contexts/modal";
 import { useEvents } from "@/hooks/useEvents";
 import ConfirmModal from "@/modals/confirm";
-import EditEventModal from "@/modals/events/EditEventModal";
 import { Event } from "../../../../types";
+import Link from "next/link";
 
 export default function EventTableOptions({ isArchived, eventId }: {
     isArchived: boolean;
@@ -26,15 +26,6 @@ export default function EventTableOptions({ isArchived, eventId }: {
                 confirmFunction={confirmFunction}
                 header={'Are you sure you want to delete this event?'}
                 subHeader='All information associated with this event will be deleted and unretrievable. This action cannot be undone.'
-                onConfirm={onConfirm}
-            />
-        )
-    }
-    const openEditModal = () => {
-        const onConfirm = (event: Event) => editEvent(eventId, event);
-        setModal(
-            <EditEventModal 
-                eventId={eventId}
                 onConfirm={onConfirm}
             />
         )
@@ -61,6 +52,13 @@ export default function EventTableOptions({ isArchived, eventId }: {
 
     return(
         <div className="flex">
+            <Link
+                className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                aria-label="Edit event"
+                href={`/admin/events/${eventId}`}
+            >
+                <EditIcon className="w-4" />
+            </Link>
             {!isArchived && (
                 <button 
                     className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
@@ -70,13 +68,6 @@ export default function EventTableOptions({ isArchived, eventId }: {
                     <ArchiveIcon className="w-4" />
                 </button>
             )}
-            <button 
-                className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
-                onClick={openEditModal}
-                aria-label="Edit event"
-            >
-                <EditIcon className="w-4" />
-            </button>
             <button 
                 className="p-2 flex items-center justify-center text-c-primary aspect-square rounded-full"
                 onClick={openRemoveModal}
