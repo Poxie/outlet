@@ -6,6 +6,7 @@ import { setEvents } from "@/store/slices/events";
 import { useAuth } from "@/contexts/auth";
 import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
+import AdminTabs from "../AdminTabs";
 
 export default function Events() {
     const { get } = useAuth();
@@ -19,13 +20,16 @@ export default function Events() {
     }, [eventLength]);
 
     return(
-        <main className="relative my-12 flex flex-col max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
-            <AdminHeader 
-                backPath={'/admin'}
-                text={'Events'}
-            />
-            <EventPanel />
-            <EventsTable />
+        <main className="my-12">
+            <AdminTabs />
+            <div className="relative flex flex-col max-h-[750px] min-h-[500px] w-main max-w-main mx-auto rounded-lg overflow-auto bg-light">
+                <AdminHeader 
+                    backPath={'/admin'}
+                    text={'Events'}
+                />
+                <EventPanel />
+                <EventsTable />
+            </div>
         </main>
     )
 }

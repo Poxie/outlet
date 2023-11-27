@@ -7,15 +7,15 @@ import { StoresIcon } from "@/assets/icons/StoresIcon"
 import { WeeklyDealIcon } from "@/assets/icons/WeeklyDealIcon"
 import Link from "next/link"
 
-const dashboardLinks = [
-    { text: 'Veckans deal', path: '/veckans-deal', icon: <WeeklyDealIcon className="w-6" /> },
-    { text: 'Events', path: '/events', icon: <EventsIcon className="w-6" /> },
-    { text: 'Inspiration', path: '/inspiration', icon: <InspirationIcon className="w-6" /> },
-    { text: 'Banners', path: '/banners', icon: <BannersIcon className="w-6" /> },
+export const dashboardLinks = [
+    { text: 'Veckans deal', path: '/admin/veckans-deal', icon: <WeeklyDealIcon className="w-5 h-5" /> },
+    { text: 'Events', path: '/admin/events', icon: <EventsIcon className="w-5 h-5" /> },
+    { text: 'Inspiration', path: '/admin/inspiration', icon: <InspirationIcon className="w-5 h-5" /> },
+    { text: 'Banners', path: '/admin/banners', icon: <BannersIcon className="w-5 h-5" /> },
 ]
-const adminLinks = [
-    { text: 'Stores', path: '/stores', icon: <StoresIcon className="w-5 -mt-0.5" /> },
-    { text: 'People', path: '/people', icon: <PeopleIcon className="w-5 -mt-0.5" /> },
+export const adminLinks = [
+    { text: 'Stores', path: '/admin/stores', icon: <StoresIcon className="w-5 -mt-0.5" /> },
+    { text: 'People', path: '/admin/people', icon: <PeopleIcon className="w-5 -mt-0.5" /> },
 ]
 
 export default function Admin() {
@@ -30,7 +30,7 @@ export default function Admin() {
                         <li key={link.path}>
                             <Link
                                 className="flex items-center justify-between p-7 border-[1px] border-light-tertiary bg-light-secondary hover:shadow-md transition-shadow rounded-md font-medium text-primary text-lg"
-                                href={`/admin/${link.path}`}
+                                href={link.path}
                             >
                                 {link.text}
                                 {link.icon}
@@ -44,7 +44,7 @@ export default function Admin() {
                         <li key={link.path}>
                             <Link
                                 className="p-3 flex items-center justify-between border-[1px] border-light-tertiary bg-light-secondary hover:shadow-md transition-shadow rounded-md font-medium text-primary"
-                                href={`/admin/${link.path}`}
+                                href={link.path}
                             >
                                 <div className="flex items-center gap-2">
                                     {link.icon}
