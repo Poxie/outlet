@@ -1,76 +1,41 @@
 "use client";
-import Button from "@/components/button";
-import WeeklyDealHeader from "./WeeklyDealHeader";
-import { useRef } from "react";
-import { useAuth } from "@/contexts/auth";
 import { WeeklyDeal } from "../../../../types";
-import Image from "next/image";
-import { getDateFromString, getWeeklyDealImage } from "@/utils";
-import { useRouter } from "next/navigation";
-import { BinIcon } from "@/assets/icons/BinIcon";
+import { ArrowIcon } from "@/assets/icons/ArrowIcon";
+import Link from "next/link";
 
 const HOURS_IN_A_WEEK = 60*60*24*7;
-export default function WeeklyDealRow({ date, images, label }: {
+export default function WeeklyDealRow({ date, active, images, label }: {
     date: string;
+    active: boolean;
     images: WeeklyDeal[];
     label?: 'This week' | 'Next week';
 }) {
-    const router = useRouter();
-    const { post, _delete } = useAuth();
-
-    const imageInput = useRef<HTMLInputElement>(null);
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(!e.target.files || !e.target.files[0]) return;
-
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(e.target.files[0]);
-
-        fileReader.onload = async () => {
-            const timestamp = getDateFromString(date);
-            const deal = await post<WeeklyDeal>(`/weekly-deals/${timestamp.getTime().toString()}/images`, {
-                image: fileReader.result,
-            });
-            router.refresh();
-        }
-    }
-    const onDelete = (id: string) => {
-        const timestamp = getDateFromString(date);
-        _delete(`/weekly-deals/${id}`);
-        router.refresh();
-    }
-
     return(
-        <div>
-            <WeeklyDealHeader text={label || date} />
-            <div className="grid items-start sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-                {images.map((image, index) => (
-                    <div className="group h-full relative rounded-md overflow-hidden">
-                        <Image 
-                            alt={`Weekly deal ${index + 1}.`}
-                            width={250}
-                            height={250}
-                            src={getWeeklyDealImage(image.id, image.date)}
-                            className="w-full"
-                            key={image.id}
-                        />
-                        <button 
-                            className="shadow opacity-0 group-hover:opacity-100 p-1 absolute top-3 right-3 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
-                            aria-label="Delete image"
-                            onClick={() => onDelete(image.id)}
-                        >
-                            <BinIcon className="w-5 text-primary" />
-                        </button>
-                    </div>
-                ))}
-                <Button 
-                    className="block"
-                    onClick={() => imageInput.current?.click()}
-                >
-                    Add image
-                </Button>
+        <Link 
+            className="p-4 flex justify-between gap-2 rounded-md border-[1px] border-light-tertiary hover:bg-light-secondary transition-colors"
+            href={`/admin/veckans-deal/${date}`}
+        >
+            <div>
+                <div className="flex items-center gap-2">
+                    <span className="font-medium">
+                        {label || date}
+                    </span>
+                    {label && (
+                        <span className="text-sm text-secondary">
+                            ({date})
+                        </span>
+                    )}
+                </div>
+                {active && (
+                    <span className="text-sm text-secondary">
+                        Currently active.
+                    </span>
+                )}
             </div>
-            <input onChange={onChange} type="file" className="hidden" ref={imageInput} />
-        </div>
+            <div className="flex items-center gap-2 text-secondary text-sm">
+                {images.length} images
+                <ArrowIcon className="w-5 rotate-90" />
+            </div>
+        </Link>
     )
 }

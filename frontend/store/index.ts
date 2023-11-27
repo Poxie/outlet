@@ -1,10 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
 import eventsReducer from "./slices/events";
+import dealsReducer from "./slices/deals";
+import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
     reducer: {
         events: eventsReducer,
+        deals: dealsReducer,
     },
     devTools: true,
 });
