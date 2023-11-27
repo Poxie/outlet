@@ -59,41 +59,47 @@ export default function EditWeeklyDeal({ params: { date } }: {
                         </Button>
                     }
                 />
-                <div className="p-4 grid grid-cols-6 gap-1">
-                    {deals.map(deal => (
-                        <div 
-                            className="group relative aspect-square overflow-hidden rounded-md"
-                            key={deal.id}
-                        >
-                            <Image 
-                                width={200}
-                                height={200}
-                                src={getWeeklyDealImage(deal.id, deal.date)}
-                                className="w-full h-full object-cover"
-                                alt=""
-                            />
-                            <button 
-                                className="shadow opacity-0 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
-                                aria-label="Delete image"
-                                onClick={() => onDelete(deal.id)}
+                {deals ? (
+                    <div className="p-4 grid grid-cols-6 gap-1">
+                        {deals?.map(deal => (
+                            <div 
+                                className="group relative aspect-square overflow-hidden rounded-md"
+                                key={deal.id}
                             >
-                                <BinIcon className="w-5 text-primary" />
-                            </button>
-                        </div>
-                    ))}
-                    <button 
-                        className="aspect-square border-[1px] border-light-tertiary text-sm text-secondary rounded-md hover:bg-light-secondary/50 transition-colors"
-                        onClick={() => imageInput.current?.click()}
-                    >
-                        Add deal image
-                    </button>
-                    <input 
-                        type="file"
-                        ref={imageInput}
-                        onChange={onChange}
-                        className="hidden"
-                    />
-                </div>
+                                <Image 
+                                    width={200}
+                                    height={200}
+                                    src={getWeeklyDealImage(deal.id, deal.date)}
+                                    className="w-full h-full object-cover"
+                                    alt=""
+                                />
+                                <button 
+                                    className="shadow opacity-0 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
+                                    aria-label="Delete image"
+                                    onClick={() => onDelete(deal.id)}
+                                >
+                                    <BinIcon className="w-5 text-primary" />
+                                </button>
+                            </div>
+                        ))}
+                        <button 
+                            className="aspect-square border-[1px] border-light-tertiary text-sm text-secondary rounded-md hover:bg-light-secondary/50 transition-colors"
+                            onClick={() => imageInput.current?.click()}
+                        >
+                            Add deal image
+                        </button>
+                        <input 
+                            type="file"
+                            ref={imageInput}
+                            onChange={onChange}
+                            className="hidden"
+                        />
+                    </div>
+                ) : (
+                    <span className="block text-center py-12">
+                        Loading deals...
+                    </span>
+                )}
             </div>
         </main>
     )

@@ -25,6 +25,7 @@ export default function WeeklyDeal() {
                     )}
                     {dates.map((date, index) => {
                         const images = deals[date];
+                        if(!images) return null;
 
                         let label: 'This week' | 'Next week' | undefined;
                         if(index === 0) label = 'This week';

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { WeeklyDeal } from '../../../types';
 
 const initialState: {
-    deals: {[date: string]: WeeklyDeal[]};
+    deals: {[date: string]: WeeklyDeal[] | undefined};
     loading: boolean;
 } = {
     deals: {},
