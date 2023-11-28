@@ -30,6 +30,7 @@ export default async function WeeklyDeals() {
                         id: deal.id,
                         image: getWeeklyDealImage(deal.id, deal.date),
                     }))}
+                    itemsPerPage={3}
                 />
                 <div className="flex items-center justify-between text-sm pt-3">
                     <span className="text-secondary">
