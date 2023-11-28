@@ -169,6 +169,14 @@ router.post('/events/:eventId/images', async (req, res, next) => {
 router.delete('/images/:imageId', async (req, res, next) => {
     const image = await myDataSource.getRepository(Images).findOneBy({ id: req.params.imageId });
     if(!image) return next(new APINotFoundError("Image not found."));
+    
+    const date = new Date(Number(image.timestamp));
+    const imagePath = `src/imgs/events/${date.getFullYear()}/${image.parentId}/${image.id}.png`;
+    try {
+        fs.rmSync(imagePath);
+    } catch(error) {
+        console.error(`Unable to remove image: ${imagePath}.`);
+    }
 
     await myDataSource.getRepository(Images).delete({ id: image.id });
 
