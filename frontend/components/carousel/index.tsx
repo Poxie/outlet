@@ -9,7 +9,9 @@ export default function Carousel({ items, itemsPerPage }: {
     itemsPerPage: number;
 }) {
     const screenSize = useScreenSize();
-    const columnCount = ['xs', 'sm'].includes(screenSize) ? 2 : itemsPerPage;
+    const columnCount = ['xs', 'sm'].includes(screenSize) ? (
+        screenSize === 'sm' ? 2 : 1
+    ) : itemsPerPage;
     const columnPercentage = (1 / columnCount) * 100;
 
     const [index, setIndex] = useState(0);
@@ -53,7 +55,7 @@ export default function Carousel({ items, itemsPerPage }: {
                             >
                                 <Image 
                                     alt=""
-                                    className='rounded-md'
+                                    className='rounded-md w-full'
                                     src={item.image}
                                     height={400}
                                     width={400}
