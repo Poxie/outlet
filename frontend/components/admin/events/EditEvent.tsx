@@ -197,6 +197,11 @@ export default function EditEvent({ params: { eventId } }: {
     const removeImage = (imageId: string) => {
         setEventImages(prev => prev.filter(i => i.id !== imageId));
     }
+    const reset = () => {
+        if(!prevImages || !event) return;
+        setEventImages(prevImages);
+        setEventInfo(event);
+    }
     
     const openTimeSelector = () => {
         const onChange = (date: Date | null) => {
@@ -358,7 +363,15 @@ export default function EditEvent({ params: { eventId } }: {
                             </div>
                         </div>
                     </div>
-                    <div className="p-4 flex justify-end bg-light-secondary">
+                    <div className="p-4 flex justify-end gap-2 bg-light-secondary">
+                        {hasChanges && (
+                            <Button 
+                                type={'transparent'}
+                                onClick={reset}
+                            >
+                                Reset changes
+                            </Button>
+                        )}
                         <Button
                             onClick={onSubmit}
                             disabled={loading}
