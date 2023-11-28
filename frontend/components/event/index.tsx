@@ -55,21 +55,27 @@ export default async function Event({ params: { eventId } }: {
                     </p>
                 </div>
             </div>
-            <ul className="mt-2 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {images.map(image => (
-                    <li 
-                        key={image.id}
-                    >
-                        <Image 
-                            className="w-full object-cover rounded-md"
-                            src={getEventImage(event.id, image.id, event.timestamp)}
-                            width={150}
-                            height={150}
-                            alt=""
-                        />
-                    </li>
-                ))}
-            </ul>
+            {images.length? (
+                <ul className="mt-3 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    {images.map(image => (
+                        <li 
+                            key={image.id}
+                        >
+                            <Image 
+                                className="w-full object-cover rounded-md"
+                                src={getEventImage(event.id, image.id, event.timestamp)}
+                                width={150}
+                                height={150}
+                                alt=""
+                            />
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <span className="py-3 block text-center text-light text-sm font-semibold">
+                    This event has no images yet.
+                </span>
+            )}
         </div>
     )
 }
