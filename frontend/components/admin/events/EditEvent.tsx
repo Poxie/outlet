@@ -59,17 +59,46 @@ export default function EditEvent({ params: { eventId } }: {
         setEventInfo(event);
     }, [event]);
     useEffect(() => {
-        if(!prevImages) {
+        if(!prevImages && !isCreatingEvent) {
             get<ImageType[]>(`/events/${eventId}/images`).then(images => {
                 dispatch(_setEventImages({ eventId, images }));
             })
             return;
         }
-        setEventImages(prevImages);
-    }, [prevImages]);
-
-    const onSubmit = async () => {
         if(!prevImages) return;
+        setEventImages(prevImages);
+    }, [prevImages, isCreatingEvent]);
+
+    const updateImages = async (eventId: string, showFeedback=false) => {
+        const previousImages = prevImages || [];
+
+        const prevImagePaths = previousImages.map(prev => prev.id);
+        const currentImagePatns = eventImages.map(prev => prev.id);
+
+        const addedImages = eventImages.filter(image => !prevImagePaths.includes(image.id));
+        const removedImages = previousImages.filter(image => !currentImagePatns.includes(image.id));
+
+        const hasImageChanges = addedImages.length || removedImages.length;
+        if(!hasImageChanges) {
+            if(showFeedback) setFeedback({ text: 'No changes have been made.', type: 'danger' });
+            return;
+        }
+        
+        if(addedImages.length) {
+            const newImages = await post(`/events/${eventId}/images`, {
+                images: addedImages.map(image => image.id)
+            });
+            dispatch(addEventImages({ eventId, images: newImages }));
+        }
+        if(removedImages.length) {
+            for(const image of removedImages) {
+                await _delete(`/images/${image.id}`);
+                dispatch(removeEventImage({ eventId, imageId: image.id }));
+            }
+        }
+    }
+    const onSubmit = async () => {
+        const previousImages = prevImages || [];
 
         if(isCreatingEvent) {
             const propsToCheck = ['title', 'description', 'image'] as const;
@@ -86,48 +115,28 @@ export default function EditEvent({ params: { eventId } }: {
 
             setLoading(true);
             const createdEvent = await post<Event>('/events', eventInfo);
+
+            await updateImages(createdEvent.id);
+
             dispatch(addEvent(createdEvent));
-
-            router.replace(`/admin/events`);
-            return;
-        }
-
-        const changes: {[prop: string]: Event[keyof Event]} = {};
-        Object.entries(eventInfo).forEach(([prop, val]) => {
-            const key = prop as keyof Event;
-            if(event[key] !== val) changes[key] = val;
-        });
-
-        const prevImagePaths = prevImages.map(prev => prev.id);
-        const currentImagePatns = eventImages.map(prev => prev.id);
-
-        const addedImages = eventImages.filter(image => !prevImagePaths.includes(image.id));
-        const removedImages = prevImages.filter(image => !currentImagePatns.includes(image.id));
-
-        const hasChanges = Object.keys(changes).length || addedImages.length || removedImages.length;
-        if(!hasChanges) return setFeedback({ text: 'No changes have been made.', type: 'danger' });
-
-        setLoading(true);
-        
-        if(Object.keys(changes).length) {
-            const updatedEvent = await patch(`/events/${eventInfo.id}`, changes);
-            dispatch(editEvent({ eventId, changes: updatedEvent }));
-        }
-        if(addedImages.length) {
-            const newImages = await post(`/events/${eventInfo.id}/images`, {
-                images: addedImages.map(image => image.id)
+            router.replace('/admin/events');
+        } else {
+            const changes: {[prop: string]: Event[keyof Event]} = {};
+            Object.entries(eventInfo).forEach(([prop, val]) => {
+                const key = prop as keyof Event;
+                if(event[key] !== val) changes[key] = val;
             });
-            dispatch(addEventImages({ eventId, images: newImages }));
-        }
-        if(removedImages.length) {
-            for(const image of removedImages) {
-                await _delete(`/images/${image.id}`);
-                dispatch(removeEventImage({ eventId, imageId: image.id }));
+
+            setLoading(true);
+            if(Object.keys(changes).length) {
+                const updatedEvent = await patch(`/events/${eventInfo.id}`, changes);
+                dispatch(editEvent({ eventId, changes: updatedEvent }));
             }
+            await updateImages(eventId, true);
+            
+            setFeedback({ text: 'Event has been updated.', type: 'success' });
+            setLoading(false);
         }
-        
-        setFeedback({ text: 'Event has been updated.', type: 'success' });
-        setLoading(false);
     }
     const updateProperty = (property: keyof typeof eventInfo, value: Event[keyof Event] | File) => {
         setFeedback(null);
@@ -204,7 +213,7 @@ export default function EditEvent({ params: { eventId } }: {
                         {feedback.text}
                     </span>
                 )}
-                {(!eventsLoading && !!prevImages) ? (
+                {(!eventsLoading && (!!prevImages || isCreatingEvent)) ? (
                     <>
                     <div>
                         <div className="p-4 pb-0 flex gap-3">
