@@ -47,11 +47,14 @@ export const eventsSlice = createSlice({
             }
 
             state.images[action.payload.eventId] = [...action.payload.images, ...(state.images[action.payload.eventId] || [])];
-        }
+        },
+        removeEventImage: (state, action) => {
+            state.images[action.payload.eventId] = state.images[action.payload.eventId]?.filter(image => image.id !== action.payload.imageId);
+        },
     }
 })
 
-export const { setEvents, addEvent, removeEvent, editEvent, setSearch, setEventImages, addEventImages } = eventsSlice.actions;
+export const { setEvents, addEvent, removeEvent, editEvent, setSearch, setEventImages, addEventImages, removeEventImage } = eventsSlice.actions;
 
 const selectId = (_:RootState, id: string) => id;
 

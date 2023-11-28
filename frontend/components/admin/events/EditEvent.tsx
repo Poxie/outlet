@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages } from "@/store/slices/events";
+import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages, removeEventImage } from "@/store/slices/events";
 import { useState, useRef, useEffect } from "react";
 import { Event, Image as ImageType } from "../../../../types";
 import Image from "next/image";
@@ -15,6 +15,7 @@ import Button from "@/components/button";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
+import { BinIcon } from "@/assets/icons/BinIcon";
 
 const createDummyEvent: () => Event = () => ({
     id: Math.random().toString(),
@@ -29,7 +30,7 @@ export default function EditEvent({ params: { eventId } }: {
     params: { eventId: string };
 }) {
     const router = useRouter();
-    const { get, post, patch } = useAuth();
+    const { get, post, patch, _delete } = useAuth();
     const { close: closePopout, setPopout } = usePopout();
 
     const dispatch = useAppDispatch();
@@ -118,6 +119,12 @@ export default function EditEvent({ params: { eventId } }: {
             });
             dispatch(addEventImages({ eventId, images: newImages }));
         }
+        if(removedImages.length) {
+            for(const image of removedImages) {
+                await _delete(`/images/${image.id}`);
+                dispatch(removeEventImage({ eventId, imageId: image.id }));
+            }
+        }
         
         setFeedback({ text: 'Event has been updated.', type: 'success' });
         setLoading(false);
@@ -158,6 +165,9 @@ export default function EditEvent({ params: { eventId } }: {
                 setEventImages(prev => [...[newImage], ...prev]);
             }
         }
+    }
+    const removeImage = (imageId: string) => {
+        setEventImages(prev => prev.filter(i => i.id !== imageId));
     }
     
     const openTimeSelector = () => {
@@ -275,13 +285,22 @@ export default function EditEvent({ params: { eventId } }: {
                         <div className="p-4 pt-0">
                             <div className="grid grid-cols-6 gap-1.5 ">
                                 {eventImages.map(({ id }, key) => (
-                                    <Image 
-                                        width={150}
-                                        height={150}
-                                        src={id.startsWith('data') ? id : getEventImage(eventId, id, eventInfo.timestamp)}
-                                        className="aspect-square w-full h-full object-cover rounded-md"
-                                        alt={`Event image ${key + 1}`}
-                                    />
+                                    <div className="group relative">
+                                        <Image 
+                                            width={150}
+                                            height={150}
+                                            src={id.startsWith('data') ? id : getEventImage(eventId, id, eventInfo.timestamp)}
+                                            className="aspect-square w-full h-full object-cover rounded-md"
+                                            alt={`Event image ${key + 1}`}
+                                        />
+                                        <button 
+                                            className="shadow opacity-0 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
+                                            aria-label="Delete image"
+                                            onClick={() => removeImage(id)}
+                                        >
+                                            <BinIcon className="w-5 text-primary" />
+                                        </button>
+                                    </div>
                                 ))}
                                 <button 
                                     className="aspect-square rounded-md border-[1px] border-light-tertiary hover:bg-light-secondary/50 transition-colors"

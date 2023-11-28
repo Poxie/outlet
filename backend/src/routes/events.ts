@@ -166,5 +166,13 @@ router.post('/events/:eventId/images', async (req, res, next) => {
 
     res.send(newImages);
 })
+router.delete('/images/:imageId', async (req, res, next) => {
+    const image = await myDataSource.getRepository(Images).findOneBy({ id: req.params.imageId });
+    if(!image) return next(new APINotFoundError("Image not found."));
+
+    await myDataSource.getRepository(Images).delete({ id: image.id });
+
+    res.send({});
+})
 
 export default router;
