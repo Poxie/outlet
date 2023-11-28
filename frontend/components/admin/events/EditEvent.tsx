@@ -253,7 +253,7 @@ export default function EditEvent({ params: { eventId } }: {
                                 </span>
                                 <button 
                                     className={twMerge(
-                                        "relative h-full aspect-video flex items-center justify-center bg-light-secondary/50 border-[1px] border-light-tertiary rounded-md overflow-hidden",
+                                        "relative aspect-video flex items-center justify-center bg-light-secondary/50 border-[1px] border-light-tertiary rounded-md overflow-hidden",
                                         eventInfo.image && 'after:content-["Change_image"] after:absolute after:w-full after:h-full after:z-[2] after:flex after:items-center after:justify-center after:bg-light-secondary/70 after:opacity-0 hover:after:opacity-100 after:transition-opacity',
                                     )}
                                     onClick={() => headerImageInput.current?.click()}
