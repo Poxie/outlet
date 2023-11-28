@@ -1,5 +1,4 @@
 import Events from './events';
-import Temp from './temp';
 import WeeklyDeals from './weekly-deals';
 
 export default function Home() {
@@ -7,7 +6,6 @@ export default function Home() {
         <main>
             <WeeklyDeals />
             <Events />
-            {/* <Temp /> */}
         </main>
     )
 }
