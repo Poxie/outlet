@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages, removeEventImage } from "@/store/slices/events";
+import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages, removeEventImages } from "@/store/slices/events";
 import { useState, useRef, useEffect } from "react";
 import { Event, Image as ImageType } from "../../../../types";
 import Image from "next/image";
@@ -96,10 +96,9 @@ export default function EditEvent({ params: { eventId } }: {
             dispatch(addEventImages({ eventId, images: newImages }));
         }
         if(removedImages.length) {
-            for(const image of removedImages) {
-                await _delete(`/images/${image.id}`);
-                dispatch(removeEventImage({ eventId, imageId: image.id }));
-            }
+            const ids = removedImages.map(i => i.id);
+            await _delete('/images', { ids });
+            dispatch(removeEventImages({ eventId, ids }));
         }
     }
     const onSubmit = async () => {
