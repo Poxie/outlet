@@ -4,9 +4,9 @@ import Image from "next/image";
 import CarouselNavButton from "./CarouselNavButton";
 import { useScreenSize } from '@/hooks/useScreenSize';
 
-export default function Carousel({ items, itemsPerPage=4 }: {
+export default function Carousel({ items, itemsPerPage }: {
     items: { id: string, image: string }[];
-    itemsPerPage?: number;
+    itemsPerPage: number;
 }) {
     const screenSize = useScreenSize();
     const columnCount = ['xs', 'sm'].includes(screenSize) ? 2 : itemsPerPage;
@@ -39,10 +39,11 @@ export default function Carousel({ items, itemsPerPage=4 }: {
             )}
             <div className='overflow-hidden'>
                 <ul 
-                    className="[--column-count:2] md:[--column-count:4] [--spacing:8px] flex transition-transform -mr-[--spacing]"
+                    className="[--spacing:8px] flex transition-transform -mr-[--spacing]"
                     style={{
                         transform: `translateX(${-1 * translate}%)`,
-                    }}
+                        '--column-count': columnCount,
+                    } as React.CSSProperties}
                 >
                     {items.map(item => {
                         return(
