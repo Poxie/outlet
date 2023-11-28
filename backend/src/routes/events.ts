@@ -23,7 +23,10 @@ router.get('/events', async (req, res, next) => {
     res.send(events);
 })
 router.get('/events/all', async (req, res, next) => {
-    const events = await myDataSource.getRepository(Events).find();
+    const events = await myDataSource.getRepository(Events).createQueryBuilder('events')
+        .orderBy('events.timestamp', 'DESC')
+        .getMany();
+
     res.send(events);
 })
 router.get('/events/:eventId', async (req, res, next) => {
