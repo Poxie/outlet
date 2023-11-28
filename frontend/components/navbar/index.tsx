@@ -12,11 +12,11 @@ export default function Navbar() {
     const currentPath = usePathname();
 
     return(
-        <nav className="bg-secondary shadow-navbar">
+        <nav className="py-6 bg-secondary shadow-navbar">
             <div className="w-main max-w-main mx-auto flex items-center justify-between">
                 <Link href="/">
                     <Image 
-                        className="w-48 my-5"
+                        className="w-48"
                         alt="Outlet logo"
                         src="/logo.png"
                         width={250}
