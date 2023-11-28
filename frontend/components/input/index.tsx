@@ -9,7 +9,10 @@ const Input = forwardRef<HTMLInputElement, {
     className?: string
     containerClassName?: string;
     textArea?: boolean;
-}>(({ onChange, value, placeholder, autoFocus, textArea=false, type='text', className='' }, ref) => {
+    minHeight?: number;
+}>(({ onChange, value, placeholder, autoFocus, minHeight, textArea=false, type='text', className='' }, ref) => {
+    if(minHeight && !textArea) throw new Error('Min height cannot be set without textArea=true.');
+
     const props = {
         placeholder,
         autoFocus,
@@ -25,7 +28,10 @@ const Input = forwardRef<HTMLInputElement, {
         !textArea ? (
             <input {...props} />
         ) : (
-            <textarea {...props}></textarea>
+            <textarea 
+                style={{ minHeight: `${minHeight}px` }}
+                {...props}
+            ></textarea>
         )
     )
 });
