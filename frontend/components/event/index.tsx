@@ -1,18 +1,29 @@
 import Image from "next/image";
-import { Event as EventType } from "../../../types";
+import { Event, Image as ImageType } from "../../../types";
 import { twMerge } from "tailwind-merge";
 import { getEventImage } from "@/utils";
 
 const getEvent = async (eventId: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${eventId}`, { next: { revalidate: 0 } });
-    const event = await res.json();
-    return event as EventType;
+    const basePath = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${eventId}`;
+    const opts = { next: { revalidate: 0 } };
+
+    const [event, images] = await Promise.all(
+        [
+            fetch(basePath, opts).then(res => res.json()),
+            fetch(`${basePath}/images`, opts).then(res => res.json())
+        ]
+    )
+
+    return {
+        event: event as Event,
+        images: images as ImageType[],
+    }
 }
 
 export default async function Event({ params: { eventId } }: {
     params: { eventId: string };
 }) {
-    const event = await getEvent(eventId);
+    const { event, images } = await getEvent(eventId);
 
     return(
         <div className="w-main max-w-main mx-auto py-6">
@@ -45,19 +56,19 @@ export default async function Event({ params: { eventId } }: {
                 </div>
             </div>
             <ul className="mt-2 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {/* {event.images?.map(image => (
+                {images.map(image => (
                     <li 
                         key={image.id}
                     >
                         <Image 
                             className="w-full object-cover rounded-md"
-                            src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${image.image}`}
+                            src={getEventImage(event.id, image.id, event.timestamp)}
                             width={150}
                             height={150}
                             alt=""
                         />
                     </li>
-                ))} */}
+                ))}
             </ul>
         </div>
     )
