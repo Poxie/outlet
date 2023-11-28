@@ -74,7 +74,7 @@ export default function Carousel({ items, itemsPerPage }: {
                 <CarouselNavButton
                     onClick={next}
                     disabled={atEnd}
-                    className="left-[unset] -right-4 rotate-90"
+                    className="left-[calc(100%+var(--from-container))] rotate-90"
                 />
             )}
         </div>

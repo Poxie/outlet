@@ -25,7 +25,7 @@ export default async function WeeklyDeals() {
 
     return(
         <section className='py-8 bg-primary'>
-            <div className="mb-1.5 p-2 w-main max-w-main mx-auto flex items-center justify-between text-sm bg-light rounded-lg">
+            <div className="mb-2 p-2 w-main max-w-main mx-auto flex items-center justify-between text-sm bg-light rounded-lg">
                 <div className="px-2 flex items-center gap-3">
                     <span className="text-xl font-semibold">
                         Veckans deal

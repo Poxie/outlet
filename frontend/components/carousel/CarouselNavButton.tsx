@@ -12,11 +12,11 @@ export default function CarouselNavButton({ onClick, className, disabled }: {
             disabled={disabled}
             onClick={!disabled ? onClick : undefined}
             className={twMerge(
-                "flex items-center justify-center z-10 h-[15%] aspect-square absolute -left-4 top-2/4 -translate-y-2/4 -rotate-90 rounded-full text-light bg-secondary",
+                "[--from-container:24px] flex items-center justify-center z-10 h-[15%] aspect-square absolute right-[calc(100%+var(--from-container))] top-2/4 -translate-y-2/4 -rotate-90 rounded-full bg-light text-c-primary",
                 className,
             )}
         >
-            <ArrowIcon className="w-[50%]" />
+            <ArrowIcon strokeWidth={2} className="w-[50%]" />
         </button>
     )
 }
