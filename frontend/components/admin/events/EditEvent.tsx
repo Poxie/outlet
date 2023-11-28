@@ -69,7 +69,12 @@ export default function EditEvent({ params: { eventId } }: {
         setEventImages(prevImages);
     }, [prevImages, isCreatingEvent]);
 
-    const updateImages = async (eventId: string, showFeedback=false) => {
+    const hasImageDiff = () => {
+        const { addedImages, removedImages } = getImageDiff();
+        if(!addedImages.length && !removedImages.length) return false;
+        return true;
+    }
+    const getImageDiff = () => {
         const previousImages = prevImages || [];
 
         const prevImagePaths = previousImages.map(prev => prev.id);
@@ -78,11 +83,11 @@ export default function EditEvent({ params: { eventId } }: {
         const addedImages = eventImages.filter(image => !prevImagePaths.includes(image.id));
         const removedImages = previousImages.filter(image => !currentImagePatns.includes(image.id));
 
-        const hasImageChanges = addedImages.length || removedImages.length;
-        if(!hasImageChanges) {
-            if(showFeedback) setFeedback({ text: 'No changes have been made.', type: 'danger' });
-            return;
-        }
+        return { addedImages, removedImages };
+    }
+    const updateImages = async (eventId: string) => {
+        const { addedImages, removedImages } = getImageDiff();
+        if(!addedImages.length && !removedImages.length) return;
         
         if(addedImages.length) {
             const newImages = await post(`/events/${eventId}/images`, {
@@ -127,12 +132,22 @@ export default function EditEvent({ params: { eventId } }: {
                 if(event[key] !== val) changes[key] = val;
             });
 
+            const hasInfoChanges = Object.keys(changes).length;
+            const hasImageChanges = hasImageDiff();
+
+            if(!hasInfoChanges && !hasImageChanges) {
+                setFeedback({ text: 'No changes have been made.', type: 'danger' });
+                return;
+            }
+
             setLoading(true);
-            if(Object.keys(changes).length) {
+            if(hasInfoChanges) {
                 const updatedEvent = await patch(`/events/${eventInfo.id}`, changes);
                 dispatch(editEvent({ eventId, changes: updatedEvent }));
             }
-            await updateImages(eventId, true);
+            if(hasImageChanges) {
+                await updateImages(eventId);
+            }
             
             setFeedback({ text: 'Event has been updated.', type: 'success' });
             setLoading(false);
