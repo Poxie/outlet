@@ -262,8 +262,9 @@ export default function EditEvent({ params: { eventId } }: {
                                     ref={headerImageInput}
                                     className="hidden"
                                     onChange={e => {
-                                        if(!e.target.files?.length) return;
+                                        if(!e.target.files?.length || !headerImageInput.current) return;
                                         updateProperty('image', e.target.files[0]);
+                                        headerImageInput.current.value = '';
                                     }}
                                 />
                             </div>
@@ -339,8 +340,9 @@ export default function EditEvent({ params: { eventId } }: {
                                     ref={eventImageInput}
                                     onChange={e => {
                                         const files = e.target.files;
-                                        if(!files) return;
+                                        if(!files || !eventImageInput.current) return;
                                         addImages(files);
+                                        eventImageInput.current.value = '';
                                     }}
                                 />
                             </div>
