@@ -279,7 +279,7 @@ export default function EditEvent({ params: { eventId } }: {
                                         width={150}
                                         height={150}
                                         src={id.startsWith('data') ? id : getEventImage(eventId, id, eventInfo.timestamp)}
-                                        className="w-full h-full object-cover rounded-md"
+                                        className="aspect-square w-full h-full object-cover rounded-md"
                                         alt={`Event image ${key + 1}`}
                                     />
                                 ))}
