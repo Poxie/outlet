@@ -15,8 +15,8 @@ import { Images } from '../entity/images.entity';
 const router = express.Router();
 
 router.get('/events', async (req, res, next) => {
-    const events = await myDataSource.getRepository(Events).createQueryBuilder()
-        .where(`timestamp <= ? AND archived = 0`, [Date.now()])
+    const events = await myDataSource.getRepository(Events).createQueryBuilder('event')
+        .where(`event.timestamp <= :timestamp AND archived = 0`, { timestamp: Date.now() })
         .select()
         .getMany();
 
