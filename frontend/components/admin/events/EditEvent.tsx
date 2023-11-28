@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import { addEvent, editEvent, selectEventById } from "@/store/slices/events";
+import { addEvent, editEvent, selectEventById, selectEventImagesById } from "@/store/slices/events";
 import { useState, useRef, useEffect } from "react";
 import { Event } from "../../../../types";
 import Image from "next/image";
@@ -33,16 +33,20 @@ export default function EditEvent({ params: { eventId } }: {
     const { close: closePopout, setPopout } = usePopout();
 
     const dispatch = useAppDispatch();
+
+    const prevImages = useAppSelector(state => selectEventImagesById(state, eventId));
     const event = useAppSelector(state => selectEventById(state, eventId));
     const eventsLoading = useAppSelector(state => state.events.loading);
     
     const [eventInfo, setEventInfo] = useState(event || createDummyEvent());
+    const [eventImages, setEventImages] = useState(prevImages || []);
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState<null | {
         text: string;
         type: 'success' | 'danger';
     }>(null);
     
+    const eventImageInput = useRef<HTMLInputElement>(null);
     const headerImageInput = useRef<HTMLInputElement>(null);
     const openPopoutButton = useRef<HTMLButtonElement>(null);
     
@@ -53,6 +57,9 @@ export default function EditEvent({ params: { eventId } }: {
         if(!event) return;
         setEventInfo(event);
     }, [event]);
+    useEffect(() => {
+        setEventImages(prevImages);
+    }, [prevImages]);
 
     const onSubmit = async () => {
         if(isCreatingEvent) {
@@ -81,12 +88,29 @@ export default function EditEvent({ params: { eventId } }: {
             const key = prop as keyof Event;
             if(event[key] !== val) changes[key] = val;
         });
-        if(!Object.keys(changes).length) return setFeedback({ text: 'No changes have been made.', type: 'danger' });
+
+        const prevImagePaths = prevImages.map(prev => prev.id);
+        const currentImagePatns = eventImages.map(prev => prev.id);
+
+        const addedImages = eventImages.filter(image => !prevImagePaths.includes(image.id));
+        const removedImages = prevImages.filter(image => !currentImagePatns.includes(image.id));
+
+        const hasChanges = Object.keys(changes).length || addedImages.length || removedImages.length;
+        if(!hasChanges) return setFeedback({ text: 'No changes have been made.', type: 'danger' });
 
         setLoading(true);
-        const updatedEvent = await patch(`/events/${eventInfo.id}`, changes);
         
-        dispatch(editEvent({ eventId, changes: updatedEvent }));
+        if(Object.keys(changes).length) {
+            const updatedEvent = await patch(`/events/${eventInfo.id}`, changes);
+            dispatch(editEvent({ eventId, changes: updatedEvent }));
+        }
+        if(addedImages.length) {
+            const newImages = await post(`/events/${eventInfo.id}/images`, {
+                images: addedImages.map(image => image.id)
+            });
+            console.log(newImages);
+        }
+        
         setFeedback({ text: 'Event has been updated.', type: 'success' });
         setLoading(false);
     }
@@ -107,6 +131,25 @@ export default function EditEvent({ params: { eventId } }: {
         setEventInfo(prev => ({...prev, ...{
             [property]: value
         }}))
+    }
+    const addImages = (files: FileList) => {
+        for(let i = 0; i < files.length; i++) {
+            const file = files[i];
+    
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+    
+            fileReader.onload = () => {
+                if(typeof fileReader.result !== 'string') return;
+    
+                const newImage = {
+                    id: fileReader.result,
+                    timestamp: Date.now().toString(),
+                    parentId: eventId,
+                }
+                setEventImages(prev => [...[newImage], ...prev])
+            }
+        }
     }
     
     const openTimeSelector = () => {
@@ -145,74 +188,111 @@ export default function EditEvent({ params: { eventId } }: {
                 )}
                 {!eventsLoading ? (
                     <>
-                    <div className="p-4 flex gap-3">
-                        <div className="flex flex-col">
-                            <span className="block text-sm mb-1">
-                                Header image
-                            </span>
-                            <button 
-                                className={twMerge(
-                                    "relative h-full aspect-video flex items-center justify-center bg-light-secondary/50 border-[1px] border-light-tertiary rounded-md overflow-hidden",
-                                    eventInfo.image && 'after:content-["Change_image"] after:absolute after:w-full after:h-full after:z-[2] after:flex after:items-center after:justify-center after:bg-light-secondary/70 after:opacity-0 hover:after:opacity-100 after:transition-opacity',
-                                )}
-                                onClick={() => headerImageInput.current?.click()}
-                            >
-                                {eventInfo.image ? (
-                                    <Image
-                                        width={400}
-                                        height={400}
-                                        src={eventInfo.image.startsWith('data') ? eventInfo.image : getEventImage(eventInfo.id, eventInfo.image, eventInfo.timestamp)}
-                                        className="h-full object-cover"
-                                        alt=""
-                                    />
-                                ) : (
-                                    <span className="px-40">
-                                        Add image
-                                    </span>
-                                )}
-                            </button>
-                            <input 
-                                type="file"
-                                ref={headerImageInput}
-                                className="hidden"
-                                onChange={e => {
-                                    if(!e.target.files?.length) return;
-                                    updateProperty('image', e.target.files[0]);
-                                }}
-                            />
+                    <div>
+                        <div className="p-4 pb-0 flex gap-3">
+                            <div className="flex flex-col">
+                                <span className="block text-sm mb-1">
+                                    Header image
+                                </span>
+                                <button 
+                                    className={twMerge(
+                                        "relative h-full aspect-video flex items-center justify-center bg-light-secondary/50 border-[1px] border-light-tertiary rounded-md overflow-hidden",
+                                        eventInfo.image && 'after:content-["Change_image"] after:absolute after:w-full after:h-full after:z-[2] after:flex after:items-center after:justify-center after:bg-light-secondary/70 after:opacity-0 hover:after:opacity-100 after:transition-opacity',
+                                    )}
+                                    onClick={() => headerImageInput.current?.click()}
+                                >
+                                    {eventInfo.image ? (
+                                        <Image
+                                            width={400}
+                                            height={400}
+                                            src={eventInfo.image.startsWith('data') ? eventInfo.image : getEventImage(eventInfo.id, eventInfo.image, eventInfo.timestamp)}
+                                            className="h-full object-cover"
+                                            alt=""
+                                        />
+                                    ) : (
+                                        <span className="px-40">
+                                            Add image
+                                        </span>
+                                    )}
+                                </button>
+                                <input 
+                                    type="file"
+                                    ref={headerImageInput}
+                                    className="hidden"
+                                    onChange={e => {
+                                        if(!e.target.files?.length) return;
+                                        updateProperty('image', e.target.files[0]);
+                                    }}
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <span className="block text-sm mb-1">
+                                    Title
+                                </span>
+                                <Input 
+                                    value={eventInfo.title}
+                                    onChange={title => updateProperty('title', title)}
+                                    placeholder={'Title...'}
+                                    className="w-full"
+                                />
+                                <span className="block text-sm mb-1 mt-2">
+                                    Description
+                                </span>
+                                <Input 
+                                    value={eventInfo.description}
+                                    onChange={description => updateProperty('description', description)}
+                                    placeholder={'Description...'}
+                                    className="w-full"
+                                    textArea
+                                />
+                                <span className="block text-sm mb-1">
+                                    Event start
+                                </span>
+                                <button 
+                                    type="button"
+                                    className="p-3 flex items-center gap-1.5 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary"
+                                    onClick={openTimeSelector}
+                                    ref={openPopoutButton}
+                                >
+                                    <ClockIcon className="w-4" />
+                                    {date.toLocaleDateString('default', { dateStyle: 'long' })}
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex-1">
-                            <span className="block text-sm mb-1">
-                                Title
+                        <div className="py-3 mx-4 relative after:z-[1] after:w-full after:h-[1px] after:absolute after:left-0 after:top-2/4 after:-translate-y-2/4 after:bg-light-tertiary">
+                            <span className="pr-4 relative z-[2] inline-block text-sm bg-light">
+                                Event images
                             </span>
-                            <Input 
-                                value={eventInfo.title}
-                                onChange={title => updateProperty('title', title)}
-                                placeholder={'Title...'}
-                                className="w-full"
-                            />
-                            <span className="block text-sm mb-1 mt-2">
-                                Description
-                            </span>
-                            <Input 
-                                value={eventInfo.description}
-                                onChange={description => updateProperty('description', description)}
-                                placeholder={'Description...'}
-                                className="w-full"
-                                textArea
-                            />
-                            <span className="block text-sm mb-1">
-                                Event start
-                            </span>
-                            <button 
-                                type="button"
-                                className="p-3 flex items-center gap-1.5 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary"
-                                onClick={openTimeSelector}
-                                ref={openPopoutButton}
-                            >
-                                <ClockIcon className="w-4" />
-                                {date.toLocaleDateString('default', { dateStyle: 'long' })}
-                            </button>
+                        </div>
+                        <div className="p-4 pt-0">
+                            <div className="grid grid-cols-6 gap-1.5 ">
+                                {eventImages.map(({ id }, key) => (
+                                    <Image 
+                                        width={150}
+                                        height={150}
+                                        src={id.startsWith('data') ? id : getEventImage(eventId, id, eventInfo.timestamp)}
+                                        className="w-full h-full object-cover rounded-md"
+                                        alt={`Event image ${key}`}
+                                    />
+                                ))}
+                                <button 
+                                    className="aspect-square rounded-md border-[1px] border-light-tertiary hover:bg-light-secondary/50 transition-colors"
+                                    onClick={() => eventImageInput.current?.click()}
+                                >
+                                    Add image
+                                </button>
+                                <input 
+                                    multiple
+                                    type="file"
+                                    className="hidden"
+                                    ref={eventImageInput}
+                                    onChange={e => {
+                                        const files = e.target.files;
+                                        if(!files) return;
+                                        addImages(files);
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="p-4 flex justify-end bg-light-secondary">

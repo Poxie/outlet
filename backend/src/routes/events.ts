@@ -10,6 +10,7 @@ import { APINotFoundError } from '../errors/apiNotFoundError';
 import { ALLOWED_EVENT_PROPERTIES } from '../utils/constants';
 import { APIInternalServerError } from '../errors/apiInternalServerError';
 import { LessThan } from 'typeorm';
+import { Images } from '../entity/images.entity';
 
 const router = express.Router();
 
@@ -125,6 +126,38 @@ router.delete('/events/:eventId', async (req, res, next) => {
     }
 
     res.send({});
+})
+router.post('/events/:eventId/images', async (req, res, next) => {
+    const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
+    if(!event) return next(new APINotFoundError('Event not found.'));
+
+    const images = req.body.images;
+    if(!images) return next(new APINotFoundError('Images property is required.'));
+
+    const newImages: Images[] = [];
+    for(const image of images) {
+        const imageId = await createId('images');
+
+        const date = new Date(Number(event.timestamp));
+        const imagePath = `src/imgs/events/${date.getFullYear()}/${event.id}/${event.id}/${imageId}.png`;
+        let imageResponse: string;
+        try {
+            imageResponse = await imageDataURI.outputFile(image, imagePath);
+        } catch(error) {
+            console.error(`Unable to remove previous image: ${imagePath}.`);
+        }
+
+        const createdImage = myDataSource.getRepository(Images).create({
+            id: imageId,
+            parentId: event.id,
+            timestamp: event.timestamp,
+        });
+        const newImage = await myDataSource.getRepository(Images).save(createdImage);
+
+        newImages.push(newImage);
+    }
+
+    res.send(newImages);
 })
 
 export default router;

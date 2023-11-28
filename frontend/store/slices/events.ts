@@ -1,14 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { Event } from '../../../types';
-import { RootState } from '..';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { Event, Image } from '../../../types';
+import { RootState, useAppSelector } from '..';
 
 const initialState: {
     search: string;
     events: Event[];
+    images: Image[];
     loading: boolean;
 } = {
     search: '',
     events: [],
+    images: [],
     loading: true,
 }
 
@@ -40,6 +42,16 @@ export const eventsSlice = createSlice({
 
 export const { setEvents, addEvent, removeEvent, editEvent, setSearch } = eventsSlice.actions;
 
+const selectId = (_:RootState, id: string) => id;
+
+const selectEvents = (state: RootState) => state.events.events;
+const selectEventImages = (state: RootState) => state.events.images;
+
+export const selectEventsLoading = (state: RootState) => state.events.loading;
 export const selectEventById = (state: RootState, eventId: string) => state.events.events.find(event => event.id === eventId);
+export const selectEventImagesById = createSelector(
+    [selectEventImages, selectId],
+    (images, eventId) => images.filter(image => image.parentId === eventId)
+)
 
 export default eventsSlice.reducer;

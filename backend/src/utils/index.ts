@@ -3,6 +3,7 @@ import { myDataSource } from "../app-data-source";
 import { WeeklyDeal } from "../entity/weekly-deal.entity";
 import { DEAL_DAY_ID } from "./constants";
 import { Events } from "../entity/events.entity";
+import { Images } from "../entity/images.entity";
 
 export const dateToReadableString = (date: Date) => `${String(date.getDate()).padStart(2,'0')}-${String(date.getMonth() + 1).padStart(2,'0')}-${date.getFullYear()}`
 
@@ -12,7 +13,12 @@ export const getCurrentWeeklyDealDate = () => {
     return currentDealDate;
 }
 
-export const createId = async (table: 'weekly_deal' | 'events') => {
+const repositories = {
+    'weekly_deal': WeeklyDeal,
+    events: Events,
+    images: Images,
+}
+export const createId = async (table: 'weekly_deal' | 'events' | 'images') => {
     const length = 8;
     const opts = '1234567890';
     
@@ -21,19 +27,8 @@ export const createId = async (table: 'weekly_deal' | 'events') => {
         id += Math.floor(Math.random() * opts.length);
     }
 
-    let repository: EntityTarget<ObjectLiteral>;
-    switch(table) {
-        case 'weekly_deal': {
-            repository = WeeklyDeal;
-            break;
-        }
-        case 'events': {
-            repository = Events;
-            break;
-        }
-        default:
-            throw new Error(`Table ${table} is not a valid table.`);
-    }    
+    const repository =  repositories[table];
+    if(!repository) throw new Error(`Repository ${table} has not been set up.`);
     const alreadyExists = await myDataSource.getRepository(repository).findOneBy({ id });
     if(alreadyExists) return await createId(table);
 
