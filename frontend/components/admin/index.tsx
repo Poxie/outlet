@@ -25,7 +25,7 @@ export default function Admin() {
                 Admin Panel
             </h1>
             <div className="bg-light p-4 rounded-lg">
-                <ul className="grid grid-cols-2 gap-2">
+                <ul className="grid sm:grid-cols-2 gap-2">
                     {dashboardLinks.map(link => (
                         <li key={link.path}>
                             <Link
