@@ -303,7 +303,7 @@ export default function EditEvent({ params: { eventId } }: {
                                             alt={`Event image ${key + 1}`}
                                         />
                                         <button 
-                                            className="shadow opacity-0 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
+                                            className="shadow opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
                                             aria-label="Delete image"
                                             onClick={() => removeImage(id)}
                                         >
