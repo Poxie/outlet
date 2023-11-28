@@ -301,6 +301,7 @@ export default function EditEvent({ params: { eventId } }: {
                                     onChange={description => updateProperty('description', description)}
                                     placeholder={'Description...'}
                                     className="w-full"
+                                    minHeight={71}
                                     textArea
                                 />
                                 <span className="block text-sm mb-1">
