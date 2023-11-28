@@ -2,9 +2,9 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import { addEvent, editEvent, selectEventById, selectEventImagesById } from "@/store/slices/events";
+import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages } from "@/store/slices/events";
 import { useState, useRef, useEffect } from "react";
-import { Event } from "../../../../types";
+import { Event, Image as ImageType } from "../../../../types";
 import Image from "next/image";
 import Input from "@/components/input";
 import { getEventImage } from "@/utils";
@@ -29,7 +29,7 @@ export default function EditEvent({ params: { eventId } }: {
     params: { eventId: string };
 }) {
     const router = useRouter();
-    const { post, patch } = useAuth();
+    const { get, post, patch } = useAuth();
     const { close: closePopout, setPopout } = usePopout();
 
     const dispatch = useAppDispatch();
@@ -58,10 +58,18 @@ export default function EditEvent({ params: { eventId } }: {
         setEventInfo(event);
     }, [event]);
     useEffect(() => {
+        if(!prevImages) {
+            get<ImageType[]>(`/events/${eventId}/images`).then(images => {
+                dispatch(_setEventImages({ eventId, images }));
+            })
+            return;
+        }
         setEventImages(prevImages);
     }, [prevImages]);
 
     const onSubmit = async () => {
+        if(!prevImages) return;
+
         if(isCreatingEvent) {
             const propsToCheck = ['title', 'description', 'image'] as const;
             const invalidProps = propsToCheck.filter(prop => !eventInfo[prop]);
@@ -108,7 +116,7 @@ export default function EditEvent({ params: { eventId } }: {
             const newImages = await post(`/events/${eventInfo.id}/images`, {
                 images: addedImages.map(image => image.id)
             });
-            console.log(newImages);
+            dispatch(addEventImages({ eventId, images: newImages }));
         }
         
         setFeedback({ text: 'Event has been updated.', type: 'success' });
@@ -147,7 +155,7 @@ export default function EditEvent({ params: { eventId } }: {
                     timestamp: Date.now().toString(),
                     parentId: eventId,
                 }
-                setEventImages(prev => [...[newImage], ...prev])
+                setEventImages(prev => [...[newImage], ...prev]);
             }
         }
     }
@@ -186,7 +194,7 @@ export default function EditEvent({ params: { eventId } }: {
                         {feedback.text}
                     </span>
                 )}
-                {!eventsLoading ? (
+                {(!eventsLoading && !!prevImages) ? (
                     <>
                     <div>
                         <div className="p-4 pb-0 flex gap-3">
@@ -207,7 +215,7 @@ export default function EditEvent({ params: { eventId } }: {
                                             height={400}
                                             src={eventInfo.image.startsWith('data') ? eventInfo.image : getEventImage(eventInfo.id, eventInfo.image, eventInfo.timestamp)}
                                             className="h-full object-cover"
-                                            alt=""
+                                            alt="Event header image"
                                         />
                                     ) : (
                                         <span className="px-40">
@@ -272,7 +280,7 @@ export default function EditEvent({ params: { eventId } }: {
                                         height={150}
                                         src={id.startsWith('data') ? id : getEventImage(eventId, id, eventInfo.timestamp)}
                                         className="w-full h-full object-cover rounded-md"
-                                        alt={`Event image ${key}`}
+                                        alt={`Event image ${key + 1}`}
                                     />
                                 ))}
                                 <button 

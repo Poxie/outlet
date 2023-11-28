@@ -127,6 +127,13 @@ router.delete('/events/:eventId', async (req, res, next) => {
 
     res.send({});
 })
+router.get('/events/:eventId/images', async (req, res, next) => {
+    const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
+    if(!event) return next(new APINotFoundError('Event not found.'));
+
+    const images = await myDataSource.getRepository(Images).findBy({ parentId: event.id });
+    res.send(images);
+})
 router.post('/events/:eventId/images', async (req, res, next) => {
     const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
     if(!event) return next(new APINotFoundError('Event not found.'));
@@ -139,7 +146,7 @@ router.post('/events/:eventId/images', async (req, res, next) => {
         const imageId = await createId('images');
 
         const date = new Date(Number(event.timestamp));
-        const imagePath = `src/imgs/events/${date.getFullYear()}/${event.id}/${event.id}/${imageId}.png`;
+        const imagePath = `src/imgs/events/${date.getFullYear()}/${event.id}/${imageId}.png`;
         let imageResponse: string;
         try {
             imageResponse = await imageDataURI.outputFile(image, imagePath);

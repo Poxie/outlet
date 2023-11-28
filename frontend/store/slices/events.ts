@@ -5,12 +5,12 @@ import { RootState, useAppSelector } from '..';
 const initialState: {
     search: string;
     events: Event[];
-    images: Image[];
+    images: {[parentId: string]: Image[] | undefined};
     loading: boolean;
 } = {
     search: '',
     events: [],
-    images: [],
+    images: {},
     loading: true,
 }
 
@@ -36,11 +36,22 @@ export const eventsSlice = createSlice({
                 if(event.id !== action.payload.eventId) return event;
                 return {...event, ...action.payload.changes};
             })
+        },
+        setEventImages: (state, action) => {
+            state.images[action.payload.eventId] = action.payload.images;
+        },
+        addEventImages: (state, action) => {
+            if(!state.images[action.payload.eventId]) {
+                state.images[action.payload.eventId] = action.payload.images;
+                return;
+            }
+
+            state.images[action.payload.eventId] = [...action.payload.images, ...(state.images[action.payload.eventId] || [])];
         }
     }
 })
 
-export const { setEvents, addEvent, removeEvent, editEvent, setSearch } = eventsSlice.actions;
+export const { setEvents, addEvent, removeEvent, editEvent, setSearch, setEventImages, addEventImages } = eventsSlice.actions;
 
 const selectId = (_:RootState, id: string) => id;
 
@@ -51,7 +62,7 @@ export const selectEventsLoading = (state: RootState) => state.events.loading;
 export const selectEventById = (state: RootState, eventId: string) => state.events.events.find(event => event.id === eventId);
 export const selectEventImagesById = createSelector(
     [selectEventImages, selectId],
-    (images, eventId) => images.filter(image => image.parentId === eventId)
+    (images, eventId) => images[eventId]
 )
 
 export default eventsSlice.reducer;
