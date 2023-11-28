@@ -23,7 +23,7 @@ export default async function WeeklyDeals() {
     const endString = `${date.getDate()} ${month}`;
 
     return(
-        <section className='py-6 bg-primary'>
+        <section className='py-12 bg-primary'>
             <div className='p-4 w-main max-w-main mx-auto bg-light rounded-lg'>
                 <Carousel 
                     items={deals.map(deal => ({
