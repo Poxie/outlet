@@ -69,6 +69,17 @@ export default function EditEvent({ params: { eventId } }: {
         setEventImages(prevImages);
     }, [prevImages, isCreatingEvent]);
 
+    const hasInfodiff = () => Object.keys(getInfoDiff()).length > 0;
+    const getInfoDiff = () => {
+        if(!event) return {};
+
+        const changes: {[prop: string]: Event[keyof Event]} = {};
+        Object.entries(eventInfo).forEach(([prop, val]) => {
+            const key = prop as keyof Event;
+            if(event[key] !== val) changes[key] = val;
+        });
+        return changes;
+    }
     const hasImageDiff = () => {
         const { addedImages, removedImages } = getImageDiff();
         if(!addedImages.length && !removedImages.length) return false;
@@ -125,13 +136,7 @@ export default function EditEvent({ params: { eventId } }: {
             dispatch(addEvent(createdEvent));
             router.replace('/admin/events');
         } else {
-            const changes: {[prop: string]: Event[keyof Event]} = {};
-            Object.entries(eventInfo).forEach(([prop, val]) => {
-                const key = prop as keyof Event;
-                if(event[key] !== val) changes[key] = val;
-            });
-
-            const hasInfoChanges = Object.keys(changes).length;
+            const hasInfoChanges = hasInfodiff();
             const hasImageChanges = hasImageDiff();
 
             if(!hasInfoChanges && !hasImageChanges) {
@@ -141,7 +146,7 @@ export default function EditEvent({ params: { eventId } }: {
 
             setLoading(true);
             if(hasInfoChanges) {
-                const updatedEvent = await patch(`/events/${eventInfo.id}`, changes);
+                const updatedEvent = await patch(`/events/${eventInfo.id}`, getInfoDiff());
                 dispatch(editEvent({ eventId, changes: updatedEvent }));
             }
             if(hasImageChanges) {
@@ -206,6 +211,7 @@ export default function EditEvent({ params: { eventId } }: {
         })
     }
 
+    const hasChanges = hasInfodiff() || hasImageDiff();
     return(
         <main className="my-12 w-main max-w-main mx-auto">
             <AdminTabs />
@@ -217,6 +223,11 @@ export default function EditEvent({ params: { eventId } }: {
                         !isCreatingEvent ? `Event: ${event.title}` : 'Create event'
                     )}
                     backPath={'/admin/events'}
+                    options={hasChanges ? (
+                        <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">
+                            You have unsaved changes.
+                        </span>
+                    ) : undefined}
                 />
                 {feedback && (
                     <span className={twMerge(
