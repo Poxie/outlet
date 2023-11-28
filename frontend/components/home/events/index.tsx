@@ -12,7 +12,7 @@ export default async function Events() {
     const events = await getEvents();
     return(
         <section className="py-12 w-main max-w-main mx-auto">
-            <ul className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+            <ul className="grid sm:grid-cols-2 md:grid-cols-3 bg-light rounded-lg overflow-hidden">
                 {events.map(event => (
                     <EventCard {...event} key={event.id} />
                 ))}

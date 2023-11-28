@@ -6,7 +6,7 @@ import { getEventImage } from "@/utils";
 
 export const EventCard: React.FC<Event> = ({ id, title, description, image, timestamp }) => {
     return(
-        <li className="p-4 flex flex-col bg-light rounded-lg">
+        <li className="p-6 flex flex-col border-[0.5px] border-light-secondary hover:bg-light-secondary/40 transition-colors">
             <Image 
                 className="w-full rounded-md aspect-[5/3] object-cover"
                 src={getEventImage(id, image, timestamp)}
@@ -18,7 +18,7 @@ export const EventCard: React.FC<Event> = ({ id, title, description, image, time
                 <span className="text-lg font-semibold">
                     {title}
                 </span>
-                <span className="text-sm mt-1 text-secondary">
+                <span className="text-sm mt-1 text-secondary line-clamp-4">
                     {description}
                 </span>
                 <div className="flex-1 flex items-end">
