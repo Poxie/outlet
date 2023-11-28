@@ -60,7 +60,7 @@ export default function EditWeeklyDeal({ params: { date } }: {
                     }
                 />
                 {deals ? (
-                    <div className="p-4 grid grid-cols-6 gap-1">
+                    <div className="p-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-1">
                         {deals?.map(deal => (
                             <div 
                                 className="group relative aspect-square overflow-hidden rounded-md"
