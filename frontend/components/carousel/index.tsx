@@ -1,8 +1,8 @@
 "use client";
-import { useState } from 'react';
+import { useScreenSize } from '@/hooks/useScreenSize';
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import CarouselNavButton from "./CarouselNavButton";
-import { useScreenSize } from '@/hooks/useScreenSize';
 
 export default function Carousel({ items, itemsPerPage }: {
     items: { id: string, image: string }[];
@@ -16,6 +16,11 @@ export default function Carousel({ items, itemsPerPage }: {
 
     const [index, setIndex] = useState(0);
     const [translate, setTranslate] = useState(0);
+
+    useEffect(() => {
+        setIndex(0);
+        setTranslate(0);
+    }, [columnCount]);
 
     const next = () => {
         setIndex(prev => prev + 1);
