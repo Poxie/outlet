@@ -42,7 +42,7 @@ export default function EventsTable() {
                 </table>
             </div>
         ) : (
-            <span className="-mt-4 flex-1 flex items-center justify-center text-secondary/80">
+            <span className="py-24 flex-1 flex items-center justify-center text-secondary/80">
                 Loading events...
             </span>
         )
