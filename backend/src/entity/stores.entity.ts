@@ -27,5 +27,5 @@ export class Stores {
     sundays: string;
 
     @Column({ type: 'bigint' })
-    added_at: string;
+    addedAt: string;
 }

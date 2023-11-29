@@ -24,7 +24,7 @@ router.put('/stores', async (req, res, next) => {
 
     const newStore = myDataSource.getRepository(Stores).create({
         id,
-        added_at: Date.now().toString(),
+        addedAt: Date.now().toString(),
         ...props,
     });
     await myDataSource.getRepository(Stores).save(newStore);
