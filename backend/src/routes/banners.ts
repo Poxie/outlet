@@ -35,15 +35,35 @@ router.delete('/banners/:bannerId', async (req, res, next) => {
     res.send({});
 })
 router.patch('/banners/:bannerId', async (req, res, next) => {
-    const text = req.body.text;
-    if(!text) return next(new APIBadRequestError('Text is a required property.'));
+    if(typeof req.body.text === 'string' && !req.body.text) {
+        next(new APIBadRequestError('Text is required.'));
+        return;
+    }
+    if(req.body.active !== undefined && ![true, false].includes(req.body.active)) {
+        next(new APIBadRequestError('Active property must be a boolean.'));
+        return;
+    }
 
     const banner = await myDataSource.getRepository(Banners).findOneBy({ id: req.params.bannerId });
     if(!banner) return next(new APINotFoundError('Banner not found.'));
 
+    const changes: {[prop: string]: any} = {};
+    if(req.body.text !== undefined) changes.text = req.body.text;
+    if(req.body.active !== undefined) changes.active = req.body.active;
+
+    if(changes.active) {
+        const alreadyActiveBanner = await myDataSource.getRepository(Banners).findOneBy({ active: true });
+        if(alreadyActiveBanner) {
+            await myDataSource.getRepository(Banners).save({
+                ...alreadyActiveBanner,
+                active: false,
+            })
+        }
+    }
+
     const newBanner = await myDataSource.getRepository(Banners).save({
         ...banner,
-        text,
+        ...changes,
     })
 
     res.send(newBanner);
