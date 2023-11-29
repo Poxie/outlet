@@ -11,7 +11,7 @@ export default function Modal({ children }: {
             transition={{ duration: .2, ease: 'easeInOut' }}
             className="fixed z-30 top-0 left-0 w-full h-full flex justify-center items-center pointer-events-none"
         >
-            <div className="w-[600px] max-w-full max-h-full overflow-auto pointer-events-auto bg-light rounded-lg">
+            <div className="w-[600px] max-w-main max-h-full overflow-auto pointer-events-auto bg-light rounded-lg">
                 {children}
             </div>
         </motion.div>

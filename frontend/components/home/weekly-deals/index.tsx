@@ -47,6 +47,7 @@ export default async function WeeklyDeals() {
                     items={deals.map(deal => ({
                         id: deal.id,
                         image: getWeeklyDealImage(deal.id, deal.date),
+                        path: `/veckans-deal/${deal.id}`,
                     }))}
                     itemsPerPage={3}
                 />

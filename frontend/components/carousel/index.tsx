@@ -3,9 +3,10 @@ import { useScreenSize } from '@/hooks/useScreenSize';
 import { useState, useEffect } from 'react';
 import Image from "next/image";
 import CarouselNavButton from "./CarouselNavButton";
+import ExpandableImage from '../expandable-image';
 
 export default function Carousel({ items, itemsPerPage }: {
-    items: { id: string, image: string }[];
+    items: { id: string, image: string, path: string }[];
     itemsPerPage: number;
 }) {
     const screenSize = useScreenSize();
@@ -58,9 +59,10 @@ export default function Carousel({ items, itemsPerPage }: {
                                 key={item.id}
                                 className="min-w-[calc(100%/var(--column-count))] border-r-[8px] border-r-transparent"
                             >
-                                <Image 
+                                <ExpandableImage 
                                     alt=""
                                     className='rounded-md w-full'
+                                    path={item.path}
                                     src={item.image}
                                     height={400}
                                     width={400}
