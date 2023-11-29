@@ -40,5 +40,26 @@ router.delete('/stores/:storeId', async (req, res, next) => {
 
     res.send({});
 })
+router.patch('/stores/:storeId', async (req, res, next) => {
+    const store = await myDataSource.getRepository(Stores).findOneBy({ id: req.params.storeId });
+    if(!store) return next(new APINotFoundError('Store was not found.'));
+
+    const changes = {};
+    for(const prop of ALLOWED_STORE_PROPERTIES) {
+        if(!req.body[prop]) continue;
+        if(REQUIRED_STORE_PROPERTIES.includes(prop) && !req.body[prop]) {
+            return next(new APIBadRequestError(`${prop} is a required property.`));
+        }
+
+        changes[prop] = req.body[prop];
+    }
+
+    const newStore = await myDataSource.getRepository(Stores).save({
+        ...store,
+        ...changes,
+    })
+
+    res.send(newStore);
+})
 
 export default router;
