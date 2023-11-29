@@ -83,8 +83,8 @@ export default function Banners() {
                 />
                 {!loading ? (
                     <div>
-                        <div className="p-4 flex items-start gap-2 border-b-[1px] border-b-light-secondary text-c-primary">
-                            <MegaphoneIcon className="w-5 mt-[.06rem]" />
+                        <div className="p-4 flex items-start gap-2 border-b-[1px] border-b-light-secondary text-c-primary text-sm">
+                            <MegaphoneIcon className="w-5" />
                             <span>
                                 Active banner
                             </span>
@@ -100,8 +100,8 @@ export default function Banners() {
                                 No banners are currently active.
                             </span>
                         )}
-                        <div className="p-4 flex items-start gap-2 border-y-[1px] border-t-light-tertiary border-b-light-secondary text-secondary">
-                            <BannersIcon className="w-5" />
+                        <div className="p-4 flex items-start gap-2 border-y-[1px] border-t-light-tertiary border-b-light-secondary text-secondary text-sm">
+                            <BannersIcon className="w-5 -mt-0.5" />
                             <span>
                                 All banners
                             </span>
