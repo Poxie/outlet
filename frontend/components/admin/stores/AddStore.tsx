@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { addStore as _addStore, selectStoreById, updateStore } from "@/store/slices/stores";
 import { Store } from "../../../../types";
+import { InfoIcon } from "@/assets/icons/InfoIcon";
+import { ClockIcon } from "@/assets/icons/ClockIcon";
 
 const getDummyStore = () => ({
     name: '',
@@ -124,8 +126,9 @@ export default function AddStore({ params: { storeId } }: {
                 />
                 <div className="grid grid-cols-[1fr_1px_1fr]">
                     <div className="flex-1">
-                        <div className="p-4 flex border-b-[1px] border-b-light-secondary">
-                            <span className="text-sm text-secondary">
+                        <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
+                            <InfoIcon className="w-4 -mt-0.5" />
+                            <span className="text-sm">
                                 Store info
                             </span>
                         </div>
@@ -184,15 +187,16 @@ export default function AddStore({ params: { storeId } }: {
                     </div>
                     <div className="self-stretch bg-light-secondary" />
                     <div className="flex-1">
-                        <div className="p-4 flex border-b-[1px] border-b-light-secondary">
-                            <span className="text-sm text-secondary">
+                        <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
+                            <ClockIcon className="w-4" />
+                            <span className="text-sm">
                                 Store opening hours
                             </span>
                         </div>
                         <div className="p-4 grid gap-3">
                             <div className="grid gap-1">
                                 <span className="text-sm text-secondary">
-                                    Weekdays'
+                                    Weekdays&apos;
                                     {' '}
                                     <span className="text-c-primary">
                                         *
@@ -206,7 +210,7 @@ export default function AddStore({ params: { storeId } }: {
                             </div>
                             <div className="grid gap-1">
                                 <span className="text-sm text-secondary">
-                                    Saturdays'
+                                    Saturdays&apos;
                                     {' '}
                                     <span className="text-c-primary">
                                         *
@@ -220,7 +224,7 @@ export default function AddStore({ params: { storeId } }: {
                             </div>
                             <div className="grid gap-1">
                                 <span className="text-sm text-secondary">
-                                    Sundays'
+                                    Sundays&apos;
                                     {' '}
                                     <span className="text-c-primary">
                                         *

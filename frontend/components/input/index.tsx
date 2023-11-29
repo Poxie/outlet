@@ -35,4 +35,5 @@ const Input = forwardRef<HTMLInputElement, {
         )
     )
 });
+Input.displayName = 'Input';
 export default Input;

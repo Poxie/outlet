@@ -326,7 +326,7 @@ export default function EditEvent({ params: { eventId } }: {
                         <div className="p-4 pt-0">
                             <div className="grid grid-cols-6 gap-1.5 ">
                                 {eventImages.map(({ id }, key) => (
-                                    <div className="group relative">
+                                    <div className="group relative" key={key}>
                                         <Image 
                                             width={150}
                                             height={150}
