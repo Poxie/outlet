@@ -38,7 +38,7 @@ export default async function Stores() {
                             <span className="text-xl text-c-primary uppercase font-semibold">
                                 {store.name}
                             </span>
-                            <pre className="mt-0.5 font-[inherit]">
+                            <pre className="mt-0.5 font-[inherit] leading-5">
                                 {store.address}
                             </pre>
                             <span className="mt-3 mb-1 text-primary font-semibold text-sm">
