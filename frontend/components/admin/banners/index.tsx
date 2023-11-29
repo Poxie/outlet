@@ -89,37 +89,41 @@ export default function Banners() {
                                 Active banner
                             </span>
                         </div>
-                        {activeBanner ? (
-                            <BannerRow 
-                                {...activeBanner}
-                                toggleActivated={toggleActivated}
-                                deleteBanner={deleteBanner}
-                            />
-                        ) : (
-                            <span className="block text-sm p-4">
-                                No banners are currently active.
-                            </span>
-                        )}
+                        <ul>
+                            {activeBanner ? (
+                                <BannerRow 
+                                    {...activeBanner}
+                                    toggleActivated={toggleActivated}
+                                    deleteBanner={deleteBanner}
+                                />
+                            ) : (
+                                <span className="block text-sm p-4">
+                                    No banners are currently active.
+                                </span>
+                            )}
+                        </ul>
                         <div className="p-4 flex items-start gap-2 border-y-[1px] border-t-light-tertiary border-b-light-secondary text-secondary text-sm">
                             <BannersIcon className="w-5 -mt-0.5" />
                             <span>
                                 All banners
                             </span>
                         </div>
-                        {inactiveBanners.length > 0 ? (
-                            inactiveBanners.map(banner => (
-                                <BannerRow 
-                                    {...banner}
-                                    deleteBanner={deleteBanner}
-                                    toggleActivated={toggleActivated}
-                                    key={banner.id}
-                                />
-                            ))
-                        ) : (
-                            <span className="block text-sm p-4">
-                                No banners to show.
-                            </span>
-                        )}
+                        <ul>
+                            {inactiveBanners.length > 0 ? (
+                                inactiveBanners.map(banner => (
+                                    <BannerRow 
+                                        {...banner}
+                                        deleteBanner={deleteBanner}
+                                        toggleActivated={toggleActivated}
+                                        key={banner.id}
+                                    />
+                                ))
+                            ) : (
+                                <span className="block text-sm p-4">
+                                    No banners to show.
+                                </span>
+                            )}
+                        </ul>
                     </div>
                 ) : (
                     <span className="py-24 block text-center">
@@ -136,7 +140,7 @@ const BannerRow: React.FC<Banner & {
     toggleActivated: (bannerId: string) => void;
 }> = ({ id, text, active, deleteBanner, toggleActivated }) => {
     return(
-        <div className="p-4 flex justify-between items-center">
+        <li className="p-4 flex justify-between items-center border-b-[1px] border-b-light-secondary last-of-type:border-b-0">
             <span>
                 {text}
             </span>
@@ -169,6 +173,6 @@ const BannerRow: React.FC<Banner & {
                     <BinIcon className="w-4" />
                 </button>
             </div>
-        </div>
+        </li>
     )
 }
