@@ -26,8 +26,24 @@ export default function Banners() {
     const toggleActivated = async (bannerId: string) => {
         const isActivated = banners.find(banner => banner.id === bannerId)?.active;
 
-        const banner = await patch(`/banners/${bannerId}`, { active: !isActivated });
-        dispatch(updateBanner({ bannerId, changes: banner }));
+        const confirmFunction = async () => patch(`/banners/${bannerId}`, { active: !isActivated });
+        const onConfirm = () => dispatch(updateBanner({ bannerId, changes: { active: !isActivated } }));
+
+        setModal(
+            <ConfirmModal 
+                onConfirm={onConfirm}
+                confirmFunction={confirmFunction}
+                header={`Are you sure you want to ${isActivated ? 'deactivate' : 'activate'} this banner?`}
+                subHeader={isActivated ? (
+                    'Deactivating this banner will hide it from the site, but will keep it here in the banners panel. Don\'t worry, this can be undone.'
+                ) : (
+                    'Activating this banner will deactivate any currently active banner and show this banner instead. Don\'t worry, any currently active banner will be saved.'
+                )}
+                confirmLoadingText={isActivated ? 'Deactivating banner...' : 'Activating banner...'}
+                confirmText={isActivated ? 'Deactivate banner' : 'Activate banner'}
+                closeOnCancel
+            />
+        )
     }
     const deleteBanner = async (bannerId: string) => {
         const confirmFunction = async () => _delete(`/banners/${bannerId}`);
