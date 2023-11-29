@@ -21,8 +21,12 @@ const getEvent = async (eventId: string) => {
     }
 }
 
-export default async function Event({ params: { eventId } }: {
+export default async function Event({ 
+    params: { eventId },
+    searchParams: { imageId },
+}: {
     params: { eventId: string };
+    searchParams: { imageId?: string };
 }) {
     const { event, images } = await getEvent(eventId);
 
@@ -65,7 +69,8 @@ export default async function Event({ params: { eventId } }: {
                             <ExpandableImage 
                                 className="w-full object-cover rounded-md"
                                 src={getEventImage(event.id, image.id, event.timestamp)}
-                                path={`/events/${event.id}?image=${image.id}`}
+                                path={`/events/${event.id}?imageId=${image.id}`}
+                                defaultActive={image.id === imageId}
                                 width={150}
                                 height={150}
                                 alt=""
