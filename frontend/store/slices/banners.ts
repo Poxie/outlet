@@ -21,10 +21,13 @@ export const bannersSlice = createSlice({
         addBanner: (state, action) => {
             state.banners.unshift(action.payload);
         },
+        removeBanner: (state, action) => {
+            state.banners = state.banners.filter(banner => banner.id !== action.payload);
+        },
     }
 })
 
-export const { setBanners, addBanner } = bannersSlice.actions;
+export const { setBanners, addBanner, removeBanner } = bannersSlice.actions;
 
 export const selectBannersLoading = (state: RootState) => state.banners.loading;
 export const selectBanners = (state: RootState) => state.banners.banners;

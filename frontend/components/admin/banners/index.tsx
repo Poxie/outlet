@@ -2,12 +2,40 @@
 import Button from "@/components/button";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import { useAppSelector } from "@/store";
-import { selectBanners, selectBannersLoading } from "@/store/slices/banners";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { removeBanner, selectBanners, selectBannersLoading } from "@/store/slices/banners";
+import { EditIcon } from "@/assets/icons/EditIcon";
+import Link from "next/link";
+import { BinIcon } from "@/assets/icons/BinIcon";
+import { useAuth } from "@/contexts/auth";
+import ConfirmModal from "@/modals/confirm";
+import { useModal } from "@/contexts/modal";
 
 export default function Banners() {
+    const { _delete } = useAuth();
+    const { setModal } = useModal();
+
+    const dispatch = useAppDispatch();
+    
     const loading = useAppSelector(selectBannersLoading);
     const banners = useAppSelector(selectBanners);
+
+    const deleteBanner = async (bannerId: string) => {
+        const confirmFunction = async () => _delete(`/banners/${bannerId}`);
+        const onConfirm = () => dispatch(removeBanner(bannerId));
+
+        setModal(
+            <ConfirmModal 
+                onConfirm={onConfirm}
+                confirmFunction={confirmFunction}
+                header={'Are you sure you want to remove this banner?'}
+                subHeader={'Removing this banner will remove it permanently. This cannot be undone.'}
+                confirmLoadingText={'Removing banner...'}
+                confirmText={'Remove banner'}
+                closeOnCancel
+            />
+        )
+    }
 
     return(
         <main className="py-8 w-main max-w-main mx-auto">
@@ -29,10 +57,26 @@ export default function Banners() {
                     <div className="grid">
                         {banners.map(banner => (
                             <div 
-                                className="p-4"
+                                className="p-4 flex justify-between items-center"
                                 key={banner.id}
                             >
-                                {banner.text}
+                                <span>
+                                    {banner.text}
+                                </span>
+                                <div className="flex">
+                                    <Link 
+                                        href={`/admin/banners/${banner.id}`}
+                                        className="p-2 block rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                                    >
+                                        <EditIcon className="w-4" />
+                                    </Link>
+                                    <button 
+                                        className="p-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                                        onClick={() => deleteBanner(banner.id)}
+                                    >
+                                        <BinIcon className="w-4" />
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
