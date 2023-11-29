@@ -7,6 +7,10 @@ import { APINotFoundError } from '../errors/apiNotFoundError';
 
 const router = express.Router();
 
+router.get('/banner', async (req, res, next) => {
+    const banner = await myDataSource.getRepository(Banners).findOneBy({ active: true });
+    res.send(banner || {});
+})
 router.get('/banners', async (req, res, next) => {
     const banners = await myDataSource.getRepository(Banners).find();
     res.send(banners);
