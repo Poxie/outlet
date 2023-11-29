@@ -3,6 +3,7 @@ import React from "react";
 
 const AuthContext = React.createContext<null | {
     get: <T>(query: string) => Promise<T>;
+    put: <T>(query: string, body?: Record<string, any>) => Promise<T>;
     post: <T>(query: string, body?: Record<string, any>) => Promise<T>;
     patch: <T>(query: string, body?: Record<string, any>) => Promise<T>;
     _delete: <T>(query: string, body?: Record<string, any>) => Promise<T>;
@@ -17,7 +18,7 @@ export const useAuth = () => {
 export default function AuthProvider({ children }: {
     children: React.ReactNode;
 }) {
-    async function request<T>(method: 'GET' | 'POST' | 'PATCH' | 'DELETE', query: string, body?: Record<string, any>) {
+    async function request<T>(method: 'GET' | 'PUT' | 'POST' | 'PATCH' | 'DELETE', query: string, body?: Record<string, any>) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}${query}`, {
             method,
             body: method === 'GET' ? undefined : JSON.stringify(body),
@@ -31,6 +32,10 @@ export default function AuthProvider({ children }: {
 
     async function get<T>(query: string) {
         const data = await request('GET', query);
+        return data as T;
+    }
+    async function put<T>(query: string, body?: Record<string, any>) {
+        const data = await request('PUT', query, body);
         return data as T;
     }
     async function post<T>(query: string, body?: Record<string, any>) {
@@ -48,6 +53,7 @@ export default function AuthProvider({ children }: {
 
     const value = {
         get,
+        put,
         post,
         patch,
         _delete,

@@ -4,11 +4,17 @@ import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import { useState } from 'react';
 import Button from "@/components/button";
+import { twMerge } from "tailwind-merge";
+import { useAuth } from "@/contexts/auth";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_WEEKDAY_HOURS = '10:00 - 20:00';
 const DEFAULT_SATURDAY_HOURS = '10:00 - 18:00';
 const DEFAULT_SUNDAY_HOURS = '11:00 - 17:00';
 export default function AddStore() {
+    const { put } = useAuth();
+    const router = useRouter();
+
     const [storeInfo, setStoreInfo] = useState({
         name: '',
         address: '',
@@ -24,7 +30,35 @@ export default function AddStore() {
         type: 'success' | 'danger';
     }>(null);
 
+    const addStore = async () => {
+        const invalidProps = ['name', 'address'].filter(prop => !storeInfo[prop as keyof typeof storeInfo]);
+        if(invalidProps.length) {
+            const formatter = new Intl.ListFormat('default', { style: 'long', type: 'conjunction' });
+            const formattedString = formatter.format(invalidProps)
+            const firstLetterUppercase = formattedString.slice(0,1).toUpperCase() + formattedString.slice(1);
+            return setFeedback({
+                text: `${firstLetterUppercase} ${invalidProps.length > 1 ? 'are' : 'is'} required.`,
+                type: 'danger',
+            });
+            return;
+        }
+
+        const timesAreInvalid = ['weekdays', 'saturdays', 'sundays'].filter(prop => !storeInfo[prop as keyof typeof storeInfo]);
+        if(timesAreInvalid.length) {
+            return setFeedback({
+                text: `Store opening hours are required.`,
+                type: 'danger',
+            });
+            return;
+        }
+
+        setLoading(true);
+        const store = await put('/stores', storeInfo);
+        router.replace('/admin/stores');
+    }
+
     const updateProperty = (property: keyof typeof storeInfo, value: string) => {
+        setFeedback(null);
         setStoreInfo(prev => ({...prev, ...{
             [property]: value,
         }}))
@@ -108,30 +142,42 @@ export default function AddStore() {
                         <div className="p-4 grid gap-3">
                             <div className="grid gap-1">
                                 <span className="text-sm text-secondary">
-                                    Weekdays
+                                    Weekdays'
+                                    {' '}
+                                    <span className="text-c-primary">
+                                        *
+                                    </span>
                                 </span>
                                 <Input 
-                                    placeholder={'Weekdays opening hours'}
+                                    placeholder={'Weekdays\' opening hours'}
                                     onChange={text => updateProperty('weekdays', text)}
                                     value={storeInfo.weekdays}
                                 />
                             </div>
                             <div className="grid gap-1">
                                 <span className="text-sm text-secondary">
-                                    Saturdays
+                                    Saturdays'
+                                    {' '}
+                                    <span className="text-c-primary">
+                                        *
+                                    </span>
                                 </span>
                                 <Input 
-                                    placeholder={'Saturdays opening hours'}
+                                    placeholder={'Saturdays\' opening hours'}
                                     onChange={text => updateProperty('saturdays', text)}
                                     value={storeInfo.saturdays}
                                 />
                             </div>
                             <div className="grid gap-1">
                                 <span className="text-sm text-secondary">
-                                    Sundays
+                                    Sundays'
+                                    {' '}
+                                    <span className="text-c-primary">
+                                        *
+                                    </span>
                                 </span>
                                 <Input 
-                                    placeholder={'Sundays opening hours'}
+                                    placeholder={'Sundays\' opening hours'}
                                     onChange={text => updateProperty('sundays', text)}
                                     value={storeInfo.sundays}
                                 />
@@ -139,9 +185,21 @@ export default function AddStore() {
                         </div>
                     </div>
                 </div>
+                {feedback && (
+                    <span className={twMerge(
+                        "block mx-4 mb-4 p-3 rounded-md text-sm border-[1px]",
+                        feedback.type === 'danger' && 'bg-red-400/50 border-red-400',
+                        feedback.type === 'success' && 'bg-green-300/50 border-green-300',
+                    )}>
+                        {feedback.text}
+                    </span>
+                )}
                 <div className="p-4 bg-light-secondary flex justify-end">
-                    <Button>
-                        Add store
+                    <Button 
+                        onClick={addStore}
+                        disabled={loading}
+                    >
+                        {!loading ? 'Add store' : 'Adding store...'}
                     </Button>
                 </div>
             </div>
