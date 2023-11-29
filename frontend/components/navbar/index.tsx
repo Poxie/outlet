@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 
 const links = [
     { path: '/', text: 'Startsida' },
-    { path: 'Våra varuhus', text: 'Våra varuhus' },
+    { path: '/vara-varuhus', text: 'Våra varuhus' },
 ]
 export default function Navbar() {
     const currentPath = usePathname();
