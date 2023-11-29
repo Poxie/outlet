@@ -28,3 +28,8 @@ export type Store = {
     phoneNumber: string | undefined;
     email: string | undefined;
 }
+export type Banner = {
+    id: string;
+    text: string;
+    createdAt: string;
+}
