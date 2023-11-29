@@ -3,36 +3,60 @@ import Input from "@/components/input";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import Button from "@/components/button";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/store";
-import { addStore as _addStore } from "@/store/slices/stores";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { addStore as _addStore, selectStoreById, updateStore } from "@/store/slices/stores";
+import { Store } from "../../../../types";
+
+const getDummyStore = () => ({
+    name: '',
+    address: '',
+    phoneNumber: '', 
+    email: '',
+    weekdays: '',
+    saturdays: '',
+    sundays: '',
+})
+
+const compareStoreInfo = (prevStore: Partial<Store>, currentStore: Partial<Store>) => {
+    const changes: {[prop: string]: Store[keyof Store]} = {};
+    Object.entries(currentStore).forEach(([prop, val]) => {
+        const key = prop as keyof Store;
+        if(prevStore[key] !== val) changes[key] = val;
+    });
+    return changes;
+}
 
 const DEFAULT_WEEKDAY_HOURS = '10:00 - 20:00';
 const DEFAULT_SATURDAY_HOURS = '10:00 - 18:00';
 const DEFAULT_SUNDAY_HOURS = '11:00 - 17:00';
-export default function AddStore() {
-    const { put } = useAuth();
+export default function AddStore({ params: { storeId } }: {
+    params: { storeId: string };
+}) {
+    const { put, patch } = useAuth();
     const router = useRouter();
 
     const dispatch = useAppDispatch();
 
-    const [storeInfo, setStoreInfo] = useState({
-        name: '',
-        address: '',
-        phoneNumber: '', 
-        email: '',
-        weekdays: '',
-        saturdays: '',
-        sundays: '',
-    })
+    const prevStore = useAppSelector(state => selectStoreById(state, storeId));
+
+    const [storeInfo, setStoreInfo] = useState(prevStore || getDummyStore());
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState<null | {
         text: string;
         type: 'success' | 'danger';
     }>(null);
+
+    useEffect(() => {
+        if(!prevStore) return;
+        setStoreInfo(prevStore);
+    }, [prevStore]);
+
+    const isAddingStore = !prevStore;
+    const changes = compareStoreInfo(prevStore || getDummyStore(), storeInfo);
 
     const addStore = async () => {
         const invalidProps = ['name', 'address'].filter(prop => !storeInfo[prop as keyof typeof storeInfo]);
@@ -56,10 +80,31 @@ export default function AddStore() {
             return;
         }
 
-        setLoading(true);
-        const store = await put('/stores', storeInfo);
-        dispatch(_addStore(store));
-        router.replace('/admin/stores');
+        
+        if(isAddingStore) {
+            setLoading(true);
+            const store = await put('/stores', storeInfo);
+            dispatch(_addStore(store));
+            router.replace('/admin/stores');
+        } else {
+            if(!Object.keys(changes).length) {
+                setFeedback({
+                    text: 'No changes have been made.',
+                    type: 'danger',
+                })
+                return;
+            }
+
+            setLoading(true);
+
+            const store = await patch(`/stores/${storeId}`, changes);
+            dispatch(updateStore({ storeId, changes }));
+            setFeedback({
+                text: 'Store has been updated.',
+                type: 'success',
+            })
+            setLoading(false);
+        }
     }
 
     const updateProperty = (property: keyof typeof storeInfo, value: string) => {
@@ -75,7 +120,7 @@ export default function AddStore() {
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin/stores'}
-                    text={'Add store'}
+                    text={isAddingStore ? 'Add store' : `Edit store: ${prevStore.name}`}
                 />
                 <div className="grid grid-cols-[1fr_1px_1fr]">
                     <div className="flex-1">
@@ -204,7 +249,11 @@ export default function AddStore() {
                         onClick={addStore}
                         disabled={loading}
                     >
-                        {!loading ? 'Add store' : 'Adding store...'}
+                        {isAddingStore ? (
+                            !loading ? 'Add store' : 'Adding store...'
+                        ) : (
+                            !loading ? 'Update store' : 'Updating store...'
+                        )}
                     </Button>
                 </div>
             </div>
