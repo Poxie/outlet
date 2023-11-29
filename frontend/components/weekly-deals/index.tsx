@@ -50,7 +50,7 @@ export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
                             <ExpandableImage 
                                 className="w-full object-cover rounded-md"
                                 src={getWeeklyDealImage(deal.id, deal.date)}
-                                path={`/veckans-deal?dealId=${deal.id}`}
+                                path={`/veckans-deal?deal=${deal.id}`}
                                 defaultActive={deal.id === dealId}
                                 width={150}
                                 height={150}
