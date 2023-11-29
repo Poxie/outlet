@@ -3,6 +3,7 @@ import { myDataSource } from '../app-data-source';
 import { Stores } from '../entity/stores.entity';
 import { ALLOWED_STORE_PROPERTIES, REQUIRED_STORE_PROPERTIES } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
+import { APINotFoundError } from '../errors/apiNotFoundError';
 
 const router = express.Router();
 
@@ -30,6 +31,14 @@ router.put('/stores', async (req, res, next) => {
     await myDataSource.getRepository(Stores).save(newStore);
 
     res.send(newStore);
+})
+router.delete('/stores/:storeId', async (req, res, next) => {
+    const store = await myDataSource.getRepository(Stores).findOneBy({ id: req.params.storeId });
+    if(!store) return next(new APINotFoundError('Store was not found.'));
+
+    await myDataSource.getRepository(Stores).remove(store);
+
+    res.send({});
 })
 
 export default router;
