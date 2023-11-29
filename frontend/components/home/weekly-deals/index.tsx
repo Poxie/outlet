@@ -24,7 +24,7 @@ export default async function WeeklyDeals() {
     const endString = `${date.getDate()} ${month}`;
 
     return(
-        <section>
+        <section className="py-8 w-main max-w-main mx-auto">
             <div className="mb-2 p-2 flex items-center justify-between text-sm bg-light rounded-lg">
                 <div className="px-2 flex items-center gap-3">
                     <span className="text-xl font-semibold">
