@@ -16,11 +16,12 @@ import { ClockIcon } from "@/assets/icons/ClockIcon";
 const getDummyStore = () => ({
     name: '',
     address: '',
-    phoneNumber: '', 
-    email: '',
     weekdays: '',
     saturdays: '',
     sundays: '',
+    email: undefined,
+    phoneNumber: undefined, 
+    instagram: undefined,
 })
 
 const compareStoreInfo = (prevStore: Partial<Store>, currentStore: Partial<Store>) => {
@@ -181,6 +182,16 @@ export default function AddStore({ params: { storeId } }: {
                                     placeholder={'Store email'}
                                     onChange={text => updateProperty('email', text)}
                                     value={storeInfo.email}
+                                />
+                            </div>
+                            <div className="grid gap-1">
+                                <span className="text-sm text-secondary">
+                                    Store instagram
+                                </span>
+                                <Input 
+                                    placeholder={'Store instagram link'}
+                                    onChange={text => updateProperty('instagram', text)}
+                                    value={storeInfo.instagram}
                                 />
                             </div>
                         </div>

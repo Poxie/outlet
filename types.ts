@@ -27,6 +27,7 @@ export type Store = {
     addedAt: string;
     phoneNumber: string | undefined;
     email: string | undefined;
+    instagram: string | undefined;
 }
 export type Banner = {
     id: string;

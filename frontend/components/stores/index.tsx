@@ -1,3 +1,4 @@
+import { InstagramIcon } from "@/assets/icons/InstagramIcon";
 import { Store } from "../../../types";
 
 const getMapsURL = (query: string, zoom?: number) => (
@@ -34,7 +35,7 @@ export default async function Stores() {
                         className="sm:flex justify-between bg-light rounded-lg overflow-hidden"
                         key={store.id}
                     >
-                        <div className="p-6 flex flex-col">
+                        <div className="flex-1 p-6 flex flex-col">
                             <span className="text-xl text-c-primary uppercase font-semibold">
                                 {store.name}
                             </span>
@@ -53,20 +54,35 @@ export default async function Stores() {
                             <span className="text-sm text-secondary">
                                 Söndagar: {store.sundays}
                             </span>
-                            <span className="mt-3 block text-sm">
-                                Tel-nr: {store.phoneNumber || 'Saknas'}
-                            </span>
-                            <span className="text-sm text-secondary">
-                                {store.email ? (
+                            <div className="mt-3 flex items-end justify-between">
+                                <div>
+                                    <span className="block text-sm">
+                                        Tel-nr: {store.phoneNumber || 'Saknas'}
+                                    </span>
+                                    <span className="text-sm text-secondary">
+                                        {store.email ? (
+                                            <a
+                                                href={`mailto:${store.email}`}
+                                            >
+                                                Maila {store.name}
+                                            </a>
+                                        ) : (
+                                            'Mail saknas.'
+                                        )}
+                                    </span>
+                                </div>
+                                {store.instagram && (
                                     <a
-                                        href={`mailto:${store.email}`}
+                                        target="_blank"
+                                        className="p-2 -m-2 rounded-md hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                                        aria-label={`${store.name}s instagram`}
+                                        referrerPolicy="no-referrer"
+                                        href={store.instagram}
                                     >
-                                        Maila {store.name}
+                                        <InstagramIcon className="w-6 text-c-primary" />
                                     </a>
-                                ) : (
-                                    'Mail saknas.'
                                 )}
-                            </span>
+                            </div>
                         </div>
                         <iframe 
                             loading="lazy"
