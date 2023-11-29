@@ -70,7 +70,40 @@ export default function AddStore() {
                     </div>
                     <div className="self-stretch bg-light-secondary" />
                     <div className="flex-1">
-
+                        <div className="p-4 flex border-b-[1px] border-b-light-secondary">
+                            <span className="text-sm text-secondary">
+                                Store opening hours
+                            </span>
+                        </div>
+                        <div className="p-4 grid gap-3">
+                            <div className="grid gap-1">
+                                <span className="text-sm text-secondary">
+                                    Weekdays
+                                </span>
+                                <Input 
+                                    placeholder={'Weekdays opening hours'}
+                                    onChange={console.log}
+                                />
+                            </div>
+                            <div className="grid gap-1">
+                                <span className="text-sm text-secondary">
+                                    Saturdays
+                                </span>
+                                <Input 
+                                    placeholder={'Saturdays opening hours'}
+                                    onChange={console.log}
+                                />
+                            </div>
+                            <div className="grid gap-1">
+                                <span className="text-sm text-secondary">
+                                    Sundays
+                                </span>
+                                <Input 
+                                    placeholder={'Sundays opening hours'}
+                                    onChange={console.log}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
