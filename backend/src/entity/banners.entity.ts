@@ -8,6 +8,9 @@ export class Banners {
     @Column()
     text: string;
 
+    @Column({ default: false })
+    active: boolean;
+
     @Column({ type: 'bigint' })
     createdAt: string;
 }

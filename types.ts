@@ -32,4 +32,5 @@ export type Banner = {
     id: string;
     text: string;
     createdAt: string;
+    active: boolean;
 }

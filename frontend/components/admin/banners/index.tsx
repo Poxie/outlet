@@ -10,6 +10,8 @@ import { BinIcon } from "@/assets/icons/BinIcon";
 import { useAuth } from "@/contexts/auth";
 import ConfirmModal from "@/modals/confirm";
 import { useModal } from "@/contexts/modal";
+import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
+import { BannersIcon } from "@/assets/icons/BannersIcon";
 
 export default function Banners() {
     const { _delete } = useAuth();
@@ -37,6 +39,9 @@ export default function Banners() {
         )
     }
 
+    const activeBanner = banners.find(banner => banner.active);
+    const inactiveBanners = banners.filter(banner => !banner.active);
+
     return(
         <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
@@ -54,30 +59,35 @@ export default function Banners() {
                     }
                 />
                 {!loading ? (
-                    <div className="grid">
+                    <div>
+                        <div className="p-4 flex items-start gap-2 border-b-[1px] border-b-light-secondary text-c-primary">
+                            <MegaphoneIcon className="w-5 mt-[.06rem]" />
+                            <span>
+                                Active banner
+                            </span>
+                        </div>
+                        {activeBanner ? (
+                            <BannerRow 
+                                {...activeBanner}
+                                deleteBanner={deleteBanner}
+                            />
+                        ) : (
+                            <span className="block text-sm p-4">
+                                No banners are currently active.
+                            </span>
+                        )}
+                        <div className="p-4 flex items-start gap-2 border-y-[1px] border-t-light-tertiary border-b-light-secondary text-secondary">
+                            <BannersIcon className="w-5" />
+                            <span>
+                                All banners
+                            </span>
+                        </div>
                         {banners.map(banner => (
-                            <div 
-                                className="p-4 flex justify-between items-center"
+                            <BannerRow 
+                                {...banner}
+                                deleteBanner={deleteBanner}
                                 key={banner.id}
-                            >
-                                <span>
-                                    {banner.text}
-                                </span>
-                                <div className="flex">
-                                    <Link 
-                                        href={`/admin/banners/${banner.id}`}
-                                        className="p-2 block rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
-                                    >
-                                        <EditIcon className="w-4" />
-                                    </Link>
-                                    <button 
-                                        className="p-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
-                                        onClick={() => deleteBanner(banner.id)}
-                                    >
-                                        <BinIcon className="w-4" />
-                                    </button>
-                                </div>
-                            </div>
+                            />
                         ))}
                     </div>
                 ) : (
@@ -87,5 +97,33 @@ export default function Banners() {
                 )}
             </div>
         </main>
+    )
+}
+
+const BannerRow: React.FC<{
+    id: string;
+    text: string;
+    deleteBanner: (bannerId: string) => void;
+}> = ({ id, text, deleteBanner }) => {
+    return(
+        <div className="p-4 flex justify-between items-center">
+            <span>
+                {text}
+            </span>
+            <div className="flex">
+                <Link 
+                    href={`/admin/banners/${id}`}
+                    className="p-2 block rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                >
+                    <EditIcon className="w-4" />
+                </Link>
+                <button 
+                    className="p-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                    onClick={() => deleteBanner(id)}
+                >
+                    <BinIcon className="w-4" />
+                </button>
+            </div>
+        </div>
     )
 }
