@@ -1,6 +1,7 @@
-import { useModal } from "@/contexts/modal";
-import ImagePreviewModal from "@/modals/image-preview";
+"use client";
 import Image from "next/image";
+import ImagePreviewModal from "@/modals/image-preview";
+import { useModal } from "@/contexts/modal";
 import { twMerge } from "tailwind-merge";
 
 export default function ExpandableImage({ src, path, width, height, className, alt }: {

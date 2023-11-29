@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Event, Image as ImageType } from "../../../types";
 import { twMerge } from "tailwind-merge";
 import { getEventImage } from "@/utils";
+import ExpandableImage from "../expandable-image";
 
 const getEvent = async (eventId: string) => {
     const basePath = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${eventId}`;
@@ -61,9 +62,10 @@ export default async function Event({ params: { eventId } }: {
                         <li 
                             key={image.id}
                         >
-                            <Image 
+                            <ExpandableImage 
                                 className="w-full object-cover rounded-md"
                                 src={getEventImage(event.id, image.id, event.timestamp)}
+                                path={`/events/${event.id}?image=${image.id}`}
                                 width={150}
                                 height={150}
                                 alt=""
