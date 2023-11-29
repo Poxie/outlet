@@ -218,7 +218,7 @@ export default function EditEvent({ params: { eventId } }: {
 
     const hasChanges = hasInfodiff() || hasImageDiff();
     return(
-        <main className="my-12 w-main max-w-main mx-auto">
+        <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 

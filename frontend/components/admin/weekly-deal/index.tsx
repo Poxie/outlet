@@ -10,7 +10,7 @@ export default function WeeklyDeal() {
 
     const dates = Object.keys(deals);
     return(
-        <main className="my-12 w-main max-w-main mx-auto">
+        <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
             <div className="flex flex-col bg-light rounded-lg overflow-hidden">
                 <AdminHeader 

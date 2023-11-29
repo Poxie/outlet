@@ -31,7 +31,7 @@ export default async function Event({
     const { event, images } = await getEvent(eventId);
 
     return(
-        <div className="w-main max-w-main mx-auto py-6">
+        <div className="w-main max-w-main mx-auto py-8">
             <div className="[--padding:16px] relative p-[--padding] flex flex-col gap-3 rounded-lg bg-light sm:flex-row">
                 <Image 
                     className="w-full max-h-[200px] aspect-[1.7/1] rounded-md object-cover sm:w-60 sm:h-[unset]"

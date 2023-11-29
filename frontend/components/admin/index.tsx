@@ -20,8 +20,8 @@ export const adminLinks = [
 
 export default function Admin() {
     return(
-        <main className="py-12 w-[900px] max-w-main mx-auto">
-            <h1 className="text-light font-bold text-4xl text-center mb-4">
+        <main className="py-8 w-[900px] max-w-main mx-auto">
+            <h1 className="text-light font-bold text-4xl text-center mb-3">
                 Admin Panel
             </h1>
             <div className="bg-light p-4 rounded-lg">

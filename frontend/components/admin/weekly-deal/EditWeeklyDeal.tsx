@@ -44,7 +44,7 @@ export default function EditWeeklyDeal({ params: { date } }: {
     
     const timestamp = new Date(date.split('-').reverse().join('-')).getTime();
     return(
-        <main className="pt-12 w-main max-w-main mx-auto">
+        <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
