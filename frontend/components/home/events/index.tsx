@@ -11,7 +11,7 @@ const getEvents = async () => {
 export default async function Events() {
     const events = await getEvents();
     return(
-        <section className="py-8 w-main max-w-main mx-auto">
+        <section>
             <ul className="grid sm:grid-cols-2 lg:grid-cols-3 bg-light rounded-lg overflow-hidden">
                 {events.map(event => (
                     <EventCard {...event} key={event.id} />

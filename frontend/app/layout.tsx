@@ -6,6 +6,7 @@ import { ModalProvider } from '@/contexts/modal';
 import AuthProvider from '@/contexts/auth';
 import { PopoutProvider } from '@/contexts/popout';
 import StoreProvider from '@/store/StoreProvider';
+import Banner from '@/components/banner';
 
 const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           <AuthProvider>
             <PopoutProvider>
               <ModalProvider>
+                <Banner />
                 <Navbar />
                 {children}
               </ModalProvider>

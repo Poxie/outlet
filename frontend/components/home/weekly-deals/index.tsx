@@ -24,8 +24,8 @@ export default async function WeeklyDeals() {
     const endString = `${date.getDate()} ${month}`;
 
     return(
-        <section className='py-8 bg-primary'>
-            <div className="mb-2 p-2 w-main max-w-main mx-auto flex items-center justify-between text-sm bg-light rounded-lg">
+        <section>
+            <div className="mb-2 p-2 flex items-center justify-between text-sm bg-light rounded-lg">
                 <div className="px-2 flex items-center gap-3">
                     <span className="text-xl font-semibold">
                         Veckans deal
@@ -42,7 +42,7 @@ export default async function WeeklyDeals() {
                     <ArrowIcon className="-mr-0.5 w-4 rotate-90" />
                 </Link>
             </div>
-            <div className='p-4 w-main max-w-main mx-auto bg-light rounded-lg'>
+            <div className='p-4 bg-light rounded-lg'>
                 <Carousel 
                     items={deals.map(deal => ({
                         id: deal.id,
