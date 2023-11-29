@@ -158,7 +158,7 @@ const BannerRow: React.FC<Banner & {
                 )}
                 <Link 
                     href={`/admin/banners/${id}`}
-                    className="p-2 block rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                    className="ml-1 p-2 block rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                 >
                     <EditIcon className="w-4" />
                 </Link>
