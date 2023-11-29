@@ -12,14 +12,14 @@ export default async function Stores() {
     const stores = await getStores();
 
     return(
-        <main className="py-12 w-[850px] max-w-main mx-auto">
+        <main className="py-12 w-[800px] max-w-main mx-auto">
             <h1 className="mb-4 text-center text-4xl text-light-secondary font-semibold">
                 Här hittar ni oss.
             </h1>
             <iframe 
                 src={getMapsURL('Ahlens Outlet Sweden')}
                 referrerPolicy="no-referrer-when-downgrade"
-                className="w-full aspect-[1.7/1] rounded-lg bg-light"
+                className="w-full aspect-[1.8/1] rounded-lg bg-light"
             />
 
             <div className="py-4 relative text-sm text-light font-semibold after:bg-light after:h-[1px] after:w-full after:absolute after:left-0 after:top-2/4 after:-translate-2/4">
