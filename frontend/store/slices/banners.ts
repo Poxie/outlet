@@ -26,10 +26,15 @@ export const bannersSlice = createSlice({
         },
         updateBanner: (state, action) => {
             state.banners = state.banners.map(banner => {
-                if(banner.id !== action.payload.bannerId) return banner;
+                if(banner.id !== action.payload.bannerId) {
+                    return {
+                        ...banner,
+                        active: action.payload.changes.active ? false : banner.active,
+                    }
+                };
                 return {
                     ...banner,
-                    text: action.payload.text,
+                    ...action.payload.changes,
                 }
             })
         },

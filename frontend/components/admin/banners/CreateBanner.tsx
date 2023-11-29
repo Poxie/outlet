@@ -58,7 +58,7 @@ export default function CreateBanner({ params: { bannerId } }: {
             router.replace('/admin/banners');
         } else {
             const banner = await patch<Banner>(`/banners/${bannerId}`, { text: bannerText });
-            dispatch(updateBanner({ bannerId, text: bannerText }));
+            dispatch(updateBanner({ bannerId, changes: { text: bannerText } }));
             setLoading(false);
             setFeedback({
                 text: 'Banner has been updated.',

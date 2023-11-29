@@ -3,7 +3,7 @@ import Button from "@/components/button";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { removeBanner, selectBanners, selectBannersLoading } from "@/store/slices/banners";
+import { removeBanner, selectBanners, selectBannersLoading, updateBanner } from "@/store/slices/banners";
 import { EditIcon } from "@/assets/icons/EditIcon";
 import Link from "next/link";
 import { BinIcon } from "@/assets/icons/BinIcon";
@@ -12,9 +12,10 @@ import ConfirmModal from "@/modals/confirm";
 import { useModal } from "@/contexts/modal";
 import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
 import { BannersIcon } from "@/assets/icons/BannersIcon";
+import { Banner } from "../../../../types";
 
 export default function Banners() {
-    const { _delete } = useAuth();
+    const { _delete, patch } = useAuth();
     const { setModal } = useModal();
 
     const dispatch = useAppDispatch();
@@ -22,6 +23,12 @@ export default function Banners() {
     const loading = useAppSelector(selectBannersLoading);
     const banners = useAppSelector(selectBanners);
 
+    const toggleActivated = async (bannerId: string) => {
+        const isActivated = banners.find(banner => banner.id === bannerId)?.active;
+
+        const banner = await patch(`/banners/${bannerId}`, { active: !isActivated });
+        dispatch(updateBanner({ bannerId, changes: banner }));
+    }
     const deleteBanner = async (bannerId: string) => {
         const confirmFunction = async () => _delete(`/banners/${bannerId}`);
         const onConfirm = () => dispatch(removeBanner(bannerId));
@@ -69,6 +76,7 @@ export default function Banners() {
                         {activeBanner ? (
                             <BannerRow 
                                 {...activeBanner}
+                                toggleActivated={toggleActivated}
                                 deleteBanner={deleteBanner}
                             />
                         ) : (
@@ -82,13 +90,20 @@ export default function Banners() {
                                 All banners
                             </span>
                         </div>
-                        {banners.map(banner => (
-                            <BannerRow 
-                                {...banner}
-                                deleteBanner={deleteBanner}
-                                key={banner.id}
-                            />
-                        ))}
+                        {inactiveBanners.length > 0 ? (
+                            inactiveBanners.map(banner => (
+                                <BannerRow 
+                                    {...banner}
+                                    deleteBanner={deleteBanner}
+                                    toggleActivated={toggleActivated}
+                                    key={banner.id}
+                                />
+                            ))
+                        ) : (
+                            <span className="block text-sm p-4">
+                                No banners to show.
+                            </span>
+                        )}
                     </div>
                 ) : (
                     <span className="py-24 block text-center">
@@ -100,17 +115,31 @@ export default function Banners() {
     )
 }
 
-const BannerRow: React.FC<{
-    id: string;
-    text: string;
+const BannerRow: React.FC<Banner & {
     deleteBanner: (bannerId: string) => void;
-}> = ({ id, text, deleteBanner }) => {
+    toggleActivated: (bannerId: string) => void;
+}> = ({ id, text, active, deleteBanner, toggleActivated }) => {
     return(
         <div className="p-4 flex justify-between items-center">
             <span>
                 {text}
             </span>
             <div className="flex">
+                {active ? (
+                    <Button 
+                        className="py-2 px-2.5"
+                        onClick={() => toggleActivated(id)}
+                    >
+                        Deactivate banner
+                    </Button>
+                ) : (
+                    <button
+                        className="py-2 px-2.5 rounded border-[1px] border-c-primary text-c-primary hover:bg-primary/10 active:bg-primary/20 text-xs font-semibold transition-colors"
+                        onClick={() => toggleActivated(id)}
+                    >
+                        Activate banner
+                    </button>
+                )}
                 <Link 
                     href={`/admin/banners/${id}`}
                     className="p-2 block rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
