@@ -19,7 +19,7 @@ export default async function Stores() {
             <iframe 
                 src={getMapsURL('Ahlens Outlet Sweden')}
                 referrerPolicy="no-referrer-when-downgrade"
-                className="w-full aspect-[2/1] rounded-lg bg-light"
+                className="w-full aspect-[1.7/1] rounded-lg bg-light"
             />
 
             <div className="py-4 relative text-sm text-light font-semibold after:bg-light after:h-[1px] after:w-full after:absolute after:left-0 after:top-2/4 after:-translate-2/4">
@@ -31,7 +31,7 @@ export default async function Stores() {
             <ul className="grid gap-3">
                 {stores.map(store => (
                     <li 
-                        className="flex justify-between bg-light rounded-lg overflow-hidden"
+                        className="sm:flex justify-between bg-light rounded-lg overflow-hidden"
                         key={store.id}
                     >
                         <div className="p-6 flex flex-col">
@@ -72,7 +72,7 @@ export default async function Stores() {
                             loading="lazy"
                             src={getMapsURL(`Ahlens outlet ${store.name} ${store.address}`, 10)}
                             referrerPolicy="no-referrer-when-downgrade"
-                            className="w-2/4"
+                            className="w-full aspect-video sm:w-2/4 sm:aspect-[unset]"
                         />
                     </li>
                 ))}
