@@ -18,6 +18,9 @@ export class Stores {
     email?: string;
 
     @Column()
+    instagram?: string;
+
+    @Column()
     weekdays: string;
 
     @Column()
