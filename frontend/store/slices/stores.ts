@@ -21,10 +21,13 @@ export const storesSlice = createSlice({
         addStore: (state, action) => {
             state.stores = [...[action.payload], ...state.stores];
         },
+        removeStore: (state, action) => {
+            state.stores = state.stores.filter(store => store.id !== action.payload);
+        },
     }
 })
 
-export const { setStores, addStore } = storesSlice.actions;
+export const { setStores, addStore, removeStore } = storesSlice.actions;
 
 export const selectStoresLoading = (state: RootState) => state.stores.loading;
 export const selectStores = (state: RootState) => state.stores.stores;

@@ -3,14 +3,39 @@ import Button from "@/components/button";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import Link from "next/link";
-import { useAppSelector } from "@/store";
-import { selectStores, selectStoresLoading } from "@/store/slices/stores";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { selectStores, selectStoresLoading, removeStore as _removeStore } from "@/store/slices/stores";
 import { EditIcon } from "@/assets/icons/EditIcon";
 import { BinIcon } from "@/assets/icons/BinIcon";
+import { useAuth } from "@/contexts/auth";
+import { useModal } from "@/contexts/modal";
+import ConfirmModal from "@/modals/confirm";
 
 export default function Stores() {
+    const { _delete } = useAuth();
+    const { setModal } = useModal();
+
+    const dispatch = useAppDispatch();
+
     const loading = useAppSelector(selectStoresLoading);
     const stores = useAppSelector(selectStores);
+
+    const removeStore = async (storeId: string) => {
+        const confirmFunction = async () => _delete(`/stores/${storeId}`);
+        const onConfirm = () => dispatch(_removeStore(storeId));
+
+        setModal(
+            <ConfirmModal 
+                onConfirm={onConfirm}
+                confirmFunction={confirmFunction}
+                header={'Are you sure you want to remove this store?'}
+                subHeader={'Removing this store will remove it permanently. This cannot be undone.'}
+                confirmLoadingText={'Removing store...'}
+                confirmText={'Remove store'}
+                closeOnCancel
+            />
+        )
+    }
 
     return(
         <main className="py-8 w-main max-w-main mx-auto">
@@ -49,7 +74,10 @@ export default function Stores() {
                                     >
                                         <EditIcon className="w-4" />
                                     </Link>
-                                    <button className="p-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors">
+                                    <button 
+                                        className="p-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                                        onClick={() => removeStore(store.id)}
+                                    >
                                         <BinIcon className="w-4" />
                                     </button>
                                 </div>
