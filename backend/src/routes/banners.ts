@@ -34,5 +34,19 @@ router.delete('/banners/:bannerId', async (req, res, next) => {
 
     res.send({});
 })
+router.patch('/banners/:bannerId', async (req, res, next) => {
+    const text = req.body.text;
+    if(!text) return next(new APIBadRequestError('Text is a required property.'));
+
+    const banner = await myDataSource.getRepository(Banners).findOneBy({ id: req.params.bannerId });
+    if(!banner) return next(new APINotFoundError('Banner not found.'));
+
+    const newBanner = await myDataSource.getRepository(Banners).save({
+        ...banner,
+        text,
+    })
+
+    res.send(newBanner);
+})
 
 export default router;
