@@ -17,3 +17,14 @@ export type Image = {
     parentId: string;
     timestamp: string;
 }
+export type Store = {
+    id: string;
+    name: string;
+    address: string;
+    weekdays: string;
+    saturdays: string;
+    sundays: string;
+    addedAt: string;
+    phoneNumber: string | undefined;
+    email: string | undefined;
+}

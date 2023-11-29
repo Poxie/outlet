@@ -2,11 +2,13 @@
 import Input from "@/components/input";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import { useState } from 'react';
 import Button from "@/components/button";
+import { useState } from 'react';
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/store";
+import { addStore as _addStore } from "@/store/slices/stores";
 
 const DEFAULT_WEEKDAY_HOURS = '10:00 - 20:00';
 const DEFAULT_SATURDAY_HOURS = '10:00 - 18:00';
@@ -14,6 +16,8 @@ const DEFAULT_SUNDAY_HOURS = '11:00 - 17:00';
 export default function AddStore() {
     const { put } = useAuth();
     const router = useRouter();
+
+    const dispatch = useAppDispatch();
 
     const [storeInfo, setStoreInfo] = useState({
         name: '',
@@ -54,6 +58,7 @@ export default function AddStore() {
 
         setLoading(true);
         const store = await put('/stores', storeInfo);
+        dispatch(_addStore(store));
         router.replace('/admin/stores');
     }
 
