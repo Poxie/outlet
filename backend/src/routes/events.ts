@@ -144,10 +144,16 @@ router.post('/events/:eventId/images', async (req, res, next) => {
     const images = req.body.images;
     if(!images) return next(new APINotFoundError('Images property is required.'));
 
-    const newImages: Images[] = [];
-    for(const image of images) {
-        const imageId = await createId('images');
+    const currentImageCount = await myDataSource.getRepository(Images)
+        .createQueryBuilder('images')
+        .where('images.parentId = :parentId', { parentId: event.id })
+        .getCount();
 
+    const newImages: Images[] = [];
+    for(let i = 0; i < images.length; i++) {
+        const image = images[i];
+        const imageId = await createId('images');
+    
         const date = new Date(Number(event.timestamp));
         const imagePath = `src/imgs/events/${date.getFullYear()}/${event.id}/${imageId}.png`;
         let imageResponse: string;
@@ -156,14 +162,15 @@ router.post('/events/:eventId/images', async (req, res, next) => {
         } catch(error) {
             console.error(`Unable to remove previous image: ${imagePath}.`);
         }
-
+    
         const createdImage = myDataSource.getRepository(Images).create({
             id: imageId,
             parentId: event.id,
             timestamp: event.timestamp,
+            position: currentImageCount + i,
         });
         const newImage = await myDataSource.getRepository(Images).save(createdImage);
-
+    
         newImages.push(newImage);
     }
 

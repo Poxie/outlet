@@ -8,6 +8,9 @@ export class Images {
     @Column()
     parentId: string;
 
+    @Column()
+    position: number;
+
     @Column({ type: 'bigint' })
     timestamp: string;
 }
