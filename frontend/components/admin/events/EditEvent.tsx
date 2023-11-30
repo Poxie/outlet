@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { BinIcon } from "@/assets/icons/BinIcon";
+import SortableImages from "@/components/sortable-images";
 
 const createDummyEvent: () => Event = () => ({
     id: Math.random().toString(),
@@ -175,28 +176,15 @@ export default function EditEvent({ params: { eventId } }: {
             [property]: value
         }}))
     }
-    const addImages = (files: FileList) => {
-        for(let i = 0; i < files.length; i++) {
-            const file = files[i];
-    
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
-    
-            fileReader.onload = () => {
-                if(typeof fileReader.result !== 'string') return;
-    
-                const newImage = {
-                    id: fileReader.result,
-                    timestamp: Date.now().toString(),
-                    parentId: eventId,
-                }
-                setEventImages(prev => [...[newImage], ...prev]);
-            }
-        }
+    const onImageAdd = (image: string) => {
+        const newImage: ImageType = {
+            id: image,
+            parentId: eventId,
+            timestamp: Date.now().toString(),
+        };
+        setEventImages(prev => [...prev, ...[newImage]]);
     }
-    const removeImage = (imageId: string) => {
-        setEventImages(prev => prev.filter(i => i.id !== imageId));
-    }
+    const onImageRemove = (imageId: string) => setEventImages(prev => prev.filter(i => i.id !== imageId));
     const reset = () => {
         if(!prevImages || !event) return;
         setEventImages(prevImages);
@@ -323,46 +311,15 @@ export default function EditEvent({ params: { eventId } }: {
                                 Event images
                             </span>
                         </div>
-                        <div className="p-4 pt-0">
-                            <div className="grid grid-cols-6 gap-1.5 ">
-                                {eventImages.map(({ id }, key) => (
-                                    <div className="group relative" key={key}>
-                                        <Image 
-                                            width={150}
-                                            height={150}
-                                            src={id.startsWith('data') ? id : getEventImage(eventId, id, eventInfo.timestamp)}
-                                            className="aspect-square w-full h-full object-cover rounded-md"
-                                            alt={`Event image ${key + 1}`}
-                                        />
-                                        <button 
-                                            className="shadow opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
-                                            aria-label="Delete image"
-                                            onClick={() => removeImage(id)}
-                                        >
-                                            <BinIcon className="w-5 text-primary" />
-                                        </button>
-                                    </div>
-                                ))}
-                                <button 
-                                    className="aspect-square rounded-md border-[1px] border-light-tertiary hover:bg-light-secondary/50 transition-colors"
-                                    onClick={() => eventImageInput.current?.click()}
-                                >
-                                    Add image
-                                </button>
-                                <input 
-                                    multiple
-                                    type="file"
-                                    className="hidden"
-                                    ref={eventImageInput}
-                                    onChange={e => {
-                                        const files = e.target.files;
-                                        if(!files || !eventImageInput.current) return;
-                                        addImages(files);
-                                        eventImageInput.current.value = '';
-                                    }}
-                                />
-                            </div>
-                        </div>
+                        <SortableImages 
+                            images={eventImages.map(image => ({
+                                id: image.id,
+                                src: image.id.startsWith('data') ? image.id : getEventImage(eventId, image.id, date.getTime().toString()),
+                            }))}
+                            onImageAdd={onImageAdd}
+                            onImageRemove={onImageRemove}
+                            className="p-4 pt-0"
+                        />
                     </div>
                     <div className="p-4 flex justify-end gap-2 bg-light-secondary">
                         {hasChanges && (
