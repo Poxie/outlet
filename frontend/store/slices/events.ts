@@ -67,7 +67,7 @@ export const selectEventsLoading = (state: RootState) => state.events.loading;
 export const selectEventById = (state: RootState, eventId: string) => state.events.events.find(event => event.id === eventId);
 export const selectEventImagesById = createSelector(
     [selectEventImages, selectId],
-    (images, eventId) => images[eventId]
+    (images, eventId) => images[eventId]?.toSorted((a,b) => a.position - b.position)
 )
 
 export default eventsSlice.reducer;

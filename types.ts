@@ -16,6 +16,7 @@ export type Image = {
     id: string;
     parentId: string;
     timestamp: string;
+    position: number;
 }
 export type Store = {
     id: string;

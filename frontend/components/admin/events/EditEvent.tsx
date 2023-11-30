@@ -181,6 +181,7 @@ export default function EditEvent({ params: { eventId } }: {
             id: image,
             parentId: eventId,
             timestamp: Date.now().toString(),
+            position: eventImages.length,
         };
         setEventImages(prev => [...prev, ...[newImage]]);
     }
@@ -312,9 +313,10 @@ export default function EditEvent({ params: { eventId } }: {
                             </span>
                         </div>
                         <SortableImages 
-                            images={eventImages.map(image => ({
-                                id: image.id,
-                                src: image.id.startsWith('data') ? image.id : getEventImage(eventId, image.id, date.getTime().toString()),
+                            images={eventImages.map(({ id, position }) => ({
+                                id: id,
+                                position,
+                                src: id.startsWith('data') ? id : getEventImage(eventId, id, date.getTime().toString()),
                             }))}
                             onImageAdd={onImageAdd}
                             onImageRemove={onImageRemove}
