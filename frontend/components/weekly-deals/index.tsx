@@ -48,7 +48,7 @@ export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
                     {deals.map(deal => (
                         <li key={deal.id}>
                             <ExpandableImage 
-                                className="w-full object-cover rounded-md"
+                                className="w-full aspect-square object-cover rounded-md"
                                 src={getWeeklyDealImage(deal.id, deal.date)}
                                 path={`/veckans-deal?deal=${deal.id}`}
                                 defaultActive={deal.id === dealId}
