@@ -11,7 +11,8 @@ import Button from '@/components/button';
 import { useAuth } from '@/contexts/auth';
 import Feedback from '@/components/feedback';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { editInspiration, selectInspirationById } from '@/store/slices/inspiration';
+import { addInspiration, editInspiration, selectInspirationById } from '@/store/slices/inspiration';
+import { useRouter } from 'next/navigation';
 
 const getDummyPost: () => BlogPost = () => ({
     id: Math.random().toString(),
@@ -24,6 +25,7 @@ const getDummyPost: () => BlogPost = () => ({
 export default function AddInspirationPost({ params: { inspirationId } }: {
     params: { inspirationId?: string };
 }) {
+    const router = useRouter();
     const { post, patch } = useAuth();
     const { close: closePopout, setPopout } = usePopout();
 
@@ -71,7 +73,10 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
         }
 
         if(isCreatingPost) {
-            await post('/inspiration', postInfo);
+            setLoading(true);
+            const blogPost = await post('/inspiration', postInfo);
+            dispatch(addInspiration(blogPost));
+            router.replace('/admin/inspiration');
         } else {
             const changes = getChanges();
             if(!Object.keys(changes).length) {
