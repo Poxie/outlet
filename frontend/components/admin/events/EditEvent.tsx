@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages, removeEventImages } from "@/store/slices/events";
+import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages, removeEventImages, updateEventImagesPosition } from "@/store/slices/events";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Event, Image as ImageType } from "../../../../types";
 import Image from "next/image";
@@ -82,8 +82,8 @@ export default function EditEvent({ params: { eventId } }: {
         return changes;
     }
     const hasImageDiff = () => {
-        const { addedImages, removedImages } = getImageDiff();
-        if(!addedImages.length && !removedImages.length) return false;
+        const { addedImages, removedImages, changedPositions } = getImageDiff();
+        if(!addedImages.length && !removedImages.length && !changedPositions.length) return false;
         return true;
     }
     const getImageDiff = () => {
@@ -95,11 +95,14 @@ export default function EditEvent({ params: { eventId } }: {
         const addedImages = eventImages.filter(image => !prevImagePaths.includes(image.id));
         const removedImages = previousImages.filter(image => !currentImagePatns.includes(image.id));
 
-        return { addedImages, removedImages };
+        const prevImagePositions = previousImages.map(image => `${image.id}-${image.position}`);
+        const changedPositions = eventImages.filter(image => `${image.id}-${image.position}` !== prevImagePositions[image.position])
+
+        return { addedImages, removedImages, changedPositions };
     }
     const updateImages = async (eventId: string) => {
-        const { addedImages, removedImages } = getImageDiff();
-        if(!addedImages.length && !removedImages.length) return;
+        const { addedImages, removedImages, changedPositions } = getImageDiff();
+        if(!addedImages.length && !removedImages.length && !changedPositions.length) return;
         
         if(addedImages.length) {
             const newImages = await post(`/events/${eventId}/images`, {
@@ -111,6 +114,11 @@ export default function EditEvent({ params: { eventId } }: {
             const ids = removedImages.map(i => i.id);
             await _delete('/images', { ids });
             dispatch(removeEventImages({ eventId, ids }));
+        }
+        if(changedPositions.length) {
+            const positions = changedPositions.map(image => ({ id: image.id, position: image.position }));
+            // await patch(`/event/${eventId}/images/positions`, positions);
+            dispatch(updateEventImagesPosition({ eventId, positions }));
         }
     }
     const onSubmit = async () => {
@@ -187,7 +195,18 @@ export default function EditEvent({ params: { eventId } }: {
     }, [])
     const onImageRemove = useCallback((imageId: string) => setEventImages(prev => prev.filter(i => i.id !== imageId)), [setEventImages]);
     const onOrderChange = useCallback((images: SortableImageProps[]) => {
-        console.log(images);
+        setEventImages(prev => {
+            const newImages = prev.map(image => {
+                const newImage = images.find(i => i.id === image.id);
+                if(!newImage) return image;
+
+                return {
+                    ...image,
+                    position: newImage.position,
+                }
+            })
+            return newImages.toSorted((a,b) => a.position - b.position);
+        })
     }, []);
 
     const reset = () => {
