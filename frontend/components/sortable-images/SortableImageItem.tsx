@@ -96,7 +96,8 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
         const top = e.clientY - mousePosOffsetY;
 
         container.current.style.left = `${left}px`;
-        container.current.style.top = `${top}px`;
+        // window.scrollY to counteract scroll offset
+        container.current.style.top = `${top + window.scrollY}px`;
 
         const pointX = left + containerWidth / 2;
         const pointY = top + containerHeight / 2;
