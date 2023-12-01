@@ -36,7 +36,7 @@ export default function Carousel({ items, itemsPerPage }: {
         setTranslate(prev => prev < 100 ? 0 : prev - 100);
     }
 
-    const atEnd = Math.floor((translate + 100) / columnPercentage) === items.length;
+    const atEnd = items.length < columnCount || Math.floor((translate + 100) / columnPercentage) === items.length;
     return(
         <div className="relative">
             {index > 0 && (
@@ -61,7 +61,7 @@ export default function Carousel({ items, itemsPerPage }: {
                             >
                                 <ExpandableImage 
                                     alt=""
-                                    className='rounded-md w-full'
+                                    className='rounded-md w-full aspect-square object-cover'
                                     path={item.path}
                                     src={item.image}
                                     height={400}
