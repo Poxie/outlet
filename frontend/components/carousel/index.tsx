@@ -57,7 +57,7 @@ export default function Carousel({ items, itemsPerPage }: {
                         return(
                             <li 
                                 key={item.id}
-                                className="min-w-[calc(100%/var(--column-count))] border-r-[8px] border-r-transparent"
+                                className="flex-1 min-w-[calc(100%/var(--column-count))] border-r-[8px] border-r-transparent"
                             >
                                 <ExpandableImage 
                                     alt=""
