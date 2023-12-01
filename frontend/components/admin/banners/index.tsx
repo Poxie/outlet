@@ -13,8 +13,10 @@ import { useModal } from "@/contexts/modal";
 import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
 import { BannersIcon } from "@/assets/icons/BannersIcon";
 import { Banner } from "../../../../types";
+import { useRouter } from "next/navigation";
 
 export default function Banners() {
+    const router = useRouter();
     const { _delete, patch } = useAuth();
     const { setModal } = useModal();
 
@@ -27,7 +29,10 @@ export default function Banners() {
         const isActivated = banners.find(banner => banner.id === bannerId)?.active;
 
         const confirmFunction = async () => patch(`/banners/${bannerId}`, { active: !isActivated });
-        const onConfirm = () => dispatch(updateBanner({ bannerId, changes: { active: !isActivated } }));
+        const onConfirm = () => {
+            dispatch(updateBanner({ bannerId, changes: { active: !isActivated } }));
+            router.refresh();
+        }
 
         setModal(
             <ConfirmModal 
@@ -47,7 +52,10 @@ export default function Banners() {
     }
     const deleteBanner = async (bannerId: string) => {
         const confirmFunction = async () => _delete(`/banners/${bannerId}`);
-        const onConfirm = () => dispatch(removeBanner(bannerId));
+        const onConfirm = () => {
+            dispatch(removeBanner(bannerId));
+            router.refresh();
+        }
 
         setModal(
             <ConfirmModal 
