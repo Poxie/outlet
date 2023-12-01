@@ -43,9 +43,7 @@ router.get('/weekly-deals/all', async (req, res) => {
     // Creating an object with empty arrays for each date
     const deals: {[date: string]: WeeklyDeal[]} = {};
     Array.from(Array(COUNT_DEAL_WEEKS_AHEAD)).forEach((_,key) => {
-        const date = new Date();
-        date.setDate(currentDealDate.getDate() + (key * DAYS_OF_THE_WEEK));
-
+        const date = new Date(currentDealDate.getTime() + (key * DAYS_OF_THE_WEEK * DAY_IN_MS));
         const dateString = dateToReadableString(date);
         deals[dateString] = [];
     })
