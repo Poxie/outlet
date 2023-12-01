@@ -125,7 +125,7 @@ export default function AddStore({ params: { storeId } }: {
                     backPath={'/admin/stores'}
                     text={isAddingStore ? 'Add store' : `Edit store: ${prevStore.name}`}
                 />
-                <div className="grid grid-cols-[1fr_1px_1fr]">
+                <div className="grid md:grid-cols-[1fr_1px_1fr]">
                     <div className="flex-1">
                         <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
                             <InfoIcon className="w-4 -mt-0.5" />
@@ -196,7 +196,7 @@ export default function AddStore({ params: { storeId } }: {
                             </div>
                         </div>
                     </div>
-                    <div className="self-stretch bg-light-secondary" />
+                    <div className="self-stretch min-h-[1px] bg-light-secondary" />
                     <div className="flex-1">
                         <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
                             <ClockIcon className="w-4" />
