@@ -37,3 +37,11 @@ export type Banner = {
     createdAt: string;
     active: boolean;
 }
+export type BlogPost = {
+    id: string;
+    title: string;
+    description: string;
+    timestamp: string;
+    images: Image[];
+    archived: boolean;
+}
