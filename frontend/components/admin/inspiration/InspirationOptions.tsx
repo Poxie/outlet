@@ -8,6 +8,8 @@ import ConfirmModal from "@/modals/confirm";
 import { Event } from "../../../../types";
 import Link from "next/link";
 import { UnarchiveIcon } from "@/assets/icons/UnarchiveIcon";
+import { useAppDispatch } from "@/store";
+import { removeInspiration } from "@/store/slices/inspiration";
 
 export default function InspirationOptions({ isArchived, postId }: {
     isArchived: boolean;
@@ -15,19 +17,21 @@ export default function InspirationOptions({ isArchived, postId }: {
 }) {
     const { _delete, patch } = useAuth();
     const { setModal } = useModal();
-    const { removeEvent, editEvent, archiveEvent, unarchiveEvent } = useEvents();
+    const { editEvent, archiveEvent, unarchiveEvent } = useEvents();
+
+    const dispatch = useAppDispatch();
 
     const openRemoveModal = () => {
-        const onConfirm = () => removeEvent(postId, false);
+        const onConfirm = () => dispatch(removeInspiration(postId));
         const confirmFunction = async () => {
             _delete<{}>(`/inspiration/${postId}`);
         }
         setModal(
             <ConfirmModal 
-                confirmFunction={confirmFunction}
-                header={'Are you sure you want to delete this event?'}
-                subHeader='All information associated with this event will be deleted and unretrievable. This action cannot be undone.'
                 onConfirm={onConfirm}
+                confirmFunction={confirmFunction}
+                header={'Are you sure you want to delete this post?'}
+                subHeader='All information associated with this post will be deleted and unretrievable. This action cannot be undone.'
                 closeOnCancel
             />
         )

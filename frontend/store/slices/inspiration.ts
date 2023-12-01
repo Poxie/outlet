@@ -29,11 +29,14 @@ export const inspirationSlice = createSlice({
                     ...action.payload.changes,
                 }
             })
-        }
+        },
+        removeInspiration: (state, action) => {
+            state.posts = state.posts.filter(post => post.id !== action.payload);
+        },
     }
 })
 
-export const { setInspiration, addInspiration, editInspiration } = inspirationSlice.actions;
+export const { setInspiration, addInspiration, editInspiration, removeInspiration } = inspirationSlice.actions;
 
 const selectId = (_:RootState, id: string) => id;
 
