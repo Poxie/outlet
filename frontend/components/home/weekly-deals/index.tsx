@@ -14,7 +14,7 @@ const getWeeklyDeals = async () => {
 const DAYS_OF_WEEK = 7;
 export default async function WeeklyDeals() {
     const deals = await getWeeklyDeals();
-    console.log(deals);
+    if(!deals.length) return null;
 
     const date = new Date();
     const daysUntilEnd = DAYS_OF_WEEK - date.getDay();
