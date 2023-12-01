@@ -117,7 +117,7 @@ export default function EditEvent({ params: { eventId } }: {
         }
         if(changedPositions.length) {
             const positions = changedPositions.map(image => ({ id: image.id, position: image.position }));
-            // await patch(`/event/${eventId}/images/positions`, positions);
+            await patch(`/events/${eventId}/images/positions`, { positions });
             dispatch(updateEventImagesPosition({ eventId, positions }));
         }
     }
