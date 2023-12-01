@@ -12,7 +12,8 @@ export default function CarouselNavButton({ onClick, className, disabled }: {
             disabled={disabled}
             onClick={!disabled ? onClick : undefined}
             className={twMerge(
-                "[--from-container:24px] flex items-center justify-center z-10 h-[15%] aspect-square absolute right-[calc(100%+var(--from-container))] top-2/4 -translate-y-2/4 -rotate-90 rounded-full bg-light text-c-primary",
+                "[--from-container:24px] flex items-center justify-center z-10 h-[15%] aspect-square absolute right-[calc(100%+var(--from-container))] top-2/4 -translate-y-2/4 -rotate-90 rounded-full bg-light active:bg-light-secondary text-c-primary transition-[background-color,opacity]",
+                disabled && 'opacity-0',
                 className,
             )}
         >

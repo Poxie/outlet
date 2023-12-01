@@ -39,12 +39,10 @@ export default function Carousel({ items, itemsPerPage }: {
     const atEnd = items.length < columnCount || Math.floor((translate + 100) / columnPercentage) === items.length;
     return(
         <div className="relative">
-            {index > 0 && (
-                <CarouselNavButton 
-                    onClick={back}
-                    disabled={index === 0}
-                />
-            )}
+            <CarouselNavButton 
+                onClick={back}
+                disabled={index === 0}
+            />
             <div className='overflow-hidden'>
                 <ul 
                     className="[--spacing:8px] flex transition-transform -mr-[--spacing]"
@@ -72,13 +70,11 @@ export default function Carousel({ items, itemsPerPage }: {
                     })}
                 </ul>
             </div>
-            {!atEnd && (
-                <CarouselNavButton
-                    onClick={next}
-                    disabled={atEnd}
-                    className="left-[calc(100%+var(--from-container))] rotate-90"
-                />
-            )}
+            <CarouselNavButton
+                onClick={next}
+                disabled={atEnd}
+                className="left-[calc(100%+var(--from-container))] rotate-90"
+            />
         </div>
     )
 }
