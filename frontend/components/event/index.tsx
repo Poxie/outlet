@@ -67,7 +67,7 @@ export default async function Event({
                             key={image.id}
                         >
                             <ExpandableImage 
-                                className="w-full object-cover rounded-md"
+                                className="w-full aspect-square object-cover rounded-md"
                                 src={getEventImage(event.id, image.id, event.timestamp)}
                                 path={`/events/${event.id}?imageId=${image.id}`}
                                 defaultActive={image.id === imageId}
