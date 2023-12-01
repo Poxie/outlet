@@ -49,7 +49,7 @@ export default function EditWeeklyDeal({ params: { date } }: {
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin/veckans-deal'}
-                    text={date}
+                    text={`Veckans deal: ${date}`}
                     options={
                         <Button 
                             className="text-xs px-3 py-2 mr-2 rounded"
