@@ -176,6 +176,37 @@ router.post('/events/:eventId/images', async (req, res, next) => {
 
     res.send(newImages);
 })
+router.patch('/events/:eventId/images/positions', async (req, res, next) => {
+    const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
+    if(!event) return next(new APINotFoundError('Event not found.'));
+
+    const positions = req.body.positions;
+    if(!positions) return next(new APIBadRequestError('Positions is required.'));
+    if(!Array.isArray(positions)) return next(new APIBadRequestError('Positions must be an array.'));
+
+    let prevPosition = null;
+    for(const item of positions) {
+        if(item.position === undefined || item.id === undefined) {
+            return next(new APIBadRequestError('Array items must have an id and a position.'));
+        }
+        if(!prevPosition) {
+            prevPosition = 0;
+            continue;
+        }
+        if(!item.position === prevPosition + 1) return next(new APIBadRequestError('Positions must be in a consecutive order.'));
+    }
+
+    for(const item of positions) {
+        await myDataSource.getRepository(Images).update({
+            id: item.id,
+        }, {
+            position: item.position,
+        })
+    }
+
+    const images = await myDataSource.getRepository(Images).findBy({ parentId: event.id });
+    res.send(images);
+})
 router.delete('/images', async (req, res, next) => {
     const ids = req.body.ids;
     if(!ids) return next(new APIBadRequestError("Ids property is required."));
