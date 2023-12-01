@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import { addEvent, editEvent, selectEventById, selectEventImagesById, setEventImages as _setEventImages, addEventImages, removeEventImages } from "@/store/slices/events";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Event, Image as ImageType } from "../../../../types";
 import Image from "next/image";
 import Input from "@/components/input";
@@ -16,7 +16,7 @@ import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { BinIcon } from "@/assets/icons/BinIcon";
-import SortableImages from "@/components/sortable-images";
+import SortableImages, { SortableImageProps } from "@/components/sortable-images";
 
 const createDummyEvent: () => Event = () => ({
     id: Math.random().toString(),
@@ -176,7 +176,7 @@ export default function EditEvent({ params: { eventId } }: {
             [property]: value
         }}))
     }
-    const onImageAdd = (image: string) => {
+    const onImageAdd = useCallback((image: string) => {
         const newImage: ImageType = {
             id: image,
             parentId: eventId,
@@ -184,8 +184,12 @@ export default function EditEvent({ params: { eventId } }: {
             position: eventImages.length,
         };
         setEventImages(prev => [...prev, ...[newImage]]);
-    }
-    const onImageRemove = (imageId: string) => setEventImages(prev => prev.filter(i => i.id !== imageId));
+    }, [])
+    const onImageRemove = useCallback((imageId: string) => setEventImages(prev => prev.filter(i => i.id !== imageId)), [setEventImages]);
+    const onOrderChange = useCallback((images: SortableImageProps[]) => {
+        console.log(images);
+    }, []);
+
     const reset = () => {
         if(!prevImages || !event) return;
         setEventImages(prevImages);
@@ -206,6 +210,11 @@ export default function EditEvent({ params: { eventId } }: {
     }
 
     const hasChanges = hasInfodiff() || hasImageDiff();
+    const images = useMemo(() => eventImages.map(({ id, position }) => ({
+        id,
+        position,
+        src: id.startsWith('data') ? id : getEventImage(eventId, id, date.getTime().toString()),
+    })), [eventImages])
     return(
         <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
@@ -313,13 +322,10 @@ export default function EditEvent({ params: { eventId } }: {
                             </span>
                         </div>
                         <SortableImages 
-                            images={eventImages.map(({ id, position }) => ({
-                                id: id,
-                                position,
-                                src: id.startsWith('data') ? id : getEventImage(eventId, id, date.getTime().toString()),
-                            }))}
+                            images={images}
                             onImageAdd={onImageAdd}
                             onImageRemove={onImageRemove}
+                            onOrderChange={onOrderChange}
                             className="p-4 pt-0"
                         />
                     </div>
