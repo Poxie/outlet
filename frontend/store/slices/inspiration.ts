@@ -21,14 +21,28 @@ export const inspirationSlice = createSlice({
         addInspiration: (state, action) => {
             state.posts.unshift(action.payload);
         },
+        editInspiration: (state, action) => {
+            state.posts = state.posts.map(post => {
+                if(post.id !== action.payload.inspirationId) return post;
+                return {
+                    ...post,
+                    ...action.payload.changes,
+                }
+            })
+        }
     }
 })
 
-export const { setInspiration, addInspiration } = inspirationSlice.actions;
+export const { setInspiration, addInspiration, editInspiration } = inspirationSlice.actions;
 
 const selectId = (_:RootState, id: string) => id;
 
 export const selectInspirationLoading = (state: RootState) => state.inspiration.loading;
 export const selectInspirationPosts = (state: RootState) => state.inspiration.posts;
+
+export const selectInspirationById = createSelector(
+    [selectInspirationPosts, selectId],
+    (posts, postId) => posts.find(post => post.id === postId)
+)
 
 export default inspirationSlice.reducer;

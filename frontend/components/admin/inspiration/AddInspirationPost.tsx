@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { BlogPost } from "../../../../types";
 import Input from "@/components/input";
 import AdminHeader from "../AdminHeader";
@@ -10,6 +10,8 @@ import { TimeSelector } from '@/components/time-selector';
 import Button from '@/components/button';
 import { useAuth } from '@/contexts/auth';
 import Feedback from '@/components/feedback';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { editInspiration, selectInspirationById } from '@/store/slices/inspiration';
 
 const getDummyPost: () => BlogPost = () => ({
     id: Math.random().toString(),
@@ -19,12 +21,18 @@ const getDummyPost: () => BlogPost = () => ({
     archived: false,
     images: [],
 })
-export default function AddInspirationPost() {
-    const { post } = useAuth();
+export default function AddInspirationPost({ params: { inspirationId } }: {
+    params: { inspirationId?: string };
+}) {
+    const { post, patch } = useAuth();
     const { close: closePopout, setPopout } = usePopout();
 
+    const dispatch = useAppDispatch();
+
+    const prevPost = useAppSelector(state => selectInspirationById(state, inspirationId || ''));
+
     const [loading, setLoading] = useState(false);
-    const [postInfo, setPostInfo] = useState(getDummyPost());
+    const [postInfo, setPostInfo] = useState(prevPost || getDummyPost());
     const [feedback, setFeedback] = useState<null | {
         text: string;
         type: 'danger' | 'success';
@@ -32,6 +40,23 @@ export default function AddInspirationPost() {
 
     const openPopoutButton = useRef<HTMLButtonElement>(null);
 
+    useEffect(() => {
+        if(!prevPost) return;
+        setPostInfo(prevPost);
+    }, [prevPost]);
+
+    const isCreatingPost = !prevPost;
+
+    const getChanges = () => {
+        if(!prevPost) return {};
+
+        const changes: {[prop: string]: BlogPost[keyof BlogPost]} = {};
+        Object.entries(postInfo).forEach(([prop, val]) => {
+            const key = prop as keyof BlogPost;
+            if(prevPost[key] !== val) changes[key] = val;
+        });
+        return changes;
+    }
     const onSubmit = async () => {
         const propsToCheck = ['title', 'description', 'timestamp'] as const;
         const invalidProps = propsToCheck.filter(prop => !postInfo[prop]);
@@ -45,7 +70,27 @@ export default function AddInspirationPost() {
             });
         }
 
-        await post('/inspiration', postInfo);
+        if(isCreatingPost) {
+            await post('/inspiration', postInfo);
+        } else {
+            const changes = getChanges();
+            if(!Object.keys(changes).length) {
+                setFeedback({
+                    text: 'No changes have been made.',
+                    type: 'danger',
+                })
+                return;
+            }
+
+            setLoading(true);
+            await patch(`/inspiration/${prevPost.id}`, changes);
+            setLoading(false);
+            setFeedback({
+                text: 'Post has been updated.',
+                type: 'success',
+            })
+            dispatch(editInspiration({ inspirationId, changes }));
+        }
     }
 
     const updateProperty = (property: keyof BlogPost, value: BlogPost[keyof BlogPost]) => setPostInfo(prev => ({
@@ -73,7 +118,11 @@ export default function AddInspirationPost() {
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin/inspiration'}
-                    text={'Inspiration: Create post'}
+                    text={isCreatingPost ? (
+                        'Inspiration: Create post'
+                    ) : (
+                        `Edit post: ${prevPost.title}`
+                    )}
                 />
                 <div className="p-4">
                     <span className="block text-sm mb-1">
@@ -120,7 +169,11 @@ export default function AddInspirationPost() {
                         onClick={onSubmit}
                         disabled={loading}
                     >
-                        Create post
+                        {isCreatingPost ? (
+                            !loading ? 'Create post' : 'Creating post...'
+                        ) : (
+                            !loading ? 'Update post' : 'Updating post...'
+                        )}
                     </Button>
                 </div>
             </div>
