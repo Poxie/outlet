@@ -28,6 +28,7 @@ export default function EventTableOptions({ isArchived, eventId }: {
                 header={'Are you sure you want to delete this event?'}
                 subHeader='All information associated with this event will be deleted and unretrievable. This action cannot be undone.'
                 onConfirm={onConfirm}
+                closeOnCancel
             />
         )
     }
