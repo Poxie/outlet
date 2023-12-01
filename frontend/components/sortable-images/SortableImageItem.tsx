@@ -118,7 +118,9 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
     }
 
     return(
-        <div>
+        <div className={twMerge(
+            dragging && 'bg-light-secondary/70 border-[1px] border-light-tertiary rounded-md'
+        )}>
             <div 
                 data-image-id={id}
                 data-position={position}
@@ -130,7 +132,7 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
             >
                 <div 
                     className={twMerge(
-                        "shadow opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 cursor-grab absolute top-2 left-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded",
+                        "shadow opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 cursor-grab absolute top-2 left-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded-md",
                         dragging && 'opacity-100',
                     )}
                     onMouseDown={onMouseDown}
