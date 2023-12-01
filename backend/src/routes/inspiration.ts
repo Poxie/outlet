@@ -37,7 +37,7 @@ router.patch('/inspiration/:inspirationId', async (req, res, next) => {
     
     const changes: {[key: string]: string} = {};
     for(const prop of ALLOWED_INSPIRATION_PROPERTIES) {
-        if(!req.body[prop]) continue;
+        if(!(prop in req.body)) continue;
         changes[prop] = req.body[prop];
     }
     if(!Object.keys(changes).length) return next(new APIBadRequestError('No properties to update were provided'));
