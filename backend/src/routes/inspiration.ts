@@ -48,5 +48,13 @@ router.patch('/inspiration/:inspirationId', async (req, res, next) => {
     
     res.send(newInspiration);
 })
+router.delete('/inspiration/:inspirationId', async (req, res, next) => {
+    const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId });
+    if(!inspiration) return next(new APINotFoundError('Post not found.'));
+
+    await myDataSource.getRepository(Inspiration).delete(inspiration);
+
+    res.send({});
+})
 
 export default router;
