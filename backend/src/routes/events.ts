@@ -134,7 +134,12 @@ router.get('/events/:eventId/images', async (req, res, next) => {
     const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
     if(!event) return next(new APINotFoundError('Event not found.'));
 
-    const images = await myDataSource.getRepository(Images).findBy({ parentId: event.id });
+    const images = await myDataSource.getRepository(Images)
+        .createQueryBuilder('images')
+        .where('images.parentId = :parentId', { parentId: event.id })
+        .orderBy('images.position')
+        .getMany();
+
     res.send(images);
 })
 router.post('/events/:eventId/images', async (req, res, next) => {
@@ -147,6 +152,7 @@ router.post('/events/:eventId/images', async (req, res, next) => {
     const currentImageCount = await myDataSource.getRepository(Images)
         .createQueryBuilder('images')
         .where('images.parentId = :parentId', { parentId: event.id })
+        .orderBy('images.positions', 'DESC')
         .getCount();
 
     const newImages: Images[] = [];
@@ -165,6 +171,7 @@ router.post('/events/:eventId/images', async (req, res, next) => {
     
         const createdImage = myDataSource.getRepository(Images).create({
             id: imageId,
+            image: imageId,
             parentId: event.id,
             timestamp: event.timestamp,
             position: currentImageCount + i,
@@ -194,6 +201,7 @@ router.patch('/events/:eventId/images/positions', async (req, res, next) => {
             continue;
         }
         if(!item.position === prevPosition + 1) return next(new APIBadRequestError('Positions must be in a consecutive order.'));
+        prevPosition++;
     }
 
     for(const item of positions) {
@@ -204,10 +212,15 @@ router.patch('/events/:eventId/images/positions', async (req, res, next) => {
         })
     }
 
-    const images = await myDataSource.getRepository(Images).findBy({ parentId: event.id });
+    const images = await myDataSource.getRepository(Images)
+        .createQueryBuilder('images')
+        .where('images.parentId = :parentId', { parentId: event.id })
+        .orderBy('images.position', 'DESC')
+        .getMany();
+        
     res.send(images);
 })
-router.delete('/images', async (req, res, next) => {
+router.delete('/events/:eventId/images', async (req, res, next) => {
     const ids = req.body.ids;
     if(!ids) return next(new APIBadRequestError("Ids property is required."));
 
@@ -224,23 +237,20 @@ router.delete('/images', async (req, res, next) => {
         }
 
         await myDataSource.getRepository(Images).delete({ id: image.id });
-    }
+        
+        // Updating other images' positions
+        const imagesToUpdate = await myDataSource.getRepository(Images)
+            .createQueryBuilder('images')
+            .where('images.position > :position', { position: image.position })
+            .getMany();
 
-    res.send({});
-})
-router.delete('/images/:imageId', async (req, res, next) => {
-    const image = await myDataSource.getRepository(Images).findOneBy({ id: req.params.imageId });
-    if(!image) return next(new APINotFoundError("Image not found."));
-    
-    const date = new Date(Number(image.timestamp));
-    const imagePath = `src/imgs/events/${date.getFullYear()}/${image.parentId}/${image.id}.png`;
-    try {
-        fs.rmSync(imagePath);
-    } catch(error) {
-        console.error(`Unable to remove image: ${imagePath}.`);
+        for(const imageToUpdate of imagesToUpdate) {
+            await myDataSource.getRepository(Images).save({
+                ...imageToUpdate,
+                position: imageToUpdate.position - 1,
+            })
+        }
     }
-
-    await myDataSource.getRepository(Images).delete({ id: image.id });
 
     res.send({});
 })

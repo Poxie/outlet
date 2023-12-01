@@ -6,6 +6,9 @@ export class Images {
     id: string;
 
     @Column()
+    image: string;
+
+    @Column()
     parentId: string;
 
     @Column()

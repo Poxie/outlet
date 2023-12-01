@@ -14,6 +14,7 @@ export type Event = {
 }
 export type Image = {
     id: string;
+    image: string;
     parentId: string;
     timestamp: string;
     position: number;
