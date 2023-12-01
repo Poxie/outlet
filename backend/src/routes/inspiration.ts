@@ -4,6 +4,7 @@ import { Inspiration } from '../entity/inspiration.entity';
 import { ALLOWED_INSPIRATION_PROPERTIES, REQUIRED_INSPIRATION_PROPERTIES } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
+import { APINotFoundError } from '../errors/apiNotFoundError';
 
 const router = express.Router();
 
@@ -29,6 +30,23 @@ router.post('/inspiration', async (req, res, next) => {
     await myDataSource.getRepository(Inspiration).save(post);
 
     res.send(post);
+})
+router.patch('/inspiration/:inspirationId', async (req, res, next) => {
+    const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId });
+    if(!inspiration) return next(new APINotFoundError('Post not found.'));
+    
+    const changes: {[key: string]: string} = {};
+    for(const prop of ALLOWED_INSPIRATION_PROPERTIES) {
+        changes[prop] = req.body[prop];
+    }
+    if(!Object.keys(changes).length) return next(new APIBadRequestError('No properties to update were provided'));
+
+    const newInspiration = await myDataSource.getRepository(Inspiration).save({
+        ...inspiration,
+        ...changes,
+    });
+    
+    res.send(newInspiration);
 })
 
 export default router;
