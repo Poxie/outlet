@@ -48,7 +48,6 @@ export default function EditEvent({ params: { eventId } }: {
         type: 'success' | 'danger';
     }>(null);
     
-    const eventImageInput = useRef<HTMLInputElement>(null);
     const headerImageInput = useRef<HTMLInputElement>(null);
     const openPopoutButton = useRef<HTMLButtonElement>(null);
     
@@ -98,27 +97,28 @@ export default function EditEvent({ params: { eventId } }: {
         const prevImagePositions = previousImages.map(image => `${image.id}-${image.position}`);
         const changedPositions = eventImages.filter(image => `${image.id}-${image.position}` !== prevImagePositions[image.position])
 
+        console.log(previousImages, eventImages);
         return { addedImages, removedImages, changedPositions };
     }
     const updateImages = async (eventId: string) => {
         const { addedImages, removedImages, changedPositions } = getImageDiff();
         if(!addedImages.length && !removedImages.length && !changedPositions.length) return;
         
+        if(removedImages.length) {
+            const ids = removedImages.map(i => i.id);
+            await _delete(`/events/${eventId}/images`, { ids });
+            dispatch(removeEventImages({ eventId, ids }));
+        }
         if(addedImages.length) {
             const newImages = await post(`/events/${eventId}/images`, {
-                images: addedImages.map(image => image.id)
+                images: addedImages.map(image => image.image)
             });
             dispatch(addEventImages({ eventId, images: newImages }));
         }
-        if(removedImages.length) {
-            const ids = removedImages.map(i => i.id);
-            await _delete('/images', { ids });
-            dispatch(removeEventImages({ eventId, ids }));
-        }
         if(changedPositions.length) {
             const positions = changedPositions.map(image => ({ id: image.id, position: image.position }));
-            await patch(`/events/${eventId}/images/positions`, { positions });
-            dispatch(updateEventImagesPosition({ eventId, positions }));
+            const newImages = await patch<ImageType[]>(`/events/${eventId}/images/positions`, { positions });
+            dispatch(_setEventImages({ eventId, images: newImages }));
         }
     }
     const onSubmit = async () => {
@@ -184,16 +184,32 @@ export default function EditEvent({ params: { eventId } }: {
             [property]: value
         }}))
     }
-    const onImageAdd = useCallback((image: string) => {
+    const onImageAdd = useCallback(({ image, position }: {
+        image: string;
+        position: number;
+    }) => {
         const newImage: ImageType = {
-            id: image,
+            id: Math.random().toString(),
+            image,
+            position,
             parentId: eventId,
             timestamp: Date.now().toString(),
-            position: eventImages.length,
         };
-        setEventImages(prev => [...prev, ...[newImage]]);
+        setEventImages(prev => [...prev, ...[newImage]].toSorted((a,b) => a.position - b.position));
     }, [])
-    const onImageRemove = useCallback((imageId: string) => setEventImages(prev => prev.filter(i => i.id !== imageId)), [setEventImages]);
+    const onImageRemove = useCallback((imageId: string) => {
+        setEventImages(prev => {
+            const imageToRemove = prev.find(image => image.id === imageId);
+            if(!imageToRemove) return prev;
+
+            return prev.filter(i => i.id !== imageId).map(image => {
+                if(image.position > imageToRemove.position) {
+                    return {...image, position: image.position - 1};
+                }
+                return image;
+            })
+        })
+    }, [setEventImages]);
     const onOrderChange = useCallback((images: SortableImageProps[]) => {
         setEventImages(prev => {
             const newImages = prev.map(image => {
@@ -229,10 +245,10 @@ export default function EditEvent({ params: { eventId } }: {
     }
 
     const hasChanges = hasInfodiff() || hasImageDiff();
-    const images = useMemo(() => eventImages.map(({ id, position }) => ({
+    const images = useMemo(() => eventImages.map(({ id, image, position }) => ({
         id,
         position,
-        src: id.startsWith('data') ? id : getEventImage(eventId, id, date.getTime().toString()),
+        src: image.startsWith('data') ? image : getEventImage(eventId, image, date.getTime().toString()),
     })), [eventImages])
     return(
         <main className="py-8 w-main max-w-main mx-auto">

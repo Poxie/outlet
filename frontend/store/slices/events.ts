@@ -51,7 +51,25 @@ export const eventsSlice = createSlice({
         removeEventImages: (state, action) => {
             const eventId = action.payload.eventId;
             const ids = action.payload.ids;
-            state.images[eventId] = state.images[eventId]?.filter(i => !ids.includes(i.id));
+            
+            let newImages = state.images[eventId];
+            if(!newImages) return;
+            
+            for(const id of ids) {
+                const imageToRemove = state.images[eventId]?.find(image => image.id === id);
+                if(!imageToRemove) continue;
+
+                newImages = newImages
+                    .filter(image => image.id !== id)
+                    .map(image => {
+                        if(image.position > imageToRemove.position) {
+                            return {...image, position: image.position - 1};
+                        }
+                        return image;
+                    })
+            }
+
+            state.images[eventId] = newImages;
         },
         updateEventImagesPosition: (state, action) => {
             const eventId = action.payload.eventId;

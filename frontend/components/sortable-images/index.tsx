@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { twMerge } from "tailwind-merge";
 import SortableImageItem from "./SortableImageItem";
 
+export const SORTABLE_IMAGE_TEMP_ID = 10;
 export type SortableImageProps = {
     id: string;
     src: string;
@@ -9,7 +10,7 @@ export type SortableImageProps = {
 }
 function SortableImages({ images, onImageAdd, onImageRemove, onOrderChange, className, addImageLabel='Add image' }: {
     images: SortableImageProps[];
-    onImageAdd: (image: string) => void;
+    onImageAdd: ({}: { image: string, position: number }) => void;
     onImageRemove: (image: string) => void;
     onOrderChange: (images: SortableImageProps[]) => void;
     addImageLabel?: string;
@@ -34,7 +35,7 @@ function SortableImages({ images, onImageAdd, onImageRemove, onOrderChange, clas
             fileReader.onload = () => {
                 const image = fileReader.result;
                 if(typeof image !== 'string') throw new Error('File reader read images incorrectly.');
-                onImageAdd(image);
+                onImageAdd({ image, position: sortableImages.length + i });
             }
         }
     }
