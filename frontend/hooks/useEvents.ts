@@ -31,8 +31,9 @@ export const useEvents = () => {
         dispatch(_editEvent({ eventId, changes }));
     }
     const archiveEvent = (eventId: string) => editEvent(eventId, { archived: true });
+    const unarchiveEvent = (eventId: string) => editEvent(eventId, { archived: false });
 
     const filteredEvents = useMemo(() => events.filter(event => event.title.toLowerCase().includes(search.toLowerCase())), [events, search]);
 
-    return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, search, setSearch };
+    return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, unarchiveEvent, search, setSearch };
 }

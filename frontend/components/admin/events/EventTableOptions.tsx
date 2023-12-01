@@ -7,6 +7,7 @@ import { useEvents } from "@/hooks/useEvents";
 import ConfirmModal from "@/modals/confirm";
 import { Event } from "../../../../types";
 import Link from "next/link";
+import { UnarchiveIcon } from "@/assets/icons/UnarchiveIcon";
 
 export default function EventTableOptions({ isArchived, eventId }: {
     isArchived: boolean;
@@ -14,7 +15,7 @@ export default function EventTableOptions({ isArchived, eventId }: {
 }) {
     const { _delete, patch } = useAuth();
     const { setModal } = useModal();
-    const { removeEvent, editEvent, archiveEvent } = useEvents();
+    const { removeEvent, editEvent, archiveEvent, unarchiveEvent } = useEvents();
 
     const openRemoveModal = () => {
         const onConfirm = () => removeEvent(eventId, false);
@@ -49,6 +50,25 @@ export default function EventTableOptions({ isArchived, eventId }: {
             />
         )
     }
+    const openUnarchiveModal = () => {
+        const onConfirm = (event: Event) => unarchiveEvent(event.id);
+        const confirmFunction = async () => {
+            const data = await patch<Event>(`/events/${eventId}`, { archived: false });
+            return data;
+        }
+
+        setModal(
+            <ConfirmModal 
+                header={'Are you sure you want to restore this event?'}
+                subHeader={`Restoring this event will make it visible to users visiting the site again, as long as it\'s not scheduled.`}
+                confirmFunction={confirmFunction}
+                onConfirm={onConfirm}
+                confirmText={'Restore event'}
+                confirmLoadingText={'Restoring event...'}
+                closeOnCancel
+            />
+        )
+    }
 
     return(
         <div className="flex">
@@ -59,13 +79,21 @@ export default function EventTableOptions({ isArchived, eventId }: {
             >
                 <EditIcon className="w-4" />
             </Link>
-            {!isArchived && (
+            {!isArchived ? (
                 <button 
                     className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
                     onClick={openArchiveModal}
                     aria-label="Edit event"
                 >
                     <ArchiveIcon className="w-4" />
+                </button>
+            ) : (
+                <button 
+                    className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                    onClick={openUnarchiveModal}
+                    aria-label="Edit event"
+                >
+                    <UnarchiveIcon className="w-4" />
                 </button>
             )}
             <button 
