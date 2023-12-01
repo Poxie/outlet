@@ -58,16 +58,18 @@ export default function Stores() {
                     <ul>
                         {stores.map(store => (
                             <li 
-                                className="px-4 py-2 grid items-center grid-cols-[1fr_4fr_1fr] border-b-[1px] border-b-light-secondary"
+                                className="px-4 py-2 flex items-center gap-3 border-b-[1px] border-b-light-secondary"
                                 key={store.id}
                             >
-                                <span className="uppercase text-c-primary font-semibold">
-                                    {store.name}
-                                </span>
-                                <span className="text-sm text-secondary">
-                                    {store.address}
-                                </span>
-                                <div className="flex justify-end">
+                                <div className="flex flex-col md:flex-row">
+                                    <span className="min-w-[200px] uppercase text-c-primary font-semibold">
+                                        {store.name}
+                                    </span>
+                                    <span className="text-sm text-secondary">
+                                        {store.address}
+                                    </span>
+                                </div>
+                                <div className="flex-1 flex justify-end">
                                     <Link 
                                         href={`/admin/stores/${store.id}`}
                                         className="p-2 block rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
