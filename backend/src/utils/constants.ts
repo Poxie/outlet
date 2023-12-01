@@ -8,4 +8,4 @@ export const ALLOWED_STORE_PROPERTIES = ['name', 'address', 'phoneNumber', 'emai
 export const REQUIRED_BANNER_PROPERTIES = ['text'];
 export const ALLOWED_BANNER_PROPERTIES = ['text', 'active'];
 export const REQUIRED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp'];
-export const ALLOWED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp'];
+export const ALLOWED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp', 'archived'];
