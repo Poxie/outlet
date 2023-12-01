@@ -290,7 +290,7 @@ export default function EditEvent({ params: { eventId } }: {
                 {(!eventsLoading && (!!prevImages || isCreatingEvent)) ? (
                     <>
                     <div>
-                        <div className="p-4 pb-0 flex gap-3">
+                        <div className="p-4 pb-0 flex gap-3 flex-col md:flex-row">
                             <div className="flex flex-col">
                                 <span className="block text-sm mb-1">
                                     Header image
