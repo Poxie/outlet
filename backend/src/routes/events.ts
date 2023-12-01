@@ -191,17 +191,19 @@ router.patch('/events/:eventId/images/positions', async (req, res, next) => {
     if(!positions) return next(new APIBadRequestError('Positions is required.'));
     if(!Array.isArray(positions)) return next(new APIBadRequestError('Positions must be an array.'));
 
-    let prevPosition = null;
-    for(const item of positions) {
+    let prevPositions: number[] = [];
+    for(const item of positions.sort((a,b) => a.position - b.position)) {
         if(item.position === undefined || item.id === undefined) {
             return next(new APIBadRequestError('Array items must have an id and a position.'));
         }
-        if(!prevPosition) {
-            prevPosition = 0;
+        if(!prevPositions.length) {
+            if(item.position !== 0) return next(new APIBadRequestError('First position must be 0.'));
+            prevPositions.push(item.position);
             continue;
         }
-        if(!item.position === prevPosition + 1) return next(new APIBadRequestError('Positions must be in a consecutive order.'));
-        prevPosition++;
+
+        if(item.position !== prevPositions.at(-1) + 1) return next(new APIBadRequestError('Positions must be in a consecutive order.'));
+        prevPositions.push(item.position)
     }
 
     for(const item of positions) {
