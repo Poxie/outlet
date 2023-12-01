@@ -5,6 +5,7 @@ import { DEAL_DAY_ID } from "./constants";
 import { Events } from "../entity/events.entity";
 import { Images } from "../entity/images.entity";
 import { Banners } from "../entity/banners.entity";
+import { Inspiration } from "../entity/inspiration.entity";
 
 export const dateToReadableString = (date: Date) => `${String(date.getDate()).padStart(2,'0')}-${String(date.getMonth() + 1).padStart(2,'0')}-${date.getFullYear()}`
 
@@ -19,8 +20,9 @@ const repositories = {
     events: Events,
     images: Images,
     banners: Banners,
+    inspiration: Inspiration,
 }
-export const createId = async (table: 'weekly_deal' | 'events' | 'images' | 'banners') => {
+export const createId = async (table: 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration') => {
     const length = 8;
     const opts = '1234567890';
     

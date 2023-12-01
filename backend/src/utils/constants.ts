@@ -7,3 +7,5 @@ export const REQUIRED_STORE_PROPERTIES = ['name', 'address', 'weekdays', 'saturd
 export const ALLOWED_STORE_PROPERTIES = ['name', 'address', 'phoneNumber', 'email', 'weekdays', 'saturdays', 'sundays', 'instagram'];
 export const REQUIRED_BANNER_PROPERTIES = ['text'];
 export const ALLOWED_BANNER_PROPERTIES = ['text', 'active'];
+export const REQUIRED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp'];
+export const ALLOWED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp'];
