@@ -7,6 +7,7 @@ import { twMerge } from "tailwind-merge";
 const links = [
     { path: '/', text: 'Startsida' },
     { path: '/vara-varuhus', text: 'Våra varuhus' },
+    { path: '/inspiration', text: 'Inspiration' },
 ]
 export default function Navbar() {
     const currentPath = usePathname();
@@ -23,7 +24,7 @@ export default function Navbar() {
                         height={50} 
                     />
                 </Link>
-                <ul className="flex gap-4">
+                <ul className="flex gap-6">
                     {links.map(link => (
                         <li key={link.path}>
                             <Link
