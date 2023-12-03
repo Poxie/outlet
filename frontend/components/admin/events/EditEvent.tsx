@@ -97,7 +97,6 @@ export default function EditEvent({ params: { eventId } }: {
         const prevImagePositions = previousImages.map(image => `${image.id}-${image.position}`);
         const changedPositions = eventImages.filter(image => `${image.id}-${image.position}` !== prevImagePositions[image.position])
 
-        console.log(previousImages, eventImages);
         return { addedImages, removedImages, changedPositions };
     }
     const updateImages = async (eventId: string) => {
@@ -195,6 +194,14 @@ export default function EditEvent({ params: { eventId } }: {
             [property]: value
         }}))
     }
+    const onChange = (images: SortableImageProps[]) => {
+        const addedImages = images.filter(image => image.src.startsWith('data'));
+
+        const currentIds = images.map(image => image.id);
+        const removedImages = eventImages.filter(image => !currentIds.includes(image.id));
+
+        console.log(addedImages, removedImages);
+    }
     const onImageAdd = useCallback(({ image, position }: {
         image: string;
         position: number;
@@ -256,9 +263,10 @@ export default function EditEvent({ params: { eventId } }: {
     }
 
     const hasChanges = hasInfodiff() || hasImageDiff();
-    const images = useMemo(() => eventImages.map(({ id, image, position }) => ({
+    const images = useMemo(() => eventImages.map(({ id, image, position, parentId }) => ({
         id,
         position,
+        parentId,
         src: image.startsWith('data') ? image : getEventImage(eventId, image, date.getTime().toString()),
     })), [eventImages])
     return(
@@ -368,10 +376,9 @@ export default function EditEvent({ params: { eventId } }: {
                             </span>
                         </div>
                         <SortableImages 
+                            onChange={onChange}
+                            parentId={eventId}
                             images={images}
-                            onImageAdd={onImageAdd}
-                            onImageRemove={onImageRemove}
-                            onOrderChange={onOrderChange}
                             className="p-4 pt-0"
                         />
                     </div>

@@ -1,18 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { twMerge } from "tailwind-merge";
 import SortableImageItem from "./SortableImageItem";
+import { Image } from '../../../types';
 
 export const SORTABLE_IMAGE_TEMP_ID = 10;
 export type SortableImageProps = {
     id: string;
     src: string;
     position: number;
+    parentId: string;
 }
-function SortableImages({ images, onImageAdd, onImageRemove, onOrderChange, className, addImageLabel='Add image' }: {
+function SortableImages({ parentId, images, className, onChange, addImageLabel='Add image' }: {
+    parentId: string;
     images: SortableImageProps[];
-    onImageAdd: ({}: { image: string, position: number }) => void;
-    onImageRemove: (image: string) => void;
-    onOrderChange: (images: SortableImageProps[]) => void;
+    onChange: (images: SortableImageProps[]) => void;
     addImageLabel?: string;
     className?: string;
 }) {
@@ -24,22 +25,35 @@ function SortableImages({ images, onImageAdd, onImageRemove, onOrderChange, clas
         if(!images) return;
         setSortableImages(images);
     }, [images]);
+    useEffect(() => {
+        if(sortableImages.toString() === images.toString()) return;
+        onChange(sortableImages);
+    }, [sortableImages]);
 
-    const handleAdd = (files: FileList) => {
+    const handleAdd = async (files: FileList) => {
         for(let i = 0; i < files.length; i++) {
-            const file = files[i];
+            await new Promise((res, rej) => {
+                const file = files[i];
 
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
 
-            fileReader.onload = () => {
-                const image = fileReader.result;
-                if(typeof image !== 'string') throw new Error('File reader read images incorrectly.');
-                onImageAdd({ image, position: sortableImages.length + i });
-            }
+                fileReader.onload = () => {
+                    const image = fileReader.result;
+                    if(typeof image !== 'string') throw new Error('File reader read images incorrectly.');
+
+                    const newImage: SortableImageProps = {
+                        id: Math.random().toString(),
+                        parentId,
+                        src: image,
+                        position: sortableImages.length,
+                    }
+                    setSortableImages(prev => prev.concat(newImage))
+                }
+            })
         }
     }
-    const handleRemove = (image: string) => onImageRemove(image);
+    const handleRemove = (id: string) => setSortableImages(prev => prev.filter(image => image.id !== id))
 
     const handleOrderChange: ({}: {
         hovered: { id: string, position: number };
@@ -86,11 +100,11 @@ function SortableImages({ images, onImageAdd, onImageRemove, onOrderChange, clas
             return newSortedImages.toSorted((a,b) => a.position - b.position);
         })
     }
-    const onMouseUp = () => onOrderChange(sortableImages);
+    const onMouseUp = () => {}
 
     return(
         <div className={twMerge(
-            "grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6",
+            "grid gap-2 -grid-cols-2 md:grid-cols-4 lg:grid-cols-6",
             className,
         )}>
             {sortableImages.map((image, key) => (
