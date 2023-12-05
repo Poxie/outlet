@@ -223,6 +223,9 @@ router.patch('/events/:eventId/images/positions', async (req, res, next) => {
     res.send(images);
 })
 router.delete('/events/:eventId/images', async (req, res, next) => {
+    const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
+    if(!event) return next(new APINotFoundError('Event not found.'));
+
     const ids = req.body.ids;
     if(!ids) return next(new APIBadRequestError("Ids property is required."));
 
@@ -243,7 +246,7 @@ router.delete('/events/:eventId/images', async (req, res, next) => {
         // Updating other images' positions
         const imagesToUpdate = await myDataSource.getRepository(Images)
             .createQueryBuilder('images')
-            .where('images.position > :position', { position: image.position })
+            .where('images.position > :position AND images.parentId = :parentId', { position: image.position, parentId: event.id })
             .getMany();
 
         for(const imageToUpdate of imagesToUpdate) {
