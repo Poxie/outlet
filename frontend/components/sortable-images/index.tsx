@@ -31,6 +31,7 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
     }, [sortableImages]);
 
     const handleAdd = async (files: FileList) => {
+        const addedImages: SortableImageProps[] = [];
         for(let i = 0; i < files.length; i++) {
             await new Promise((res, rej) => {
                 const file = files[i];
@@ -46,12 +47,14 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
                         id: Math.random().toString(),
                         parentId,
                         src: image,
-                        position: sortableImages.length,
+                        position: sortableImages.length + i,
                     }
-                    setSortableImages(prev => prev.concat(newImage))
+                    addedImages.push(newImage);
+                    res(newImage);
                 }
             })
         }
+        setSortableImages(prev => prev.concat(addedImages));
     }
     const handleRemove = (id: string) => setSortableImages(prev => prev.filter(image => image.id !== id))
 
@@ -100,7 +103,7 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
             return newSortedImages.toSorted((a,b) => a.position - b.position);
         })
     }
-    const onMouseUp = () => {}
+    const onMouseUp = () => onChange(sortableImages);
 
     return(
         <div className={twMerge(

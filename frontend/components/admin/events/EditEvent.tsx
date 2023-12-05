@@ -95,7 +95,7 @@ export default function EditEvent({ params: { eventId } }: {
         const removedImages = previousImages.filter(image => !currentImagePatns.includes(image.id));
 
         const prevImagePositions = previousImages.map(image => `${image.id}-${image.position}`);
-        const changedPositions = eventImages.filter(image => `${image.id}-${image.position}` !== prevImagePositions[image.position])
+        const changedPositions = eventImages.filter(image => `${image.id}-${image.position}` !== prevImagePositions[image.position]);
 
         return { addedImages, removedImages, changedPositions };
     }
@@ -195,53 +195,34 @@ export default function EditEvent({ params: { eventId } }: {
         }}))
     }
     const onChange = (images: SortableImageProps[]) => {
-        const addedImages = images.filter(image => image.src.startsWith('data'));
+        const newIds = images.map(i => i.id);
+        const currentIds = eventImages.map(i => i.id);
+        const addedImages: ImageType[] = images.filter(i => !currentIds.includes(i.id)).map(image => ({
+            ...image,
+            image: image.src,
+            timestamp: eventInfo.timestamp,
+        }));
+        const removedIds = currentIds.filter(id => !newIds.includes(id));
+        
+        setEventImages(prev => {
+            // Filter to remove removed images, concat to add new images, map to update position, sort to sort by position
+            const newImages = prev
+                .filter(i => !removedIds.includes(i.id))
+                .concat(addedImages)
+                .map(image => {
+                    const position = images.find(i => i.id === image.id)?.position;
+                    if(position === undefined) return image;
 
-        const currentIds = images.map(image => image.id);
-        const removedImages = eventImages.filter(image => !currentIds.includes(image.id));
+                    return {
+                        ...image,
+                        position,
+                    }
+                })
+                .toSorted((a,b) => a.position - b.position);
 
-        console.log(addedImages, removedImages);
+            return newImages;
+        })
     }
-    const onImageAdd = useCallback(({ image, position }: {
-        image: string;
-        position: number;
-    }) => {
-        const newImage: ImageType = {
-            id: Math.random().toString(),
-            image,
-            position,
-            parentId: eventId,
-            timestamp: Date.now().toString(),
-        };
-        setEventImages(prev => [...prev, ...[newImage]].toSorted((a,b) => a.position - b.position));
-    }, [])
-    const onImageRemove = useCallback((imageId: string) => {
-        setEventImages(prev => {
-            const imageToRemove = prev.find(image => image.id === imageId);
-            if(!imageToRemove) return prev;
-
-            return prev.filter(i => i.id !== imageId).map(image => {
-                if(image.position > imageToRemove.position) {
-                    return {...image, position: image.position - 1};
-                }
-                return image;
-            })
-        })
-    }, [setEventImages]);
-    const onOrderChange = useCallback((images: SortableImageProps[]) => {
-        setEventImages(prev => {
-            const newImages = prev.map(image => {
-                const newImage = images.find(i => i.id === image.id);
-                if(!newImage) return image;
-
-                return {
-                    ...image,
-                    position: newImage.position,
-                }
-            })
-            return newImages.toSorted((a,b) => a.position - b.position);
-        })
-    }, []);
 
     const reset = () => {
         if(!prevImages || !event) return;
