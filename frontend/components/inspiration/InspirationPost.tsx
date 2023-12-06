@@ -1,9 +1,11 @@
-import { getReadableDateFromTimestamp } from "@/utils";
+import { getBlogImage, getReadableDateFromTimestamp } from "@/utils";
 import { BlogPost } from "../../../types";
 import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
 import Link from "next/link";
+import Image from "next/image";
+import ExpandableImage from "../expandable-image";
 
-export default function InspirationPost({ id, title, description, timestamp }: BlogPost) {
+export default function InspirationPost({ id, title, description, timestamp, images }: BlogPost) {
     const date = new Date(Number(timestamp));
     const dateTime = getReadableDateFromTimestamp(timestamp);
 
@@ -31,6 +33,19 @@ export default function InspirationPost({ id, title, description, timestamp }: B
                 <p className="text-secondary w-[800px] max-w-full">
                     {description}
                 </p>
+                <div className="grid grid-cols-4 gap-2 mt-4">
+                    {images.map((image, key) => (
+                        <ExpandableImage
+                            alt={`Blog image ${key}`}
+                            className="w-full aspect-square rounded-lg"
+                            path={`/inspiration/${image.parentId}?photo=${image.id}`}
+                            src={getBlogImage(image.parentId, image.id)}
+                            width={250}
+                            height={250}
+                            key={image.id}
+                        />
+                    ))}
+                </div>
             </header>
         </article>
     )
