@@ -4,6 +4,8 @@ import { MegaphoneIcon } from "@/assets/icons/MegaphoneIcon";
 import Link from "next/link";
 import Image from "next/image";
 import ExpandableImage from "../expandable-image";
+import Button from "../button";
+import { DoubleArrowIcon } from "@/assets/icons/DoubleArrowIcon";
 
 export default function InspirationPost({ id, title, description, timestamp, images }: BlogPost) {
     const date = new Date(Number(timestamp));
@@ -45,6 +47,16 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                             key={image.id}
                         />
                     ))}
+                </div>
+                <div className="flex mt-2">
+                    <Button 
+                        className="-ml-2 py-2 px-2"
+                        icon={<DoubleArrowIcon className="w-4" />}
+                        href={`/inspiration/${id}`}
+                        type={'transparent'}
+                    >
+                        Läs mer
+                    </Button>
                 </div>
             </header>
         </article>
