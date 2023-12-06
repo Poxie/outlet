@@ -18,7 +18,7 @@ const getWeeklyDealByDate = async (date: Date) => {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     
-    const dateString = `${day}-${month}-${year}`;
+    const dateString = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
     const weeklyDeals = await myDataSource.getRepository(WeeklyDeal).findBy({
         date: dateString
     })
