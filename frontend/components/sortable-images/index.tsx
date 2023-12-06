@@ -4,20 +4,18 @@ import SortableImageItem from "./SortableImageItem";
 import { Image } from '../../../types';
 
 export const SORTABLE_IMAGE_TEMP_ID = 10;
-export type SortableImageProps = {
-    id: string;
+export type ImageWithSrc = Image & {
     src: string;
-    position: number;
-    parentId: string;
 }
 function SortableImages({ parentId, images, className, onChange, addImageLabel='Add image' }: {
     parentId: string;
-    images: SortableImageProps[];
-    onChange: (images: SortableImageProps[]) => void;
+    images: ImageWithSrc[];
+    onChange: (images: ImageWithSrc[]) => void;
     addImageLabel?: string;
     className?: string;
 }) {
     const [sortableImages, setSortableImages] = useState(images);
+    const [update, setUpdate] = useState(0);
 
     const addImageInput = useRef<HTMLInputElement>(null);
 
@@ -28,10 +26,10 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
     useEffect(() => {
         if(sortableImages.toString() === images.toString()) return;
         onChange(sortableImages);
-    }, [sortableImages]);
+    }, [update]);
 
     const handleAdd = async (files: FileList) => {
-        const addedImages: SortableImageProps[] = [];
+        const addedImages: ImageWithSrc[] = [];
         for(let i = 0; i < files.length; i++) {
             await new Promise((res, rej) => {
                 const file = files[i];
@@ -43,10 +41,12 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
                     const image = fileReader.result;
                     if(typeof image !== 'string') throw new Error('File reader read images incorrectly.');
 
-                    const newImage: SortableImageProps = {
+                    const newImage: ImageWithSrc = {
                         id: Math.random().toString(),
-                        parentId,
                         src: image,
+                        image,
+                        parentId,
+                        timestamp: Date.now().toString(),
                         position: sortableImages.length + i,
                     }
                     addedImages.push(newImage);
@@ -55,8 +55,26 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
             })
         }
         setSortableImages(prev => prev.concat(addedImages));
+        setUpdate(prev => prev + 1);
     }
-    const handleRemove = (id: string) => setSortableImages(prev => prev.filter(image => image.id !== id))
+    const handleRemove = (id: string) => {
+        setSortableImages(prev => {
+            const imageToRemove = prev.find(i => i.id === id);
+            if(!imageToRemove) {
+                console.error('Image not found.');
+                return prev;
+            }
+
+            return prev.filter(i => i.id !== id).map(image => {
+                if(image.position < imageToRemove?.position) return image;
+                return {
+                    ...image,
+                    position: image.position - 1,
+                }
+            })
+        });
+        setUpdate(prev => prev + 1);
+    }
 
     const handleOrderChange: ({}: {
         hovered: { id: string, position: number };
@@ -102,6 +120,7 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
 
             return newSortedImages.toSorted((a,b) => a.position - b.position);
         })
+        setUpdate(prev => prev + 1);
     }
     const onMouseUp = () => onChange(sortableImages);
 

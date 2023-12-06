@@ -7,7 +7,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Event, Image as ImageType } from "../../../../types";
 import Image from "next/image";
 import Input from "@/components/input";
-import { getEventImage } from "@/utils";
+import { getEventImage, getImageDiff } from "@/utils";
 import { TimeSelector } from "@/components/time-selector";
 import { usePopout } from "@/contexts/popout";
 import { ClockIcon } from "@/assets/icons/ClockIcon";
@@ -16,7 +16,7 @@ import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { BinIcon } from "@/assets/icons/BinIcon";
-import SortableImages, { SortableImageProps } from "@/components/sortable-images";
+import SortableImages, { ImageWithSrc } from "@/components/sortable-images";
 
 const createDummyEvent: () => Event = () => ({
     id: Math.random().toString(),
@@ -81,26 +81,17 @@ export default function EditEvent({ params: { eventId } }: {
         return changes;
     }
     const hasImageDiff = () => {
-        const { addedImages, removedImages, changedPositions } = getImageDiff();
-        if(!addedImages.length && !removedImages.length && !changedPositions.length) return false;
-        return true;
-    }
-    const getImageDiff = () => {
-        const previousImages = prevImages || [];
+        if(!prevImages) {
+            return eventImages.length > 0;
+        }
 
-        const prevImagePaths = previousImages.map(prev => prev.id);
-        const currentImagePatns = eventImages.map(prev => prev.id);
-
-        const addedImages = eventImages.filter(image => !prevImagePaths.includes(image.id));
-        const removedImages = previousImages.filter(image => !currentImagePatns.includes(image.id));
-
-        const prevImagePositions = previousImages.map(image => `${image.id}-${image.position}`);
-        const changedPositions = eventImages.filter(image => `${image.id}-${image.position}` !== prevImagePositions[image.position]);
-
-        return { addedImages, removedImages, changedPositions };
+        const { addedImages, removedImages, changedPositions } = getImageDiff(prevImages, eventImages);
+        return addedImages.length || removedImages.length || changedPositions.length;
     }
     const updateImages = async (eventId: string) => {
-        const { addedImages, removedImages, changedPositions } = getImageDiff();
+        if(!prevImages) return;
+
+        const { addedImages, removedImages, changedPositions } = getImageDiff(prevImages, eventImages);
         if(!addedImages.length && !removedImages.length && !changedPositions.length) return;
         
         if(removedImages.length) {
@@ -194,35 +185,7 @@ export default function EditEvent({ params: { eventId } }: {
             [property]: value
         }}))
     }
-    const onChange = (images: SortableImageProps[]) => {
-        const newIds = images.map(i => i.id);
-        const currentIds = eventImages.map(i => i.id);
-        const addedImages: ImageType[] = images.filter(i => !currentIds.includes(i.id)).map(image => ({
-            ...image,
-            image: image.src,
-            timestamp: eventInfo.timestamp,
-        }));
-        const removedIds = currentIds.filter(id => !newIds.includes(id));
-        
-        setEventImages(prev => {
-            // Filter to remove removed images, concat to add new images, map to update position, sort to sort by position
-            const newImages = prev
-                .filter(i => !removedIds.includes(i.id))
-                .concat(addedImages)
-                .map(image => {
-                    const position = images.find(i => i.id === image.id)?.position;
-                    if(position === undefined) return image;
-
-                    return {
-                        ...image,
-                        position,
-                    }
-                })
-                .toSorted((a,b) => a.position - b.position);
-
-            return newImages;
-        })
-    }
+    const onChange = setEventImages;
 
     const reset = () => {
         if(!prevImages || !event) return;
@@ -244,11 +207,9 @@ export default function EditEvent({ params: { eventId } }: {
     }
 
     const hasChanges = hasInfodiff() || hasImageDiff();
-    const images = useMemo(() => eventImages.map(({ id, image, position, parentId }) => ({
-        id,
-        position,
-        parentId,
-        src: image.startsWith('data') ? image : getEventImage(eventId, image, date.getTime().toString()),
+    const images = useMemo(() => eventImages.map(image => ({
+        ...image,
+        src: image.image.startsWith('data') ? image.image : getEventImage(eventId, image.id, date.getTime().toString()),
     })), [eventImages])
     return(
         <main className="py-8 w-main max-w-main mx-auto">

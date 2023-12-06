@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { useRef, useState, useEffect } from 'react';
-import { SortableImageProps } from ".";
+import { ImageWithSrc } from ".";
 import { BinIcon } from "@/assets/icons/BinIcon";
 import { HamIcon } from "@/assets/icons/HamIcon";
 import { twMerge } from "tailwind-merge";
+import { Image as ImageType } from "../../../types";
 
-export default function SortableImageItem({ id, src, position, onMouseUp: _onMouseUp, handleRemove, onOrderChange }: SortableImageProps & {
+export default function SortableImageItem({ id, src, position, onMouseUp: _onMouseUp, handleRemove, onOrderChange }: ImageWithSrc & {
     onMouseUp: () => void;
     handleRemove: (id: string) => void;
     onOrderChange: ({}: { hovered: {
