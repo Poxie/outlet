@@ -61,7 +61,7 @@ export default async function Event({
                 </div>
             </div>
             {images.length? (
-                <ul className="mt-3 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <ul className="mt-2 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {images.map(image => (
                         <li 
                             key={image.id}

@@ -44,7 +44,7 @@ export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
                 </div>
             </div>
             {deals.length? (
-                <ul className="mt-3 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <ul className="mt-2 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {deals.map(deal => (
                         <li key={deal.id}>
                             <ExpandableImage 
