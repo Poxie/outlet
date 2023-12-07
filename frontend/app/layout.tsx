@@ -1,12 +1,9 @@
+import './globals.css'
 import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
-import './globals.css'
 import Navbar from '@/components/navbar'
-import { ModalProvider } from '@/contexts/modal';
-import AuthProvider from '@/contexts/auth';
-import { PopoutProvider } from '@/contexts/popout';
-import StoreProvider from '@/store/StoreProvider';
 import Banner from '@/components/banner';
+import Providers from '@/contexts';
 
 const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
@@ -23,17 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <StoreProvider>
-          <AuthProvider>
-            <PopoutProvider>
-              <ModalProvider>
-                <Banner />
-                <Navbar />
-                {children}
-              </ModalProvider>
-            </PopoutProvider>
-          </AuthProvider>
-        </StoreProvider>
+        <Providers>
+          <Banner />
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   )
