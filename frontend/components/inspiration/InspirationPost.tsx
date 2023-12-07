@@ -28,10 +28,7 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                         {month} {date.getDate()}, {date.getFullYear()}
                     </span>
                 </time>
-                <h2 className={twMerge(
-                    "font-bold mb-2",
-                    active ? 'text-3xl' : 'text-2xl',
-                )}>
+                <h2 className="font-bold mb-2 text-3xl">
                     {!active ? (
                         <Link 
                             href={`/inspiration/${id}`}
