@@ -13,7 +13,7 @@ export default function Navbar() {
     const currentPath = usePathname();
 
     return(
-        <nav className="py-6 bg-secondary shadow-navbar">
+        <nav className="relative py-6 bg-secondary shadow-navbar">
             <div className="w-main max-w-main mx-auto flex items-center justify-between">
                 <Link href="/">
                     <Image 
