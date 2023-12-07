@@ -8,8 +8,9 @@ import Button from "../button";
 import { DoubleArrowIcon } from "@/assets/icons/DoubleArrowIcon";
 import { twMerge } from "tailwind-merge";
 
-export default function InspirationPost({ id, title, description, timestamp, images, active }: BlogPost & {
+export default function InspirationPost({ id, title, description, timestamp, images, active, activePhotoId }: BlogPost & {
     active?: boolean;
+    activePhotoId?: string;
 }) {
     const date = new Date(Number(timestamp));
     const dateTime = getReadableDateFromTimestamp(timestamp);
@@ -57,6 +58,7 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                         className="w-full aspect-square rounded-lg"
                         path={`/inspiration/${image.parentId}?photo=${image.id}`}
                         src={getBlogImage(image.parentId, image.id)}
+                        defaultActive={image.id === activePhotoId}
                         width={250}
                         height={250}
                         key={image.id}

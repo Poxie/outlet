@@ -6,8 +6,12 @@ const getInspirationPost = async (inspirationId: string) => {
     return await res.json() as BlogPost;
 }
 
-export default async function Inspiration({ params: { inspirationId } }: {
-    params: { inspirationId: string }
+export default async function Inspiration({ 
+    params: { inspirationId },
+    searchParams: { photo },
+}: {
+    params: { inspirationId: string };
+    searchParams: { photo?: string };
 }) {
     const post = await getInspirationPost(inspirationId);
     return(
@@ -15,6 +19,7 @@ export default async function Inspiration({ params: { inspirationId } }: {
             <div className="w-main max-w-main mx-auto">
                 <InspirationPost 
                     {...post}
+                    activePhotoId={photo}
                     active={true}
                 />
             </div>
