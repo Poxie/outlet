@@ -35,30 +35,30 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                 <p className="text-secondary w-[800px] max-w-full">
                     {description}
                 </p>
-                <div className="grid grid-cols-4 gap-2 mt-4">
-                    {images.map((image, key) => (
-                        <ExpandableImage
-                            alt={`Blog image ${key}`}
-                            className="w-full aspect-square rounded-lg"
-                            path={`/inspiration/${image.parentId}?photo=${image.id}`}
-                            src={getBlogImage(image.parentId, image.id)}
-                            width={250}
-                            height={250}
-                            key={image.id}
-                        />
-                    ))}
-                </div>
-                <div className="flex mt-2">
-                    <Button 
-                        className="-ml-2 py-2 px-2"
-                        icon={<DoubleArrowIcon className="w-4" />}
-                        href={`/inspiration/${id}`}
-                        type={'transparent'}
-                    >
-                        Läs mer
-                    </Button>
-                </div>
             </header>
+            <div className="grid grid-cols-4 gap-2 mt-4">
+                {images.map((image, key) => (
+                    <ExpandableImage
+                        alt={`Blog image ${key}`}
+                        className="w-full aspect-square rounded-lg"
+                        path={`/inspiration/${image.parentId}?photo=${image.id}`}
+                        src={getBlogImage(image.parentId, image.id)}
+                        width={250}
+                        height={250}
+                        key={image.id}
+                    />
+                ))}
+            </div>
+            <footer className="flex mt-2">
+                <Button 
+                    className="-ml-2 py-2 px-2"
+                    icon={<DoubleArrowIcon className="w-4" />}
+                    href={`/inspiration/${id}`}
+                    type={'transparent'}
+                >
+                    Läs mer
+                </Button>
+            </footer>
         </article>
     )
 }
