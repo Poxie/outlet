@@ -6,6 +6,7 @@ import Image from "next/image";
 import ExpandableImage from "../expandable-image";
 import Button from "../button";
 import { DoubleArrowIcon } from "@/assets/icons/DoubleArrowIcon";
+import { twMerge } from "tailwind-merge";
 
 export default function InspirationPost({ id, title, description, timestamp, images, active }: BlogPost & {
     active?: boolean;
@@ -26,7 +27,10 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                         {month} {date.getDate()}, {date.getFullYear()}
                     </span>
                 </time>
-                <h2 className="text-2xl font-bold mb-2">
+                <h2 className={twMerge(
+                    "font-bold mb-2",
+                    active ? 'text-3xl' : 'text-2xl',
+                )}>
                     {!active ? (
                         <Link 
                             href={`/inspiration/${id}`}
