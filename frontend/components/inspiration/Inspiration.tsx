@@ -11,7 +11,7 @@ export default async function Inspiration({ params: { inspirationId } }: {
 }) {
     const post = await getInspirationPost(inspirationId);
     return(
-        <main className="bg-light py-8">
+        <main className="py-8">
             <div className="w-main max-w-main mx-auto">
                 <InspirationPost 
                     {...post}
