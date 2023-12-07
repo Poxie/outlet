@@ -11,7 +11,7 @@ export default async function Banner() {
     if(!('text' in banner)) return null;
 
     return(
-        <span className="py-4 block text-center text-sm text-light font-semibold bg-primary">
+        <span className="py-3 block text-center text-sm text-light font-semibold bg-primary">
             {banner.text}
         </span>
     )
