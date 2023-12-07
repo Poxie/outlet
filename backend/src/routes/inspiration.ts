@@ -13,14 +13,15 @@ import { APIInternalServerError } from '../errors/apiInternalServerError';
 
 const router = express.Router();
 
+const getPostImages = async (parentId: string) => {
+    return await myDataSource.getRepository(Images).findBy({ parentId });
+}
 router.get('/inspiration', async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration).find();
 
     const inspirationWithImages = [];
     for(const post of inspiration) {
-        const images = await myDataSource.getRepository(Images).findBy({
-            parentId: post.id,
-        })
+        const images = await getPostImages(post.id);
         inspirationWithImages.push({
             ...post,
             images: images.sort((a,b) => a.position - b.position),
@@ -28,6 +29,16 @@ router.get('/inspiration', async (req, res, next) => {
     }
 
     res.send(inspirationWithImages);
+})
+router.get('/inspiration/:inspirationId', async (req, res, next) => {
+    const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId });
+    if(!inspiration) return next(new APINotFoundError('Post not found.'));
+
+    const images = await getPostImages(inspiration.id);
+    res.send({
+        ...inspiration,
+        images,
+    });
 })
 router.post('/inspiration', async (req, res, next) => {
     for(const prop of REQUIRED_INSPIRATION_PROPERTIES) {

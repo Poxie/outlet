@@ -18,7 +18,7 @@ export default async function Inspiration() {
                     Här i vår inspirationsblogg visar vi upp nya fynd från varuhuset. Försäljning sker via våra varuhus, vi har tyvärr idag ingen möjlighet att sälja online.
                 </p>
             </header>
-            <div className="bg-light py-16">
+            <div className="py-16">
                 <div className="grid w-main max-w-main mx-auto">
                     {inspiration.map(post => (
                         <InspirationPost 

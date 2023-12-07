@@ -7,7 +7,9 @@ import ExpandableImage from "../expandable-image";
 import Button from "../button";
 import { DoubleArrowIcon } from "@/assets/icons/DoubleArrowIcon";
 
-export default function InspirationPost({ id, title, description, timestamp, images }: BlogPost) {
+export default function InspirationPost({ id, title, description, timestamp, images, active }: BlogPost & {
+    active?: boolean;
+}) {
     const date = new Date(Number(timestamp));
     const dateTime = getReadableDateFromTimestamp(timestamp);
 
@@ -25,12 +27,20 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                     </span>
                 </time>
                 <h2 className="text-2xl font-bold mb-2">
-                    <Link 
-                        href={`/inspiration/${id}`}
-                        className="visited:text-c-primary hover:text-c-primary transition-colors"
-                    >
-                        {title}
-                    </Link>
+                    {!active ? (
+                        <Link 
+                            href={`/inspiration/${id}`}
+                            className="visited:text-c-primary hover:text-c-primary transition-colors"
+                        >
+                            {title}
+                        </Link>
+                    ) : (
+                        <span 
+                            className="text-primary"
+                        >
+                            {title}
+                        </span>
+                    )}
                 </h2>
                 <p className="text-secondary w-[800px] max-w-full">
                     {description}
@@ -49,16 +59,18 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                     />
                 ))}
             </div>
-            <footer className="flex mt-2">
-                <Button 
-                    className="-ml-2 py-2 px-2"
-                    icon={<DoubleArrowIcon className="w-4" />}
-                    href={`/inspiration/${id}`}
-                    type={'transparent'}
-                >
-                    Läs mer
-                </Button>
-            </footer>
+            {!active && (
+                <footer className="flex mt-2">
+                    <Button 
+                        className="-ml-2 py-2 px-2"
+                        icon={<DoubleArrowIcon className="w-4" />}
+                        href={`/inspiration/${id}`}
+                        type={'transparent'}
+                    >
+                        Läs mer
+                    </Button>
+                </footer>
+            )}
         </article>
     )
 }
