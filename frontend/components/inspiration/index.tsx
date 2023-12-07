@@ -10,7 +10,7 @@ export default async function Inspiration() {
     const inspiration = await getInspiration();
     return(
         <main>
-            <header className="bg-primary py-16 grid gap-4 text-center text-light">
+            <header className="bg-primary py-24 grid gap-4 text-center text-light">
                 <h1 className="text-4xl uppercase font-extrabold">
                     Inspiration
                 </h1>
