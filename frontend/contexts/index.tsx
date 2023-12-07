@@ -19,7 +19,7 @@ export default function Providers({ children }: {
     return(
         <body className={twMerge(
             roboto.className,
-            isLightPath ? 'bg-light' : 'bg-primary',
+            isLightPath ? 'bg-light' : 'bg-secondary',
         )}>
             <StoreProvider>
                 <AuthProvider>
