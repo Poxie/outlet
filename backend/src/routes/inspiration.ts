@@ -14,7 +14,7 @@ import { APIInternalServerError } from '../errors/apiInternalServerError';
 const router = express.Router();
 
 const getPostImages = async (parentId: string) => {
-    return await myDataSource.getRepository(Images).findBy({ parentId });
+    return (await myDataSource.getRepository(Images).findBy({ parentId })).sort((a,b) => a.position - b.position);
 }
 router.get('/inspiration', async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration).find();
@@ -24,7 +24,7 @@ router.get('/inspiration', async (req, res, next) => {
         const images = await getPostImages(post.id);
         inspirationWithImages.push({
             ...post,
-            images: images.sort((a,b) => a.position - b.position),
+            images,
         })
     }
 
