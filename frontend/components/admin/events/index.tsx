@@ -3,6 +3,7 @@ import EventsTable from "./EventsTable";
 import EventPanel from "./EventPanel";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
+import EventCategoriesButton from "./EventCategoriesButton";
 
 export default function Events() {
     return(
@@ -13,6 +14,7 @@ export default function Events() {
                     backPath={'/admin'}
                     text={'Events'}
                 />
+                <EventCategoriesButton />
                 <EventPanel />
                 <EventsTable />
             </div>
