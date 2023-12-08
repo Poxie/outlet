@@ -4,12 +4,23 @@ import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createUniqueIdFromName } from '../utils';
 import { Category } from '../entity/category.entity';
 import { ALLOWED_CATEGORY_PROPERTIES, REQUIRED_CATEGORY_PROPERTIES } from '../utils/constants';
+import { Events } from '../entity/events.entity';
 
 const router = express.Router();
 
 router.get('/categories', async (req, res, next) => {
     const categories = await myDataSource.getRepository(Category).find();
-    res.send(categories);
+
+    const categoriesWithEventCount = [];
+    for(const category of categories) {
+        const [_, eventCount] = await myDataSource.getRepository(Events).findAndCountBy({ id: category.id });
+        categoriesWithEventCount.push({
+            ...category,
+            eventCount,
+        })
+    }
+
+    res.send(categoriesWithEventCount);
 })
 router.post('/categories', async (req, res, next) => {
     const properties: {[key: string]: any} = {};

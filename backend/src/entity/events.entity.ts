@@ -19,4 +19,7 @@ export class Events {
 
     @Column({ default: false })
     archived: boolean;
+
+    @Column({ default: null })
+    parentId: string | null;
 }
