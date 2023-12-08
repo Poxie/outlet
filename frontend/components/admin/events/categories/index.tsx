@@ -1,6 +1,7 @@
 import Button from "@/components/button";
 import AdminHeader from "../../AdminHeader";
 import AdminTabs from "../../AdminTabs";
+import CategoryTable from "./CategoryTable";
 
 export default function EventCategories() {
     return(
@@ -19,6 +20,7 @@ export default function EventCategories() {
                         </Button>
                     }
                 />
+                <CategoryTable />
             </div>
         </main>
     )
