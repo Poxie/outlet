@@ -15,6 +15,7 @@ export const getCurrentWeeklyDealDate = () => {
     return currentDealDate;
 }
 
+type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category';
 const repositories = {
     'weekly_deal': WeeklyDeal,
     events: Events,
@@ -22,19 +23,42 @@ const repositories = {
     banners: Banners,
     inspiration: Inspiration,
 }
-export const createId = async (table: 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration') => {
-    const length = 8;
+
+const generateRandomNumbers = (length: number) => {
     const opts = '1234567890';
     
     let id = '';
     for(let i = 0; i < length; i++) {
         id += Math.floor(Math.random() * opts.length);
     }
+    return id;
+}
+export const createId = async (table: DatabaseTable) => {
+    const id = generateRandomNumbers(8);
 
     const repository =  repositories[table];
     if(!repository) throw new Error(`Repository ${table} has not been set up.`);
     const alreadyExists = await myDataSource.getRepository(repository).findOneBy({ id });
     if(alreadyExists) return await createId(table);
 
+    return id;
+}
+
+export const createUniqueIdFromName = async (name: string, table: DatabaseTable) => {
+    const prelimId = name.toLowerCase().split(' ').join('-');
+
+    const previousItem = await myDataSource.getRepository(table).findOneBy({ id: prelimId });
+
+    let id = prelimId;
+    if(previousItem) {
+        const generateId = async () => {
+            const tempId = `${id}-${generateRandomNumbers(4)}`;
+            const prev = await myDataSource.getRepository(table).findOneBy({ id: tempId });
+            
+            return prev ? await generateId() : tempId;
+        }
+        id = await generateId();
+    }
+    
     return id;
 }
