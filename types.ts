@@ -12,6 +12,13 @@ export type Event = {
     timestamp: string;
     archived: boolean;
 }
+export type EventCategory = {
+    id: string;
+    name: string;
+    description: string | null;
+    timestamp: string;
+    archived: boolean;
+}
 export type Image = {
     id: string;
     image: string;

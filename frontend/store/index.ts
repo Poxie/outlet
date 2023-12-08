@@ -3,6 +3,7 @@ import dealsReducer from "./slices/deals";
 import storesReducer from "./slices/stores";
 import bannersReducer from "./slices/banners";
 import inspirationReducer from './slices/inspiration';
+import categoriesReducer from './slices/categories';
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
@@ -13,6 +14,7 @@ export const store = configureStore({
         stores: storesReducer,
         banners: bannersReducer,
         inspiration: inspirationReducer,
+        categories: categoriesReducer,
     },
     devTools: true,
 });
