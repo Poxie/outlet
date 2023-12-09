@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/store';
 
 const getDummyCategory = () => ({
     name: '',
+    description: '',
 })
 export default function CreateEventCategory({ params: { categoryId } }: {
     params: { categoryId: string };
@@ -82,7 +83,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
         }
 
         setLoading(true);
-        
+
         const changes = getChanges();
         await patch(`/categories/${prevCategory.id}`, changes);
 
@@ -112,6 +113,16 @@ export default function CreateEventCategory({ params: { categoryId } }: {
                         onChange={name => updateProperty('name', name)}
                         placeholder={'Category name...'}
                         className="w-full"
+                    />
+                    <span className="block text-sm mb-1 mt-2">
+                        Category description
+                    </span>
+                    <Input 
+                        value={categoryInfo.description || ''}
+                        onChange={description => updateProperty('description', description)}
+                        placeholder={'Category description...'}
+                        className="w-full"
+                        textArea
                     />
                 </div>
                 {feedback && (

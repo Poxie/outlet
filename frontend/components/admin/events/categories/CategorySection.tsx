@@ -59,11 +59,11 @@ export default function CategorySection({ header, headerIcon, categories, search
                 key={category.id}
             >
                 <td className="px-4 py-4">
-                    <span className="inline-block text-base">
+                    <span className="block text-base font-semibold">
                         {category.name}
                     </span>
                     {category.description && (
-                        <span>
+                        <span className="text-sm text-secondary">
                             {category.description}
                         </span>
                     )}
