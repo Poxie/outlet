@@ -15,7 +15,7 @@ router.get('/categories', async (req, res, next) => {
 
     const categoriesWithEventCount = [];
     for(const category of categories) {
-        const [_, eventCount] = await myDataSource.getRepository(Events).findAndCountBy({ id: category.id });
+        const [_, eventCount] = await myDataSource.getRepository(Events).findAndCountBy({ parentId: category.id });
         categoriesWithEventCount.push({
             ...category,
             eventCount,
