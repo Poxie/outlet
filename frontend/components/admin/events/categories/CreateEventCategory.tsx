@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminHeader from "../../AdminHeader";
 import AdminTabs from "../../AdminTabs";
 import Input from '@/components/input';
@@ -7,23 +7,32 @@ import Button from '@/components/button';
 import { useAuth } from '@/contexts/auth';
 import Feedback from '@/components/feedback';
 import { useRouter } from 'next/navigation';
-import { addCategory } from '@/store/slices/categories';
-import { useAppDispatch } from '@/store';
+import { addCategory, selectCategoryById, updateCategory } from '@/store/slices/categories';
+import { useAppDispatch, useAppSelector } from '@/store';
 
-export default function CreateEventCategory() {
+const getDummyCategory = () => ({
+    name: '',
+})
+export default function CreateEventCategory({ params: { categoryId } }: {
+    params: { categoryId: string };
+}) {
     const router = useRouter();
-    const { post } = useAuth();
+    const { post, patch } = useAuth();
 
-    const [categoryInfo, setCategoryInfo] = useState({
-        name: '',
-    });
+    const dispatch = useAppDispatch();
+    const prevCategory = useAppSelector(state => selectCategoryById(state, categoryId));
+
+    const [categoryInfo, setCategoryInfo] = useState(prevCategory || getDummyCategory());
     const [feedback, setFeedback] = useState<null | {
         text: string;
         type: 'success' | 'danger';
     }>(null);
     const [loading, setLoading] = useState(false);
 
-    const dispatch = useAppDispatch();
+    useEffect(() => {
+        if(!prevCategory) return;
+        setCategoryInfo(prevCategory);
+    }, [prevCategory]);
 
     const updateProperty = (prop: keyof typeof categoryInfo, value: string) => {
         setFeedback(null);
@@ -33,6 +42,18 @@ export default function CreateEventCategory() {
         }));
     }
 
+    const getChanges = () => {
+        if(!prevCategory) return categoryInfo;
+
+        const changes: {[key: string]: any} = {};
+        for(const [prop, val] of Object.entries(categoryInfo)) {
+            if(prevCategory[prop as keyof typeof prevCategory] !== val) {
+                changes[prop] = val;
+            }
+        }
+        return changes;
+    }
+    const hasChanges = () => Object.keys(getChanges()).length > 0;
     const onSubmit = async () => {
         if(!categoryInfo.name) {
             setFeedback({
@@ -42,21 +63,45 @@ export default function CreateEventCategory() {
             return;
         }
 
-        setLoading(true);
+        if(!prevCategory) {
+            setLoading(true);
+            
+            const category = await post(`/categories`, categoryInfo);
+            dispatch(addCategory(category));
+            
+            router.replace('/admin/events/categories');
+            return;
+        }
 
-        const category = await post(`/categories`, categoryInfo);
-        dispatch(addCategory(category));
+        if(!hasChanges()) {
+            setFeedback({
+                text: 'No changes have been made.',
+                type: 'danger',
+            })
+            return;
+        }
+
+        setLoading(true);
         
-        router.replace('/admin/events/categories');
+        const changes = getChanges();
+        await patch(`/categories/${prevCategory.id}`, changes);
+
+        dispatch(updateCategory({ categoryId, changes }));
+        setLoading(false);
+        setFeedback({
+            text: 'Category has been updated.',
+            type: 'success',
+        })
     }
 
+    const isCreatingCategory = !prevCategory;
     return(
         <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin/events/categories'}
-                    text={'Events / Categories / Create'}
+                    text={`Events / Categories / ${isCreatingCategory ? 'Create' : prevCategory.name}`}
                 />
                 <div className="p-4">
                     <span className="block text-sm mb-1">
@@ -80,7 +125,11 @@ export default function CreateEventCategory() {
                         onClick={onSubmit}
                         disabled={loading}
                     >
-                        {!loading ? 'Create category' : 'Creating category...'}
+                        {isCreatingCategory ? (
+                            !loading ? 'Create category' : 'Creating category...'
+                        ) : (
+                            !loading ? 'Update category' : 'Updating category...'
+                        )}
                     </Button>
                 </div>
             </div>

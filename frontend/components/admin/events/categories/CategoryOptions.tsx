@@ -78,7 +78,7 @@ export default function CategoryOptions({ isArchived, categoryId }: {
             <Link
                 className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
                 aria-label="Edit category"
-                href={`/admin/categories/${categoryId}`}
+                href={`/admin/events/categories/${categoryId}`}
             >
                 <EditIcon className="w-4" />
             </Link>
