@@ -44,8 +44,9 @@ const selectId = (_:RootState, id: string) => id;
 
 export const selectCategoriesLoading = (state: RootState) => state.categories.loading;
 export const selectCategories = (state: RootState) => state.categories.categories;
+export const selectCategoriesLength = (state: RootState) => state.categories.categories.length;
 
-export const selectcategoryById = createSelector(
+export const selectCategoryById = createSelector(
     [selectCategories, selectId],
     (categories, categoryId) => categories.find(category => category.id === categoryId)
 )
