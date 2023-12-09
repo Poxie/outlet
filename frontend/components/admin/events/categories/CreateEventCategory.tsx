@@ -135,6 +135,12 @@ export default function CreateEventCategory({ params: { categoryId } }: {
         }
         if(eventChanges.length) {
             await put(`/categories/${prevCategory.id}/children`, { eventIds: eventChanges });
+
+            const removedIds = prevEventIds.filter(id => !eventIds.includes(id));
+            for(const id of removedIds) {
+                dispatch(editEvent({ eventId: id, changes: { parentId: null } }));
+            }
+            
             for(const event of eventChanges) {
                 dispatch(editEvent({ eventId: event, changes: { parentId: categoryId } }));
                 dispatch(updateCategory({ categoryId, changes: { eventCount: eventChanges.length } }));
