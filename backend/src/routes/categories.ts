@@ -85,6 +85,10 @@ router.put('/categories/:categoryId/children', async (req, res, next) => {
     if(eventIds.find(id => typeof id !== 'string')) return next(new APIBadRequestError('eventIds must be an array of strings.'));
 
     await myDataSource.getRepository(Events).update(
+        { parentId: category.id },
+        { parentId: null },
+    )
+    await myDataSource.getRepository(Events).update(
         { id: In(eventIds) },
         { parentId: category.id },
     );
