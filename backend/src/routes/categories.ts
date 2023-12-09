@@ -6,6 +6,7 @@ import { Category } from '../entity/category.entity';
 import { ALLOWED_CATEGORY_PROPERTIES, REQUIRED_CATEGORY_PROPERTIES } from '../utils/constants';
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
+import { In } from 'typeorm';
 
 const router = express.Router();
 
@@ -53,6 +54,10 @@ router.delete('/categories/:categoryId', async (req, res, next) => {
     if(!category) return next(new APINotFoundError('Category not found.'));
 
     await myDataSource.getRepository(Category).delete({ id: category.id });
+    await myDataSource.getRepository(Events).update(
+        { parentId: category.id },
+        { parentId: null },
+    )
 
     res.send({});
 })
