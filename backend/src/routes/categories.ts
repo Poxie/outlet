@@ -5,6 +5,7 @@ import { createUniqueIdFromName } from '../utils';
 import { Category } from '../entity/category.entity';
 import { ALLOWED_CATEGORY_PROPERTIES, REQUIRED_CATEGORY_PROPERTIES } from '../utils/constants';
 import { Events } from '../entity/events.entity';
+import { APINotFoundError } from '../errors/apiNotFoundError';
 
 const router = express.Router();
 
@@ -46,6 +47,14 @@ router.post('/categories', async (req, res, next) => {
     await myDataSource.getRepository(Category).save(category);
 
     res.send(category);
+});
+router.delete('/categories/:categoryId', async (req, res, next) => {
+    const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
+    if(!category) return next(new APINotFoundError('Category not found.'));
+
+    await myDataSource.getRepository(Category).delete({ id: category.id });
+
+    res.send({});
 })
 
 export default router;
