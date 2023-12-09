@@ -11,6 +11,7 @@ export type Event = {
     image: string;
     timestamp: string;
     archived: boolean;
+    parentId: string | null;
 }
 export type EventCategory = {
     id: string;
