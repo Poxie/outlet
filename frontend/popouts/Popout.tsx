@@ -66,7 +66,7 @@ export default function Popout({ children, element, options }: {
             }
             if(top > window.innerHeight - popHeight - SPACE_FROM_EDGE) {
                 top = window.innerHeight - popHeight - SPACE_FROM_EDGE;
-                left = elLeft + elWidth + options.distance;
+                console.log(left);
             }
             if(left > window.innerWidth - popWidth) {
                 left = window.innerWidth - popWidth - SPACE_FROM_EDGE;
@@ -92,7 +92,8 @@ export default function Popout({ children, element, options }: {
             initial={INITIAL_STYLE}
             animate={ANIMATED_STYLE}
             transition={{ duration: ANIMATION_DURATION }}
-            className="z-30 absolute bg-light-secondary rounded shadow min-w-[250px]"
+            className="z-30 absolute bg-light rounded-lg shadow min-w-[250px] overflow-auto"
+            style={{ maxHeight: `calc(100% - ${SPACE_FROM_EDGE * 2}px)` }}
             ref={ref}
         >
             {children}

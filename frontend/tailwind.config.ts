@@ -7,6 +7,7 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './contexts/**/*.{js,ts,jsx,tsx,mdx}',
     './modals/**/*.{js,ts,jsx,tsx,mdx}',
+    './popouts/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
