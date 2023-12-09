@@ -49,6 +49,32 @@ router.post('/categories', async (req, res, next) => {
 
     res.send(category);
 });
+router.patch('/categories/:categoryId', async (req, res, next) => {
+    const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
+    if(!category) return next(new APINotFoundError('Category not found.'));
+
+    const properties: {[key: string]: any} = {};
+    for(const [prop, val] of Object.entries(req.body)) {
+        if(!ALLOWED_CATEGORY_PROPERTIES.includes(prop)) {
+            return next(new APIBadRequestError(`${prop} is not a valid property.`));
+        }
+        if(!val && REQUIRED_CATEGORY_PROPERTIES.includes(prop)) {
+            return next(new APIBadRequestError(`${prop} is invalid.`));
+        }
+        properties[prop] = val;
+    }
+
+    if(!Object.keys(properties).length) {
+        return next(new APIBadRequestError('No properties to update were provided.'));
+    }
+
+    const newCategory = await myDataSource.getRepository(Category).save({
+        ...category,
+        ...properties,
+    })
+
+    res.send(newCategory);
+})
 router.delete('/categories/:categoryId', async (req, res, next) => {
     const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
     if(!category) return next(new APINotFoundError('Category not found.'));

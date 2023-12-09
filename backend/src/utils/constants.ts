@@ -10,4 +10,4 @@ export const ALLOWED_BANNER_PROPERTIES = ['text', 'active'];
 export const REQUIRED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp'];
 export const ALLOWED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp', 'archived'];
 export const REQUIRED_CATEGORY_PROPERTIES = ['name'];
-export const ALLOWED_CATEGORY_PROPERTIES = ['name', 'description'];
+export const ALLOWED_CATEGORY_PROPERTIES = ['name', 'description', 'archived'];
