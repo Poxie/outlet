@@ -43,8 +43,8 @@ export default function CategoryOptions({ isArchived, categoryId }: {
 
         setModal(
             <ConfirmModal 
-                header={'Are you sure you want to archive this post?'}
-                subHeader={`Archiving this post will leave it here in the post panel, but will be hidden from visitors to the site. Don't worry, this can be undone.`}
+                header={'Are you sure you want to archive this category?'}
+                subHeader={`Archiving this category will also archive the events associated with the category.`}
                 confirmFunction={confirmFunction}
                 onConfirm={onConfirm}
                 confirmText={'Archive post'}
