@@ -28,8 +28,8 @@ export default function CategoryOptions({ isArchived, categoryId }: {
             <ConfirmModal 
                 onConfirm={onConfirm}
                 confirmFunction={confirmFunction}
-                header={'Are you sure you want to delete this post?'}
-                subHeader='All information associated with this post will be deleted and unretrievable. This action cannot be undone.'
+                header={'Are you sure you want to delete this category?'}
+                subHeader='Events associated with this category will not be deleted.'
                 closeOnCancel
             />
         )

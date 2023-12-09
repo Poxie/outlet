@@ -11,15 +11,8 @@ export default function CategoryTable() {
 
     const search = '';
 
-    const activeCategories = categories.filter(post => (
-        !post.archived &&
-        Number(post.timestamp) <= new Date().getTime()
-    ))
-    const scheduledCategories = categories.filter(post => (
-        !post.archived &&
-        Number(post.timestamp) > new Date().getTime()
-    ))
-    const archivedCategories = categories.filter(post => post.archived);
+    const activeCategories = categories.filter(category => !category.archived);
+    const archivedCategories = categories.filter(category => category.archived);
 
     return(
         <table className="[--spacing:.75rem] w-full text-sm border-spacing-2">
