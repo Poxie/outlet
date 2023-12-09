@@ -6,7 +6,7 @@ import { ArchiveIcon } from "@/assets/icons/ArchiveIcon";
 import { useEvents } from "@/hooks/useEvents";
 
 export default function EventsTable() {
-    const { events, loading } = useEvents();
+    const { events } = useEvents();
 
     const onGoingEvents = events.filter(event => (
         !event.archived &&
@@ -19,32 +19,26 @@ export default function EventsTable() {
     const archivedEvents = events.filter(event => event.archived);
 
     return(
-        !loading ? (
-            <div>
-                <table className="[--spacing:.75rem] w-full text-sm border-spacing-2">
-                    <tbody>
-                        <EventTableSection 
-                            header={'On-going events'}
-                            headerIcon={<MegaphoneIcon className="w-4" />}
-                            events={onGoingEvents}
-                        />
-                        <EventTableSection
-                            header={'Scheduled events'}
-                            headerIcon={<ClockIcon className="w-4" />}
-                            events={scheduledEvents}
-                        />
-                        <EventTableSection
-                            header={'Archived events'}
-                            headerIcon={<ArchiveIcon className="w-4" />}
-                            events={archivedEvents}
-                        />
-                    </tbody>
-                </table>
-            </div>
-        ) : (
-            <span className="py-24 flex-1 flex items-center justify-center text-secondary/80">
-                Loading events...
-            </span>
-        )
+        <div>
+            <table className="[--spacing:.75rem] w-full text-sm border-spacing-2">
+                <tbody>
+                    <EventTableSection 
+                        header={'On-going events'}
+                        headerIcon={<MegaphoneIcon className="w-4" />}
+                        events={onGoingEvents}
+                    />
+                    <EventTableSection
+                        header={'Scheduled events'}
+                        headerIcon={<ClockIcon className="w-4" />}
+                        events={scheduledEvents}
+                    />
+                    <EventTableSection
+                        header={'Archived events'}
+                        headerIcon={<ArchiveIcon className="w-4" />}
+                        events={archivedEvents}
+                    />
+                </tbody>
+            </table>
+        </div>
     )
 }

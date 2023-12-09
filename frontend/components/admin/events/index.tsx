@@ -4,8 +4,10 @@ import EventPanel from "./EventPanel";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import EventCategoriesButton from "./EventCategoriesButton";
+import { useEvents } from "@/hooks/useEvents";
 
 export default function Events() {
+    const { loading } = useEvents();
     return(
         <main className="my-8 w-main max-w-main mx-auto">
             <AdminTabs />
@@ -14,9 +16,17 @@ export default function Events() {
                     backPath={'/admin'}
                     text={'Events'}
                 />
-                <EventCategoriesButton />
-                <EventPanel />
-                <EventsTable />
+                {!loading ? (
+                    <>
+                    <EventCategoriesButton />
+                    <EventPanel />
+                    <EventsTable />
+                    </>
+                ) : (
+                    <span className="py-24 flex-1 flex items-center justify-center text-secondary/80">
+                        Loading events...
+                    </span>
+                )}
             </div>
         </main>
     )
