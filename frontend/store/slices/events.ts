@@ -95,11 +95,18 @@ const selectId = (_:RootState, id: string) => id;
 const selectEvents = (state: RootState) => state.events.events;
 const selectEventImages = (state: RootState) => state.events.images;
 
+export const selectEventIds = (state: RootState) => state.events.events.map(event => event.id);
+
 export const selectEventsLoading = (state: RootState) => state.events.loading;
 export const selectEventById = (state: RootState, eventId: string) => state.events.events.find(event => event.id === eventId);
 export const selectEventImagesById = createSelector(
     [selectEventImages, selectId],
     (images, eventId) => images[eventId]?.toSorted((a,b) => a.position - b.position)
+)
+
+export const selectEventsByParent = createSelector(
+    [selectEvents, selectId],
+    (events, parentId) => events.filter(event => event.parentId === parentId).map(e => e.id)
 )
 
 export default eventsSlice.reducer;

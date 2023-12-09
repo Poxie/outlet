@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AdminHeader from "../../AdminHeader";
 import AdminTabs from "../../AdminTabs";
 import Input from '@/components/input';
@@ -9,6 +9,12 @@ import Feedback from '@/components/feedback';
 import { useRouter } from 'next/navigation';
 import { addCategory, selectCategoryById, updateCategory } from '@/store/slices/categories';
 import { useAppDispatch, useAppSelector } from '@/store';
+import { usePopout } from '@/contexts/popout';
+import EventsPopout from '@/popouts/events';
+import { Event } from '../../../../../types';
+import events, { selectEventById, selectEventsByParent } from '@/store/slices/events';
+import Image from 'next/image';
+import { getEventImage } from '@/utils';
 
 const getDummyCategory = () => ({
     name: '',
@@ -19,21 +25,43 @@ export default function CreateEventCategory({ params: { categoryId } }: {
 }) {
     const router = useRouter();
     const { post, patch } = useAuth();
+    const { setPopout } = usePopout();
 
     const dispatch = useAppDispatch();
     const prevCategory = useAppSelector(state => selectCategoryById(state, categoryId));
+    const prevEventIds = useAppSelector(state => selectEventsByParent(state, categoryId));
 
     const [categoryInfo, setCategoryInfo] = useState(prevCategory || getDummyCategory());
+    const [eventIds, setEventIds] = useState<string[]>(prevEventIds || []);
     const [feedback, setFeedback] = useState<null | {
         text: string;
         type: 'success' | 'danger';
     }>(null);
     const [loading, setLoading] = useState(false);
 
+    const eventsPopoutButton = useRef<HTMLButtonElement>(null);
+
     useEffect(() => {
         if(!prevCategory) return;
         setCategoryInfo(prevCategory);
     }, [prevCategory]);
+
+    const openEventsPopout = () => {
+        const onChange = (event: Event) => {
+            setEventIds(prev => {
+                if(prev.includes(event.id)) {
+                    return prev.filter(id => id !== event.id);
+                }
+                return [...[event.id], ...prev];
+            });
+        }
+
+        setPopout({
+            popout: <EventsPopout onChange={onChange} />,
+            ref: eventsPopoutButton,
+            options: { position: 'left' },
+        })
+    }
 
     const updateProperty = (prop: keyof typeof categoryInfo, value: string) => {
         setFeedback(null);
@@ -104,26 +132,48 @@ export default function CreateEventCategory({ params: { categoryId } }: {
                     backPath={'/admin/events/categories'}
                     text={`Events / Categories / ${isCreatingCategory ? 'Create' : prevCategory.name}`}
                 />
-                <div className="p-4">
-                    <span className="block text-sm mb-1">
-                        Category name
-                    </span>
-                    <Input 
-                        value={categoryInfo.name}
-                        onChange={name => updateProperty('name', name)}
-                        placeholder={'Category name...'}
-                        className="w-full"
-                    />
-                    <span className="block text-sm mb-1 mt-2">
-                        Category description
-                    </span>
-                    <Input 
-                        value={categoryInfo.description || ''}
-                        onChange={description => updateProperty('description', description)}
-                        placeholder={'Category description...'}
-                        className="w-full"
-                        textArea
-                    />
+                <div className="flex">
+                    <div className="p-4 flex-1 border-r-[1px] border-r-light-secondary">
+                        <span className="block text-sm mb-1">
+                            Category name
+                        </span>
+                        <Input 
+                            value={categoryInfo.name}
+                            onChange={name => updateProperty('name', name)}
+                            placeholder={'Category name...'}
+                            className="w-full"
+                        />
+                        <span className="block text-sm mb-1 mt-2">
+                            Category description
+                        </span>
+                        <Input 
+                            value={categoryInfo.description || ''}
+                            onChange={description => updateProperty('description', description)}
+                            placeholder={'Category description...'}
+                            className="w-full"
+                            textArea
+                        />
+                    </div>
+                    <div className="p-4 flex-1">
+                        <span className="block text-sm mb-1">
+                            Assigned events
+                        </span>
+                        <div className="flex flex-col gap-1.5">
+                            {eventIds.map(eventId => (
+                                <AssignedEvent 
+                                    id={eventId}
+                                    key={eventId}
+                                />
+                            ))}
+                            <button 
+                                className="p-3 text-center hover:bg-light-secondary/50 transition-colors border-[1px] border-light-tertiary text-secondary rounded-md"
+                                onClick={openEventsPopout}
+                                ref={eventsPopoutButton}
+                            >
+                                Assgin event
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 {feedback && (
                     <Feedback 
@@ -145,5 +195,34 @@ export default function CreateEventCategory({ params: { categoryId } }: {
                 </div>
             </div>
         </main>
+    )
+}
+
+function AssignedEvent({ id }: {
+    id: string;
+}) {
+    const event = useAppSelector(state => selectEventById(state, id));
+    if(!event) return null;
+
+    return(
+        <li className="flex gap-3">
+            <div className="min-w-[30%] rounded overflow-hidden">
+                <Image 
+                    width={100}
+                    height={100}
+                    src={getEventImage(event.id, event.image, event.timestamp)}
+                    className="w-full aspect-video object-cover"
+                    alt=""
+                />
+            </div>
+            <div className="flex flex-col text-left ">
+                <span className="font-semibold">
+                    {event.title}
+                </span>
+                <span className="line-clamp-2 text-sm text-secondary">
+                    {event.description}
+                </span>
+            </div>
+        </li>
     )
 }
