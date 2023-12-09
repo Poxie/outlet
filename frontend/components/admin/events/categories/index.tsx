@@ -1,9 +1,14 @@
+"use client";
 import Button from "@/components/button";
 import AdminHeader from "../../AdminHeader";
 import AdminTabs from "../../AdminTabs";
 import CategoryTable from "./CategoryTable";
+import { useAppSelector } from "@/store";
+import { selectCategoriesLoading } from "@/store/slices/categories";
 
 export default function EventCategories() {
+    const loading = useAppSelector(selectCategoriesLoading);
+
     return(
         <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
@@ -20,7 +25,13 @@ export default function EventCategories() {
                         </Button>
                     }
                 />
-                <CategoryTable />
+                {!loading ? (
+                    <CategoryTable />
+                ) : (
+                    <span className="block py-24 text-center">
+                        Loading categories...
+                    </span>
+                )}
             </div>
         </main>
     )
