@@ -25,6 +25,7 @@ const createDummyEvent: () => Event = () => ({
     description: '',
     timestamp: Date.now().toString(),
     archived: false,
+    parentId: null,
 })
 
 export default function EditEvent({ params: { eventId } }: {

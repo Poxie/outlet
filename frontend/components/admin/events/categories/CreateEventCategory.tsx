@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { usePopout } from '@/contexts/popout';
 import EventsPopout from '@/popouts/events';
 import { Event } from '../../../../../types';
-import events, { selectEventById, selectEventsByParent } from '@/store/slices/events';
+import events, { editEvent, selectEventById, selectEventsByParent } from '@/store/slices/events';
 import Image from 'next/image';
 import { getEventImage } from '@/utils';
 
@@ -24,7 +24,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
     params: { categoryId: string };
 }) {
     const router = useRouter();
-    const { post, patch } = useAuth();
+    const { post, patch, put } = useAuth();
     const { setPopout } = usePopout();
 
     const dispatch = useAppDispatch();
@@ -45,6 +45,10 @@ export default function CreateEventCategory({ params: { categoryId } }: {
         if(!prevCategory) return;
         setCategoryInfo(prevCategory);
     }, [prevCategory]);
+    useEffect(() => {
+        if(!prevEventIds) return;
+        setEventIds(prevEventIds);
+    }, [prevEventIds]);
 
     const openEventsPopout = () => {
         const onChange = (event: Event) => {
@@ -72,17 +76,28 @@ export default function CreateEventCategory({ params: { categoryId } }: {
     }
 
     const getChanges = () => {
-        if(!prevCategory) return categoryInfo;
+        if(!prevCategory || !prevEventIds) return {
+            categoryChanges: categoryInfo,
+            eventChanges: eventIds,
+        };
 
-        const changes: {[key: string]: any} = {};
+        const categoryChanges: {[key: string]: any} = {};
         for(const [prop, val] of Object.entries(categoryInfo)) {
             if(prevCategory[prop as keyof typeof prevCategory] !== val) {
-                changes[prop] = val;
+                categoryChanges[prop] = val;
             }
         }
-        return changes;
+
+        const eventChanges = eventIds.toString() === prevEventIds.toString() ? [] : eventIds;
+
+        return { categoryChanges, eventChanges };
     }
-    const hasChanges = () => Object.keys(getChanges()).length > 0;
+    const hasChanges = () => {
+        return(
+            Object.keys(getChanges().categoryChanges).length > 0 ||
+            Object.keys(getChanges().eventChanges).length > 0
+        )
+    }
     const onSubmit = async () => {
         if(!categoryInfo.name) {
             setFeedback({
@@ -112,10 +127,19 @@ export default function CreateEventCategory({ params: { categoryId } }: {
 
         setLoading(true);
 
-        const changes = getChanges();
-        await patch(`/categories/${prevCategory.id}`, changes);
+        const { categoryChanges, eventChanges } = getChanges();
+        
+        if(Object.keys(categoryChanges).length > 0) {
+            await patch(`/categories/${prevCategory.id}`, categoryChanges);
+            dispatch(updateCategory({ categoryId, changes: categoryChanges }));
+        }
+        if(eventChanges.length) {
+            await put(`/categories/${prevCategory.id}/children`, { eventIds: eventChanges });
+            for(const event of eventChanges) {
+                dispatch(editEvent({ eventId: event, changes: { parentId: categoryId } }));
+            }
+        }
 
-        dispatch(updateCategory({ categoryId, changes }));
         setLoading(false);
         setFeedback({
             text: 'Category has been updated.',
