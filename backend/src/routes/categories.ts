@@ -75,6 +75,22 @@ router.patch('/categories/:categoryId', async (req, res, next) => {
 
     res.send(newCategory);
 })
+router.put('/categories/:categoryId/children', async (req, res, next) => {
+    const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
+    if(!category) return next(new APINotFoundError('Category not found.'));
+
+    const eventIds = req.body.eventIds;
+    if(!eventIds) return next(new APIBadRequestError('eventIds is required.'));
+    if(!Array.isArray(eventIds)) return next(new APIBadRequestError('eventIds must be an array.'));
+    if(eventIds.find(id => typeof id !== 'string')) return next(new APIBadRequestError('eventIds must be an array of strings.'));
+
+    await myDataSource.getRepository(Events).update(
+        { id: In(eventIds) },
+        { parentId: category.id },
+    );
+
+    res.send({});
+})
 router.delete('/categories/:categoryId', async (req, res, next) => {
     const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
     if(!category) return next(new APINotFoundError('Category not found.'));
