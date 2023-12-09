@@ -47,14 +47,14 @@ export default function CategoryOptions({ isArchived, categoryId }: {
                 subHeader={`Archiving this category will also archive the events associated with the category.`}
                 confirmFunction={confirmFunction}
                 onConfirm={onConfirm}
-                confirmText={'Archive post'}
-                confirmLoadingText={'Archiving post...'}
+                confirmText={'Archive category'}
+                confirmLoadingText={'Archiving category...'}
                 closeOnCancel
             />
         )
     }
     const openUnarchiveModal = () => {
-        const onConfirm = (post: EventCategory) => dispatch(updateCategory({ categoryId: categoryId, changes: { archived: false } }));
+        const onConfirm = (category: EventCategory) => dispatch(updateCategory({ categoryId: categoryId, changes: { archived: false } }));
         const confirmFunction = async () => {
             const data = await patch<EventCategory>(`/categories/${categoryId}`, { archived: false });
             return data;
@@ -62,12 +62,12 @@ export default function CategoryOptions({ isArchived, categoryId }: {
 
         setModal(
             <ConfirmModal 
-                header={'Are you sure you want to restore this post?'}
-                subHeader={`Restoring this post will make it visible to users visiting the site again, as long as it\'s not scheduled.`}
+                header={'Are you sure you want to restore this category?'}
+                subHeader={`Restoring this category will make all events associated with it visible.`}
                 confirmFunction={confirmFunction}
                 onConfirm={onConfirm}
-                confirmText={'Restore post'}
-                confirmLoadingText={'Restoring post...'}
+                confirmText={'Restore category'}
+                confirmLoadingText={'Restoring category...'}
                 closeOnCancel
             />
         )
