@@ -137,6 +137,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
             await put(`/categories/${prevCategory.id}/children`, { eventIds: eventChanges });
             for(const event of eventChanges) {
                 dispatch(editEvent({ eventId: event, changes: { parentId: categoryId } }));
+                dispatch(updateCategory({ categoryId, changes: { eventCount: eventChanges.length } }));
             }
         }
 
