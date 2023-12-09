@@ -70,7 +70,7 @@ export default function CategorySection({ header, headerIcon, categories, search
                 </td>
                 <td className="px-4 py-4 text-secondary">
                     <span className="line-clamp-2">
-                        {category.description}
+                        {category.eventCount} associated events
                     </span>
                 </td>
                 <td className="px-4 py-4">

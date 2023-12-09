@@ -18,6 +18,7 @@ export type EventCategory = {
     description: string | null;
     timestamp: string;
     archived: boolean;
+    eventCount: number;
 }
 export type Image = {
     id: string;
