@@ -49,6 +49,11 @@ export default function CreateEventCategory({ params: { categoryId } }: {
         if(!prevEventIds) return;
         setEventIds(prevEventIds);
     }, [prevEventIds]);
+    const reset = () => {
+        if(!prevCategory) return;
+        setEventIds(prevEventIds);
+        setCategoryInfo(prevCategory);
+    }
 
     const openEventsPopout = () => {
         const onChange = (event: Event) => {
@@ -155,6 +160,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
     }
 
     const isCreatingCategory = !prevCategory;
+    const canReset = hasChanges().events || hasChanges().info;
     return(
         <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
@@ -162,6 +168,11 @@ export default function CreateEventCategory({ params: { categoryId } }: {
                 <AdminHeader 
                     backPath={'/admin/events/categories'}
                     text={`Events / Categories / ${isCreatingCategory ? 'Create' : prevCategory.name}`}
+                    options={canReset ? (
+                        <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">
+                            You have unsaved changes.
+                        </span>
+                    ) : undefined}
                 />
                 <div className="flex">
                     <div className="p-4 flex-1 border-r-[1px] border-r-light-secondary">
@@ -213,6 +224,14 @@ export default function CreateEventCategory({ params: { categoryId } }: {
                     />
                 )}
                 <div className="p-4 flex justify-end gap-2 bg-light-secondary">
+                    {canReset && (
+                        <Button 
+                            type={'transparent'}
+                            onClick={reset}
+                        >
+                            Reset changes
+                        </Button>
+                    )}
                     <Button
                         onClick={onSubmit}
                         disabled={loading}
