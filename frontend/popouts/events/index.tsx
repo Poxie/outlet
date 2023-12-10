@@ -3,9 +3,11 @@ import { selectEventById, selectEventIds } from "@/store/slices/events";
 import { getEventImage } from "@/utils";
 import Image from "next/image";
 import { Event } from "../../../types";
+import { useState } from "react";
 
-export default function EventsPopout({ onChange }: {
+export default function EventsPopout({ onChange, selectedIds }: {
     onChange: (event: Event) => void;
+    selectedIds?: string[];
 }) {
     const eventIds = useAppSelector(selectEventIds);
 
@@ -19,6 +21,7 @@ export default function EventsPopout({ onChange }: {
                     <EventsPopoutItem 
                         id={id}
                         onClick={onChange}
+                        active={selectedIds ? selectedIds.includes(id) : undefined}
                         key={id}
                     />
                 ))}
@@ -27,10 +30,13 @@ export default function EventsPopout({ onChange }: {
     )
 }
 
-function EventsPopoutItem({ id, onClick }: {
+function EventsPopoutItem({ id, onClick, active: _active }: {
     id: string;
     onClick: (event: Event) => void;
+    active?: boolean;
 }) {
+    const [active, setActive] = useState(_active);
+
     const event = useAppSelector(state => selectEventById(state, id));
     if(!event) return null;
 
@@ -38,7 +44,11 @@ function EventsPopoutItem({ id, onClick }: {
         <li>
             <button 
                 className="p-2 w-full flex gap-3 hover:bg-light-secondary transition-colors rounded"
-                onClick={() => onClick(event)}
+                onClick={() => {
+                    onClick(event);
+                    if(active === undefined) return;
+                    setActive(prev => !prev);
+                }}
             >
                 <div className="min-w-[30%] rounded overflow-hidden">
                     <Image 
@@ -57,6 +67,11 @@ function EventsPopoutItem({ id, onClick }: {
                         {event.description}
                     </span>
                 </div>
+                {active && (
+                    <span>
+                        Active
+                    </span>
+                )}
             </button>
         </li>
     )
