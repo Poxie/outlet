@@ -13,6 +13,9 @@ export type Event = {
     archived: boolean;
     parentId: string | null;
 }
+export type EventWithImages = Event & {
+    images: Image[];
+}
 export type EventCategory = {
     id: string;
     name: string;
