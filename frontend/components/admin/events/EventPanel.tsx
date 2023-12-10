@@ -1,12 +1,18 @@
+import { ArrowIcon } from "@/assets/icons/ArrowIcon";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import { useModal } from "@/contexts/modal";
 import { useEvents } from "@/hooks/useEvents";
 import AddEventModal from "@/modals/events/AddEventModal";
+import { useAppSelector } from "@/store";
+import { selectCategoriesLength } from "@/store/slices/categories";
+import Link from "next/link";
 
 export default function EventPanel() {
     const { setModal } = useModal();
     const { addEvent, setSearch } = useEvents();
+
+    const categoryCount = useAppSelector(selectCategoriesLength);
 
     const openAddEventModal = () => setModal(
         <AddEventModal 
@@ -21,13 +27,13 @@ export default function EventPanel() {
                 placeholder={'Search'}
                 onChange={setSearch}
             />
-            <Button 
-                href={'/admin/events/create'}
-                onClick={openAddEventModal}
-                className="p-3"
+            <Link 
+                className="px-3 py-2 flex items-center gap-2 text-secondary hover:bg-light-secondary/50 active:bg-light-secondary transition-colors rounded-md"
+                href={`/admin/events/categories`}
             >
-                Create event
-            </Button>
+                {categoryCount} categories
+                <ArrowIcon className="w-4 rotate-90" />
+            </Link>
         </div>
     )
 }
