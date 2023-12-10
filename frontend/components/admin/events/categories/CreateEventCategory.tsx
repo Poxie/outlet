@@ -171,7 +171,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
     }
 
     const isCreatingCategory = !prevCategory;
-    const canReset = hasChanges().events || hasChanges().info;
+    const canReset = !isCreatingCategory && (hasChanges().events || hasChanges().info);
     return(
         <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
