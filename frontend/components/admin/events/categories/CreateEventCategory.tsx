@@ -11,7 +11,7 @@ import { addCategory, selectCategoryById, updateCategory } from '@/store/slices/
 import { useAppDispatch, useAppSelector } from '@/store';
 import { usePopout } from '@/contexts/popout';
 import EventsPopout from '@/popouts/events';
-import { Event } from '../../../../../types';
+import { Event, EventCategory } from '../../../../../types';
 import events, { editEvent, selectEventById, selectEventsByParent } from '@/store/slices/events';
 import Image from 'next/image';
 import { getEventImage } from '@/utils';
@@ -115,8 +115,19 @@ export default function CreateEventCategory({ params: { categoryId } }: {
         if(!prevCategory) {
             setLoading(true);
             
-            const category = await post(`/categories`, categoryInfo);
+            const category = await post<EventCategory>(`/categories`, categoryInfo);
             dispatch(addCategory(category));
+
+            
+            if(eventIds.length) {
+                await put(`/categories/${category.id}/children`, { eventIds: eventIds });
+                
+                for(const eventId of eventIds) {
+                    dispatch(editEvent({ eventId: eventId, changes: { parentId: category.id } }));
+                    dispatch(updateCategory({ categoryId: category.id, changes: { eventCount: eventIds.length } }));
+                }
+            }
+
             
             router.replace('/admin/events/categories');
             return;
