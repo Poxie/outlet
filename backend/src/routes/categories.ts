@@ -7,6 +7,7 @@ import { ALLOWED_CATEGORY_PROPERTIES, REQUIRED_CATEGORY_PROPERTIES } from '../ut
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { In } from 'typeorm';
+import { Images } from '../entity/images.entity';
 
 const router = express.Router();
 
@@ -49,6 +50,28 @@ router.post('/categories', async (req, res, next) => {
 
     res.send(category);
 });
+router.get('/categories/:categoryId/children', async (req, res, next) => {
+    const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
+    if(!category) return next(new APINotFoundError('Category not found.'));
+
+    const events = await myDataSource.getRepository(Events).findBy({ parentId: category.id });
+
+    const eventsWithImages = [];
+    for(const event of events) {
+        const images = await myDataSource.getRepository(Images)
+            .createQueryBuilder('images')
+            .where('images.parentId = :parentId', { parentId: event.id })
+            .orderBy('images.position')
+            .getMany();
+
+        eventsWithImages.push({
+            ...event,
+            images,
+        })
+    }
+
+    res.send(eventsWithImages);
+})
 router.patch('/categories/:categoryId', async (req, res, next) => {
     const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
     if(!category) return next(new APINotFoundError('Category not found.'));
