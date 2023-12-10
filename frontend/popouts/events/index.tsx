@@ -4,6 +4,8 @@ import { getEventImage } from "@/utils";
 import Image from "next/image";
 import { Event } from "../../../types";
 import { useState } from "react";
+import { CheckmarkIcon } from "@/assets/icons/CheckmarkIcon";
+import { twMerge } from "tailwind-merge";
 
 export default function EventsPopout({ onChange, selectedIds }: {
     onChange: (event: Event) => void;
@@ -43,7 +45,10 @@ function EventsPopoutItem({ id, onClick, active: _active }: {
     return(
         <li>
             <button 
-                className="p-2 w-full flex gap-3 hover:bg-light-secondary transition-colors rounded"
+                className={twMerge(
+                    "p-2 w-full flex gap-3 hover:bg-light-secondary transition-colors rounded",
+                    active && "bg-light-secondary/50",
+                )}
                 onClick={() => {
                     onClick(event);
                     if(active === undefined) return;
@@ -68,9 +73,9 @@ function EventsPopoutItem({ id, onClick, active: _active }: {
                     </span>
                 </div>
                 {active && (
-                    <span>
-                        Active
-                    </span>
+                    <div>
+                        <CheckmarkIcon className="min-w-7 w-7 text-c-primary" />
+                    </div>
                 )}
             </button>
         </li>

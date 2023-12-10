@@ -61,7 +61,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
         }
 
         setPopout({
-            popout: <EventsPopout onChange={onChange} />,
+            popout: <EventsPopout selectedIds={eventIds} onChange={onChange} />,
             ref: eventsPopoutButton,
             options: { position: 'left' },
         })
