@@ -11,10 +11,11 @@ export default async function Category({ params: { categoryId } }: {
 }) {
     const events = await getEvents(categoryId);
     return(
-        <main className="py-8 w-main max-w-main mx-auto flex flex-col gap-12">
+        <main className="w-main max-w-main mx-auto">
             {events.map(event => (
                 <EventContainer 
                     event={event}
+                    className="py-8"
                 />
             ))}
         </main>
