@@ -1,3 +1,4 @@
+import { twMerge } from "tailwind-merge";
 import { EventWithImages } from "../../../types";
 import EventContainer from "../event/EventContainer";
 
@@ -12,10 +13,13 @@ export default async function Category({ params: { categoryId } }: {
     const events = await getEvents(categoryId);
     return(
         <main className="w-main max-w-main mx-auto">
-            {events.map(event => (
+            {events.map((event, index) => (
                 <EventContainer 
                     event={event}
-                    className="py-8"
+                    className={twMerge(
+                        "py-8",
+                        index !== 0 && 'border-t-[1px] border-t-light-secondary/50',
+                    )}
                 />
             ))}
         </main>
