@@ -93,10 +93,10 @@ export default function CreateEventCategory({ params: { categoryId } }: {
         return { categoryChanges, eventChanges };
     }
     const hasChanges = () => {
-        return(
-            Object.keys(getChanges().categoryChanges).length > 0 ||
-            Object.keys(getChanges().eventChanges).length > 0
-        )
+        return {
+            info: Object.keys(getChanges().categoryChanges).length > 0,
+            events: (Object.keys(getChanges().eventChanges).length > 0 || eventIds.length !== prevEventIds.length),
+        }
     }
     const onSubmit = async () => {
         if(!categoryInfo.name) {
@@ -117,7 +117,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
             return;
         }
 
-        if(!hasChanges()) {
+        if(!hasChanges().events && !hasChanges().info) {
             setFeedback({
                 text: 'No changes have been made.',
                 type: 'danger',
@@ -129,11 +129,11 @@ export default function CreateEventCategory({ params: { categoryId } }: {
 
         const { categoryChanges, eventChanges } = getChanges();
         
-        if(Object.keys(categoryChanges).length > 0) {
+        if(hasChanges().info) {
             await patch(`/categories/${prevCategory.id}`, categoryChanges);
             dispatch(updateCategory({ categoryId, changes: categoryChanges }));
         }
-        if(eventChanges.length) {
+        if(hasChanges().events) {
             await put(`/categories/${prevCategory.id}/children`, { eventIds: eventChanges });
 
             const removedIds = prevEventIds.filter(id => !eventIds.includes(id));
