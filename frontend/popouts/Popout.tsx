@@ -92,7 +92,7 @@ export default function Popout({ children, element, options }: {
             initial={INITIAL_STYLE}
             animate={ANIMATED_STYLE}
             transition={{ duration: ANIMATION_DURATION }}
-            className="z-30 absolute bg-light rounded-lg shadow min-w-[250px] overflow-auto"
+            className="z-30 absolute bg-light rounded-lg shadow-centered min-w-[250px] overflow-auto"
             style={{ maxHeight: `calc(100% - ${SPACE_FROM_EDGE * 2}px)` }}
             ref={ref}
         >
