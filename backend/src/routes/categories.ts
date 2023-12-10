@@ -91,6 +91,13 @@ router.patch('/categories/:categoryId', async (req, res, next) => {
         return next(new APIBadRequestError('No properties to update were provided.'));
     }
 
+    if(typeof properties.archived === 'boolean') {
+        await myDataSource.getRepository(Events).update(
+            { parentId: category.id },
+            { archived: properties.archived },
+        );
+    }
+
     const newCategory = await myDataSource.getRepository(Category).save({
         ...category,
         ...properties,
