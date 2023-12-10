@@ -24,16 +24,17 @@ const getEvent = async (eventId: string) => {
 
 export default async function Event({ 
     params: { eventId },
-    searchParams: { imageId },
+    searchParams: { photoId },
 }: {
     params: { eventId: string };
-    searchParams: { imageId?: string };
+    searchParams: { photoId?: string };
 }) {
     const { event, images } = await getEvent(eventId);
 
     return(
         <div className="w-main max-w-main mx-auto py-8">
             <EventContainer 
+                photoId={photoId}
                 event={{
                     ...event,
                     images,

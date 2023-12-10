@@ -4,8 +4,9 @@ import { getEventImage } from "@/utils";
 import { twMerge } from "tailwind-merge";
 import ExpandableImage from "../expandable-image";
 
-export default function EventContainer({ event, className }: {
+export default function EventContainer({ event, photoId, className }: {
     event: EventWithImages;
+    photoId?: string;
     className?: string;
 }) {
     return(
@@ -50,8 +51,8 @@ export default function EventContainer({ event, className }: {
                             <ExpandableImage 
                                 className="w-full aspect-square object-cover rounded-md"
                                 src={getEventImage(event.id, image.id, event.timestamp)}
-                                path={`/events/${event.id}?imageId=${image.id}`}
-                                // defaultActive={image.id === imageId}
+                                path={`/events/${event.id}?photoId=${image.id}`}
+                                defaultActive={image.id === photoId}
                                 width={150}
                                 height={150}
                                 alt=""

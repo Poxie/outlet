@@ -10,8 +10,12 @@ const getEvents = async (categoryId: string) => {
     return null;
 }
 
-export default async function Category({ params: { categoryId } }: {
+export default async function Category({ 
+    params: { categoryId },
+    searchParams: { photoId },
+}: {
     params: { categoryId: string };
+    searchParams: { photoId?: string };
 }) {
     const events = await getEvents(categoryId);
     if(!events) {
@@ -32,6 +36,7 @@ export default async function Category({ params: { categoryId } }: {
             {events.map((event, index) => (
                 <EventContainer 
                     event={event}
+                    photoId={photoId}
                     className={twMerge(
                         "py-8",
                         index !== 0 && 'border-t-[1px] border-t-light-secondary/50',
