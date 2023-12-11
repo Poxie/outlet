@@ -3,7 +3,7 @@ import * as imageDataURI from 'image-data-uri';
 import * as fs from 'fs';
 import * as express from 'express';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
-import { createId } from '../utils';
+import { createId, createUniqueIdFromName } from '../utils';
 import { myDataSource } from '../app-data-source';
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
@@ -48,7 +48,7 @@ router.post('/events', async (req, res, next) => {
     const date = new Date(Number(timestamp));
     if(!date.getTime()) return next(new APIBadRequestError("Invalid timestamp was provided."));
 
-    const id = await createId('events');
+    const id = await createUniqueIdFromName(title, 'events');
     let imageResponse: string;
     try {
         imageResponse = await imageDataURI.outputFile(image, `src/imgs/events/${date.getFullYear()}/${id}/${EVENT_IMAGE_ID}.png`);
