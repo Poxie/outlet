@@ -17,7 +17,7 @@ import { CloseIcon } from "@/assets/icons/CloseIcon";
 export default function EventPanel() {
     const { setModal } = useModal();
     const { setPopout } = usePopout();
-    const { addEvent, setSearch, categoryId } = useEvents();
+    const { addEvent, setSearch, categoryId, hasFilters } = useEvents();
 
     const categoryPopoutButton = useRef<HTMLButtonElement>(null);
     const resetCategoryButton = useRef<HTMLButtonElement>(null);
@@ -45,6 +45,10 @@ export default function EventPanel() {
             ref: categoryPopoutButton,
             options: { position: 'right' },
         })
+    }
+    const resetFilters = () => {
+        dispatch(setSearch(''));
+        dispatch(setCategoryId(null));
     }
 
     return(
@@ -77,6 +81,14 @@ export default function EventPanel() {
                         'Sort by category...'
                     )}
                 </button>
+                {hasFilters && (
+                    <button 
+                        className="px-3 py-2 text-sm hover:bg-light-secondary/50 active:bg-light-secondary rounded-md transition-colors"
+                        onClick={resetFilters}
+                    >
+                        Reset filters
+                    </button>
+                )}
             </div>
             <Link 
                 className="px-3 py-2 flex items-center gap-2 text-secondary hover:bg-light-secondary/50 active:bg-light-secondary transition-colors rounded-md"

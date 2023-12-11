@@ -42,5 +42,7 @@ export const useEvents = () => {
         )
     }, [events, search, categoryId]);
 
-    return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, unarchiveEvent, search, setSearch, categoryId };
+    const hasFilters = !!search || categoryId;
+
+    return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, unarchiveEvent, search, setSearch, categoryId, hasFilters };
 }
