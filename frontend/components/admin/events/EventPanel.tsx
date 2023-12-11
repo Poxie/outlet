@@ -6,10 +6,12 @@ import { usePopout } from "@/contexts/popout";
 import { useEvents } from "@/hooks/useEvents";
 import AddEventModal from "@/modals/events/AddEventModal";
 import CategoryPopout from "@/popouts/categories";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { selectCategoriesLength } from "@/store/slices/categories";
 import Link from "next/link";
 import { useRef } from "react";
+import { EventCategory } from "../../../../types";
+import { setCategoryId } from "@/store/slices/events";
 
 export default function EventPanel() {
     const { setModal } = useModal();
@@ -18,6 +20,7 @@ export default function EventPanel() {
 
     const categoryPopoutButton = useRef<HTMLButtonElement>(null);
 
+    const dispatch = useAppDispatch();
     const categoryCount = useAppSelector(selectCategoriesLength);
 
     const openAddEventModal = () => setModal(
@@ -26,8 +29,11 @@ export default function EventPanel() {
         />
     )
     const openCategoryPopout = () => {
+        const onClick = (category: EventCategory) => {
+            dispatch(setCategoryId(category.id));
+        }
         setPopout({
-            popout: <CategoryPopout onClick={console.log} />,
+            popout: <CategoryPopout onClick={onClick} />,
             ref: categoryPopoutButton,
             options: { position: 'right' },
         })

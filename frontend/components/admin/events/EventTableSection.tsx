@@ -12,7 +12,7 @@ export default function EventTableSection({ events, header, headerIcon }: {
     header: string;
     headerIcon: React.ReactNode;
 }) {
-    const { search } = useEvents();
+    const { search, categoryId } = useEvents();
 
     const [expanded, setExpanded] = useState(true);
 
@@ -34,7 +34,7 @@ export default function EventTableSection({ events, header, headerIcon }: {
                             {header}
                         </span>
                         <span className="text-xs font-normal text-secondary">
-                            {events.length} events {search && '(based on filters)'}
+                            {events.length} events {(search || categoryId) && '(based on filters)'}
                         </span>
                     </div>
                 </div>

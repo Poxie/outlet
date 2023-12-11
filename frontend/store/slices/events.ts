@@ -3,11 +3,13 @@ import { Event, Image } from '../../../types';
 import { RootState, useAppSelector } from '..';
 
 const initialState: {
+    categoryId: string | null;
     search: string;
     events: Event[];
     images: {[parentId: string]: Image[] | undefined};
     loading: boolean;
 } = {
+    categoryId: null,
     search: '',
     events: [],
     images: {},
@@ -18,6 +20,9 @@ export const eventsSlice = createSlice({
     name: 'events',
     initialState,
     reducers: {
+        setCategoryId: (state, action) => {
+            state.categoryId = action.payload;
+        },
         setSearch: (state, action) => {
             state.search = action.payload;
         },
@@ -88,7 +93,7 @@ export const eventsSlice = createSlice({
     }
 })
 
-export const { setEvents, addEvent, removeEvent, editEvent, setSearch, setEventImages, addEventImages, removeEventImages, updateEventImagesPosition } = eventsSlice.actions;
+export const { setCategoryId, setEvents, addEvent, removeEvent, editEvent, setSearch, setEventImages, addEventImages, removeEventImages, updateEventImagesPosition } = eventsSlice.actions;
 
 const selectId = (_:RootState, id: string) => id;
 

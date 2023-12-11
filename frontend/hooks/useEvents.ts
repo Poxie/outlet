@@ -11,6 +11,7 @@ export const useEvents = () => {
     const events = useAppSelector(state => state.events.events);
     const loading = useAppSelector(state => state.events.loading);
     const search = useAppSelector(state => state.events.search);
+    const categoryId = useAppSelector(state => state.events.categoryId);
 
     const setSearch = (query: string) => dispatch(_setSearch(query));
     const addEvent = async (event: Event) => {
@@ -33,7 +34,13 @@ export const useEvents = () => {
     const archiveEvent = (eventId: string) => editEvent(eventId, { archived: true });
     const unarchiveEvent = (eventId: string) => editEvent(eventId, { archived: false });
 
-    const filteredEvents = useMemo(() => events.filter(event => event.title.toLowerCase().includes(search.toLowerCase())), [events, search]);
+    const filteredEvents = useMemo(() => {
+        return (
+            events
+                .filter(event => event.title.toLowerCase().includes(search.toLowerCase()))
+                .filter(event => !categoryId || event.parentId === categoryId)
+        )
+    }, [events, search, categoryId]);
 
-    return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, unarchiveEvent, search, setSearch };
+    return { events: filteredEvents, loading, addEvent, removeEvent, editEvent, archiveEvent, unarchiveEvent, search, setSearch, categoryId };
 }
