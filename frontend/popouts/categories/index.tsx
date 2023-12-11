@@ -5,8 +5,9 @@ import { AddIcon } from "@/assets/icons/AddIcon";
 import Link from "next/link";
 import { usePopout } from "@/contexts/popout";
 
-export default function CategoryPopout({ onClick }: {
+export default function CategoryPopout({ onClick, closeOnSelect=true }: {
     onClick: (category: EventCategory) => void;
+    closeOnSelect?: boolean;
 }) {
     const { close } = usePopout();
 
@@ -33,7 +34,10 @@ export default function CategoryPopout({ onClick }: {
                     <li key={category.id}>
                         <button
                             className="p-2 w-full text-left hover:bg-light-secondary/50 active:bg-light-secondary transition-colors rounded-md"
-                            onClick={() => onClick(category)}
+                            onClick={() => {
+                                onClick(category)
+                                if(closeOnSelect) close();
+                            }}
                         >
                             {category.name}
                         </button>
