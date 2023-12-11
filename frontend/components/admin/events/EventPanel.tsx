@@ -7,28 +7,36 @@ import { useEvents } from "@/hooks/useEvents";
 import AddEventModal from "@/modals/events/AddEventModal";
 import CategoryPopout from "@/popouts/categories";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { selectCategoriesLength } from "@/store/slices/categories";
+import { selectCategoriesLength, selectCategoryById } from "@/store/slices/categories";
 import Link from "next/link";
 import { useRef } from "react";
 import { EventCategory } from "../../../../types";
 import { setCategoryId } from "@/store/slices/events";
+import { CloseIcon } from "@/assets/icons/CloseIcon";
 
 export default function EventPanel() {
     const { setModal } = useModal();
     const { setPopout } = usePopout();
-    const { addEvent, setSearch } = useEvents();
+    const { addEvent, setSearch, categoryId } = useEvents();
 
     const categoryPopoutButton = useRef<HTMLButtonElement>(null);
+    const resetCategoryButton = useRef<HTMLButtonElement>(null);
 
     const dispatch = useAppDispatch();
     const categoryCount = useAppSelector(selectCategoriesLength);
+    const sortByCategory = useAppSelector(state => selectCategoryById(state, categoryId || ''));
 
+    const resetCategoryFilters = () => dispatch(setCategoryId(null));
     const openAddEventModal = () => setModal(
         <AddEventModal 
             onEventAdd={addEvent}
         />
     )
-    const openCategoryPopout = () => {
+    const openCategoryPopout = (e: React.MouseEvent) => {
+        if(resetCategoryButton.current && resetCategoryButton.current.contains(e.target as HTMLElement)) {
+            return;
+        }
+
         const onClick = (category: EventCategory) => {
             dispatch(setCategoryId(category.id));
         }
@@ -52,7 +60,22 @@ export default function EventPanel() {
                     onClick={openCategoryPopout}
                     ref={categoryPopoutButton}
                 >
-                    Sort by category...
+                    {sortByCategory ? (
+                        <span className="flex items-center gap-1">
+                            Category:{' '}
+                            {sortByCategory.name}
+                            <button
+                                className="p-0.5 -mr-0.5"
+                                onClick={resetCategoryFilters}
+                                aria-label="Remove category filters"
+                                ref={resetCategoryButton}
+                            >
+                                <CloseIcon className="w-4" />
+                            </button>
+                        </span>
+                    ) : (
+                        'Sort by category...'
+                    )}
                 </button>
             </div>
             <Link 
