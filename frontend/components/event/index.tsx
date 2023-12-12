@@ -12,7 +12,7 @@ const getEvent = async (eventId: string) => {
     const [event, images] = await Promise.all(
         [
             fetch(basePath, opts).then(res => res.json()),
-            fetch(`${basePath}/images`, opts).then(res => res.json())
+            fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/events/${eventId}`, opts).then(res => res.json())
         ]
     )
 

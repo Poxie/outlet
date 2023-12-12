@@ -96,14 +96,14 @@ export default function EditEvent({ params: { eventId } }: {
         if(!addedImages.length && !removedImages.length && !changedPositions.length) return;
         
         if(removedImages.length) {
-            const ids = removedImages.map(i => i.id);
-            await _delete(`/events/${eventId}/images`, { ids });
-            dispatch(removeEventImages({ eventId, ids }));
+            const imageIds = removedImages.map(i => i.id);
+            await _delete(`/images/events/${eventId}`, { imageIds });
+            dispatch(removeEventImages({ eventId, ids: imageIds }));
         }
         
         let newlyAddedImages: ImageType[] = [];
         if(addedImages.length) {
-            newlyAddedImages = await post<ImageType[]>(`/events/${eventId}/images`, {
+            newlyAddedImages = await post<ImageType[]>(`/images/events/${eventId}`, {
                 images: addedImages.map(image => image.image)
             });
             dispatch(addEventImages({ eventId, images: newlyAddedImages }));
@@ -119,7 +119,7 @@ export default function EditEvent({ params: { eventId } }: {
                 }
                 return { id, position };
             });
-            const newImages = await patch<ImageType[]>(`/events/${eventId}/images/positions`, { positions });
+            const newImages = await patch<ImageType[]>(`/images/events/${eventId}`, { positions });
             dispatch(_setEventImages({ eventId, images: newImages }));
         }
     }
