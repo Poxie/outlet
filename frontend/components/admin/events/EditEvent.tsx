@@ -61,7 +61,7 @@ export default function EditEvent({ params: { eventId } }: {
     }, [event]);
     useEffect(() => {
         if(!prevImages && !isCreatingEvent) {
-            get<ImageType[]>(`/events/${eventId}/images`).then(images => {
+            get<ImageType[]>(`/images/events/${eventId}`).then(images => {
                 dispatch(_setEventImages({ eventId, images }));
             })
             return;
