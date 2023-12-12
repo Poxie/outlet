@@ -133,13 +133,13 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
         
         if(removedImages.length) {
             const ids = removedImages.map(i => i.id);
-            await _delete(`/inspiration/${inspirationId}/images`, { ids });
+            await _delete(`/images/inspiration/${inspirationId}`, { imageIds: ids });
             dispatch(removeInspirationImages({ inspirationId, ids }));
         }
         
         let newlyAddedImages: Image[] = [];
         if(addedImages.length) {
-            newlyAddedImages = await post<Image[]>(`/inspiration/${inspirationId}/images`, {
+            newlyAddedImages = await post<Image[]>(`/images/inspiration/${inspirationId}`, {
                 images: addedImages.map(image => image.image)
             });
             dispatch(addInspirationImages({ inspirationId, images: newlyAddedImages }));
@@ -155,7 +155,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
                 }
                 return { id, position };
             });
-            const newImages = await patch<Image[]>(`/inspiration/${inspirationId}/images/positions`, { positions });
+            const newImages = await patch<Image[]>(`/images/inspiration/${inspirationId}`, { positions });
             dispatch(setInspirationImages({ inspirationId, images: newImages }));
         }
     }
