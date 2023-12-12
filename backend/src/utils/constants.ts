@@ -11,3 +11,5 @@ export const REQUIRED_INSPIRATION_PROPERTIES = ['title', 'description', 'timesta
 export const ALLOWED_INSPIRATION_PROPERTIES = ['title', 'description', 'timestamp', 'archived'];
 export const REQUIRED_CATEGORY_PROPERTIES = ['name'];
 export const ALLOWED_CATEGORY_PROPERTIES = ['name', 'description', 'archived'];
+
+export const ACCEPTED_IMAGE_TYPES = ['deals', 'events', 'inspiration'];

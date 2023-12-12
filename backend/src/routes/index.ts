@@ -6,6 +6,7 @@ import stores from './stores';
 import banners from './banners';
 import inspiration from './inspiration';
 import categories from './categories';
+import images from './images';
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.use('', stores);
 router.use('', banners);
 router.use('', inspiration);
 router.use('', categories);
+router.use('', images);
 
 router.use(logError);
 router.use(returnError);
