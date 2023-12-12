@@ -1,7 +1,7 @@
 import { EntityTarget, ObjectLiteral } from "typeorm";
 import { myDataSource } from "../app-data-source";
 import { WeeklyDeal } from "../entity/weekly-deal.entity";
-import { DEAL_DAY_ID } from "./constants";
+import { DEAL_DAY_ID, IMAGE_TYPE_REPOSITORIES } from "./constants";
 import { Events } from "../entity/events.entity";
 import { Images } from "../entity/images.entity";
 import { Banners } from "../entity/banners.entity";
@@ -62,3 +62,5 @@ export const createUniqueIdFromName = async (name: string, table: DatabaseTable)
     
     return id;
 }
+
+export const getParentRepository = (imageType: keyof typeof IMAGE_TYPE_REPOSITORIES) => IMAGE_TYPE_REPOSITORIES[imageType];
