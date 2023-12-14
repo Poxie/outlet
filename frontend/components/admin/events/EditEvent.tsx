@@ -90,9 +90,7 @@ export default function EditEvent({ params: { eventId } }: {
         return !!(addedImages.length || removedImages.length || changedPositions.length);
     }
     const updateImages = async (eventId: string) => {
-        if(!prevImages) return;
-
-        const { addedImages, removedImages, changedPositions } = getImageDiff(prevImages, eventImages);
+        const { addedImages, removedImages, changedPositions } = getImageDiff(prevImages || [], eventImages);
         if(!addedImages.length && !removedImages.length && !changedPositions.length) return;
         
         if(removedImages.length) {
@@ -108,7 +106,7 @@ export default function EditEvent({ params: { eventId } }: {
             });
             dispatch(addEventImages({ eventId, images: newlyAddedImages }));
         }
-        if(changedPositions.length) {
+        if(prevImages && changedPositions.length) {
             const positions = eventImages.map(({ id, position }) => {
                 if(id.startsWith('0.')) {
                     const realId = newlyAddedImages.shift()?.id;
@@ -207,7 +205,7 @@ export default function EditEvent({ params: { eventId } }: {
         })
     }
 
-    const hasChanges = hasInfodiff() || hasImageDiff();
+    const hasChanges = !isCreatingEvent && (hasInfodiff() || hasImageDiff());
     const images = useMemo(() => eventImages.map(image => ({
         ...image,
         src: image.image.startsWith('data') ? image.image : getEventImage(eventId, image.id, date.getTime().toString()),
