@@ -10,6 +10,7 @@ import { APINotFoundError } from '../errors/apiNotFoundError';
 import { Images } from '../entity/images.entity';
 import { createId, getParentRepository } from '../utils';
 import { APIInternalServerError } from '../errors/apiInternalServerError';
+import { WEEKLY_DEAL_DAY } from '../constants';
 
 const router = express.Router();
 
@@ -26,6 +27,13 @@ const imagePaths = {
     inspiration: ({ parentId, imageId }: { parentId: string, imageId: string }) => {
         return `${BASE_PATH}/blog/${parentId}/${imageId}.png`;
     },
+    deals: ({ id, date }: {
+        id: string;
+        date: string;
+    }) => {
+        const [day, month, year] = date.split('-');
+        return `${BASE_PATH}/weekly-deals/${year}/${month}-${day}/${id}.png`;
+    },
 }
 router.get('/images/:imageType/:relevantId', async (req, res, next) => {
     const imageType = req.params.imageType as ImageType;
@@ -33,14 +41,9 @@ router.get('/images/:imageType/:relevantId', async (req, res, next) => {
         return next(new APIBadRequestError('Invalid image type.'));
     }
 
-    const parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: req.params.relevantId });
-    if(!parent) {
-        return next(new APINotFoundError('Parent not found.'));
-    }
-
     const images = await myDataSource.getRepository(Images)
         .createQueryBuilder('images')
-        .where('images.parentId = :parentId', { parentId: parent.id })
+        .where('images.parentId = :parentId', { parentId: req.params.relevantId })
         .orderBy('images.position', 'ASC')
         .getMany();
 
@@ -58,8 +61,8 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
     if(!Array.isArray(images)) return next(new APIBadRequestError('images must be an array.'));
 
     const parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: relevantId });
-    if(!parent) return next(new APINotFoundError('Parent not found.'));
 
+    let timestamp = parent?.timestamp;
     const newImages = [];
     for(const image of images) {
         const imageId = await createId('images');
@@ -74,6 +77,17 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
                 }
                 case 'inspiration': {
                     imagePath = imagePaths.inspiration({ parentId: parent.id, imageId });
+                    break;
+                }
+                case 'deals': {
+                    const [day,month,year] = relevantId.split('-');
+                    const date = new Date(Number(year), Number(month) - 1, Number(day));
+                    if(date.getDay() !== WEEKLY_DEAL_DAY) {
+                        return next(new APIBadRequestError('The provided date is not a deal-date.'));
+                    }
+
+                    timestamp = date.getTime().toString();
+                    imagePath = imagePaths.deals({ date: relevantId, id: imageId })
                     break;
                 }
                 default: {
@@ -97,7 +111,7 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
             image: imageId,
             position: prevCount,
             parentId: relevantId,
-            timestamp: parent.timestamp,
+            timestamp: timestamp,
         })
         await myDataSource.getRepository(Images).save(newImage);
         newImages.push(newImage);
@@ -116,7 +130,6 @@ router.delete('/images/:imageType/:relevantId', async (req, res, next) => {
     if(!Array.isArray(imageIds)) return next(new APIBadRequestError('imageIds must be an array.'));
 
     const parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: relevantId });
-    if(!parent) return next(new APINotFoundError('Parent not found.'));
 
     for(const imageId of imageIds) {
         const image = await myDataSource.getRepository(Images).findOneBy({ id: imageId });
@@ -135,6 +148,10 @@ router.delete('/images/:imageType/:relevantId', async (req, res, next) => {
             }
             case 'inspiration': {
                 imagePath = imagePaths.inspiration({ parentId: parent.id, imageId });
+                break;
+            }
+            case 'deals': {
+                imagePath = imagePaths.deals({ date: relevantId, id: imageId });
                 break;
             }
             default: {
@@ -187,9 +204,6 @@ router.patch('/images/:imageType/:relevantId', async (req, res, next) => {
         }
         currentPos++;
     }
-
-    const parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: relevantId });
-    if(!parent) return next(new APINotFoundError('Parent not found.'));
 
     for(const pos of positions) {
         await myDataSource.getRepository(Images).update(

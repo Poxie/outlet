@@ -1,12 +1,12 @@
 import { getWeeklyDealImage } from "@/utils";
 import Image from "next/image";
-import { WeeklyDeal } from "../../../types";
+import { Image as ImageType } from "../../../types";
 import { twMerge } from "tailwind-merge";
 import ExpandableImage from "../expandable-image";
 
 const getActiveDeals = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/weekly-deals`, { next: { revalidate: 0 } });
-    return await res.json() as WeeklyDeal[];
+    return await res.json() as ImageType[];
 }
 
 export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
@@ -49,7 +49,7 @@ export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
                         <li key={deal.id}>
                             <ExpandableImage 
                                 className="w-full aspect-square object-cover rounded-md"
-                                src={getWeeklyDealImage(deal.id, deal.date)}
+                                src={getWeeklyDealImage(deal.id, deal.parentId)}
                                 path={`/veckans-deal?deal=${deal.id}`}
                                 defaultActive={deal.id === dealId}
                                 width={150}

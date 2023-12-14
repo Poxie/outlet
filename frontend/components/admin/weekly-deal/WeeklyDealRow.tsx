@@ -1,5 +1,5 @@
 "use client";
-import { WeeklyDeal } from "../../../../types";
+import { Image } from "../../../../types";
 import { ArrowIcon } from "@/assets/icons/ArrowIcon";
 import Link from "next/link";
 
@@ -7,7 +7,7 @@ const HOURS_IN_A_WEEK = 60*60*24*7;
 export default function WeeklyDealRow({ date, active, images, label }: {
     date: string;
     active: boolean;
-    images: WeeklyDeal[];
+    images: Image[];
     label?: 'This week' | 'Next week';
 }) {
     return(

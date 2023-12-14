@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { WeeklyDeal } from '../../../types';
+import { Image } from '../../../types';
 
 const initialState: {
-    deals: {[date: string]: WeeklyDeal[] | undefined};
+    deals: {[date: string]: Image[] | undefined};
     loading: boolean;
 } = {
     deals: {},
@@ -17,29 +17,23 @@ export const dealsSlice = createSlice({
             state.deals = action.payload;
             state.loading = false;
         },
-        addDeal: (state, action) => {
-            const deals = state.deals[action.payload.date];
-            if(!deals) {
-                state.deals[action.payload.date] = [action.payload];
-                return;
-            }
-
-            deals.unshift(action.payload);
-        },
-        removeDeal: (state, action) => {
+        addDeals: (state, action) => {
             const date = action.payload.date;
-            state.deals[date] = (state.deals[date] || []).filter(deal => deal.id !== action.payload.dealId);
+            const deals = action.payload.deals;
+            state.deals[date] = state.deals[date]?.concat(deals);
         },
-        editDeal: (state, action) => {
+        removeDeals: (state, action) => {
             const date = action.payload.date;
-            state.deals[date] = (state.deals[date] || []).map(deal => {
-                if(deal.id !== action.payload.dealId) return deal;
-                return {...deal, ...action.payload.changes};
-            });
-        }
+            state.deals[date] = (state.deals[date] || []).filter(deal => !action.payload.ids.includes(deal.id));
+        },
+        editDeals: (state, action) => {
+            const date = action.payload.date;
+            const deals = action.payload.deals;
+            state.deals[date] = deals;
+        },
     }
 })
 
-export const { setDeals, addDeal, removeDeal, editDeal } = dealsSlice.actions;
+export const { setDeals, addDeals, removeDeals, editDeals } = dealsSlice.actions;
 
 export default dealsSlice.reducer;

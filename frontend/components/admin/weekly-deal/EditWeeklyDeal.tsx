@@ -1,48 +1,93 @@
 "use client";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
-import Image from "next/image";
 import Button from "@/components/button";
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from "@/store";
-import { getDateFromString, getWeeklyDealImage } from "@/utils";
-import { WeeklyDeal } from "../../../../types";
-import { addDeal, removeDeal } from "@/store/slices/deals";
+import { getDateFromString, getImageDiff, getWeeklyDealImage, hasImageChanges } from "@/utils";
+import { editDeals, addDeals, removeDeals } from "@/store/slices/deals";
 import { useAuth } from "@/contexts/auth";
-import { BinIcon } from "@/assets/icons/BinIcon";
+import SortableImages, { ImageWithSrc } from "@/components/sortable-images";
+import Feedback from "@/components/feedback";
+import { Image } from "../../../../types";
 
 export default function EditWeeklyDeal({ params: { date } }: {
     params: { date: string };
 }) {
-    const { post, _delete } = useAuth();
+    const { post, patch, _delete } = useAuth();
 
     const imageInput = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
-    const deals = useAppSelector(state => state.deals.deals[date]);
+    const prevDeals = useAppSelector(state => state.deals.deals[date]);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(!e.target.files || !e.target.files[0]) return;
+    const [deals, setDeals] = useState(prevDeals || []);
+    const [loading, setLoading] = useState(false);
+    const [feedback, setFeedback] = useState<null | {
+        text: string;
+        type: 'success' | 'danger';
+    }>(null);
 
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(e.target.files[0]);
+    useEffect(() => {
+        if(!prevDeals) return;
+        setDeals(prevDeals);
+    }, [prevDeals]);
 
-        fileReader.onload = async () => {
-            const timestamp = getDateFromString(date);
-            const deal = await post<WeeklyDeal>(`/weekly-deals/${timestamp.getTime().toString()}/images`, {
-                image: fileReader.result,
-            });
-            console.log(deal);
-            dispatch(addDeal(deal));
+    const onChange = (images: Image[]) => {
+        setFeedback(null);
+        setDeals(images);
+    };
+    const reset = () => setDeals(prevDeals || []);
+    const onSubmit = async () => {
+        if(!hasImageChanges(prevDeals || [], deals)) {
+            setFeedback({ text: 'No changes have been made.', type: 'danger' });
+            return
         }
-    }
-    const onDelete = async (id: string) => {
-        const timestamp = getDateFromString(date);
-        await _delete(`/weekly-deals/${id}`);
-        dispatch(removeDeal({ dealId: id, date }));
+
+        const { addedImages, removedImages, changedPositions } = getImageDiff(prevDeals || [], deals);
+
+        setLoading(true);
+        if(removedImages.length) {
+            const imageIds = removedImages.map(i => i.id);
+            await _delete(`/images/deals/${date}`, { imageIds });
+            dispatch(removeDeals({ date, ids: imageIds }));
+        }
+        
+        let newlyAddedImages: Image[] = [];
+        if(addedImages.length) {
+            newlyAddedImages = await post<Image[]>(`/images/deals/${date}`, {
+                images: addedImages.map(image => image.image)
+            });
+            dispatch(addDeals({ date, deals: newlyAddedImages }));
+        }
+        if(changedPositions.length) {
+            const positions = deals.map(({ id, position }) => {
+                if(id.startsWith('0.')) {
+                    const realId = newlyAddedImages.shift()?.id;
+                    return {
+                        id: realId,
+                        position,
+                    }
+                }
+                return { id, position };
+            });
+            const newImages = await patch<Image[]>(`/images/deals/${date}`, { positions });
+         
+            dispatch(editDeals({ date, deals: newImages }));
+        }
+
+        setLoading(false);
+        setFeedback({
+            text: 'Deals have been updated.',
+            type: 'success',
+        });
     }
     
-    const timestamp = new Date(date.split('-').reverse().join('-')).getTime();
+    const hasChanges = prevDeals && (hasImageChanges(prevDeals, deals));
+    const images: ImageWithSrc[] = deals?.map(deal => ({
+        ...deal,
+        src: deal.image.startsWith('data') ? deal.image : getWeeklyDealImage(deal.id, deal.parentId),
+    })) || [];
     return(
         <main className="py-8 w-main max-w-main mx-auto">
             <AdminTabs />
@@ -50,51 +95,38 @@ export default function EditWeeklyDeal({ params: { date } }: {
                 <AdminHeader 
                     backPath={'/admin/veckans-deal'}
                     text={`Veckans deal: ${date}`}
-                    options={
-                        <Button 
-                            className="text-xs px-3 py-2 mr-2 rounded"
-                            onClick={() => imageInput.current?.click()}
-                        >
-                            Add image
-                        </Button>
-                    }
                 />
                 {deals ? (
-                    <div className="p-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-1">
-                        {deals?.map(deal => (
-                            <div 
-                                className="group relative aspect-square overflow-hidden rounded-md"
-                                key={deal.id}
-                            >
-                                <Image 
-                                    width={200}
-                                    height={200}
-                                    src={getWeeklyDealImage(deal.id, deal.date)}
-                                    className="w-full h-full object-cover"
-                                    alt=""
-                                />
-                                <button 
-                                    className="shadow opacity-0 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
-                                    aria-label="Delete image"
-                                    onClick={() => onDelete(deal.id)}
-                                >
-                                    <BinIcon className="w-5 text-primary" />
-                                </button>
-                            </div>
-                        ))}
-                        <button 
-                            className="aspect-square border-[1px] border-light-tertiary text-sm text-secondary rounded-md hover:bg-light-secondary/50 transition-colors"
-                            onClick={() => imageInput.current?.click()}
-                        >
-                            Add deal image
-                        </button>
-                        <input 
-                            type="file"
-                            ref={imageInput}
-                            onChange={onChange}
-                            className="hidden"
+                    <>
+                    <SortableImages 
+                        className="p-4"
+                        images={images}
+                        onChange={onChange}
+                        parentId={date}
+                    />
+                    {feedback && (
+                        <Feedback 
+                            {...feedback}
+                            className="mb-4"
                         />
+                    )}
+                    <div className="p-4 flex justify-end gap-2 bg-light-secondary">
+                        {hasChanges && (
+                            <Button 
+                                type={'transparent'}
+                                onClick={reset}
+                            >
+                                Reset changes
+                            </Button>
+                        )}
+                        <Button
+                            onClick={onSubmit}
+                            disabled={loading}
+                        >
+                            {loading ? 'Updating deals...' : 'Update deals'}
+                        </Button>
                     </div>
+                    </>
                 ) : (
                     <span className="block text-center py-12">
                         Loading deals...

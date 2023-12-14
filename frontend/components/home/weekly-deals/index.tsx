@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import { WeeklyDeal } from '../../../../types';
+import { Image } from '../../../../types';
 import Link from 'next/link';
 import Carousel from '@/components/carousel';
 import { getWeeklyDealImage } from '@/utils';
@@ -8,7 +7,7 @@ import { ArrowIcon } from '@/assets/icons/ArrowIcon';
 const getWeeklyDeals = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/weekly-deals`, { next: { revalidate: 0 } });
     const data = await res.json();
-    return data as WeeklyDeal[];
+    return data as Image[];
 }
 
 const DAYS_OF_WEEK = 7;
@@ -46,7 +45,7 @@ export default async function WeeklyDeals() {
                 <Carousel 
                     items={deals.map(deal => ({
                         id: deal.id,
-                        image: getWeeklyDealImage(deal.id, deal.date),
+                        image: getWeeklyDealImage(deal.id, deal.parentId),
                         path: `/veckans-deal?deal=${deal.id}`,
                     }))}
                     itemsPerPage={3}

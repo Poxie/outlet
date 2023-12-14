@@ -36,3 +36,7 @@ export const getImageDiff = (prevImages: Image[], currentImages: Image[]) => {
 
     return { addedImages, removedImages, changedPositions };
 }
+export const hasImageChanges = (prevImages: Image[], currentImages: Image[]) => {
+    const { addedImages, removedImages, changedPositions } = getImageDiff(prevImages, currentImages);
+    return !!(addedImages.length || removedImages.length || changedPositions.length);
+}
