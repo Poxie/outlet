@@ -87,7 +87,7 @@ export default function EditEvent({ params: { eventId } }: {
         }
 
         const { addedImages, removedImages, changedPositions } = getImageDiff(prevImages, eventImages);
-        return addedImages.length || removedImages.length || changedPositions.length;
+        return !!(addedImages.length || removedImages.length || changedPositions.length);
     }
     const updateImages = async (eventId: string) => {
         if(!prevImages) return;
