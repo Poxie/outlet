@@ -118,14 +118,14 @@ router.delete('/events/:eventId', async (req, res, next) => {
     const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
     if(!event) return next(new APINotFoundError('Event not found.'));
 
-    await myDataSource.getRepository(Events).delete(event);
+    await myDataSource.getRepository(Events).delete({ id: event.id });
 
     const date = new Date(Number(event.timestamp));
     const imagePath = `src/imgs/events/${date.getFullYear()}/${event.id}`;
     try {
         fs.rmSync(imagePath, { recursive: true });
     } catch(error) {
-        console.error(`Unable to remove previous image: ${imagePath}.`);
+        console.error(`Unable to remove previous image: ${imagePath}.`, error);
     }
 
     res.send({});
