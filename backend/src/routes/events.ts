@@ -119,6 +119,7 @@ router.delete('/events/:eventId', async (req, res, next) => {
     if(!event) return next(new APINotFoundError('Event not found.'));
 
     await myDataSource.getRepository(Events).delete({ id: event.id });
+    await myDataSource.getRepository(Images).delete({ parentId: event.id });
 
     const date = new Date(Number(event.timestamp));
     const imagePath = `src/imgs/events/${date.getFullYear()}/${event.id}`;
