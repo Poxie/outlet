@@ -45,7 +45,13 @@ export const createId = async (table: DatabaseTable) => {
 }
 
 export const createUniqueIdFromName = async (name: string, table: DatabaseTable) => {
-    const prelimId = name.toLowerCase().split(' ').join('-');
+    const prelimId = name.toLowerCase().split(' ').join('-')
+        .replace(/å/g, 'a')
+        .replace(/ä/g, 'a')
+        .replace(/ö/g, 'o')
+        .replace(/!/g, '')
+        .replace(/\?/g, '')
+        .replace(/=/g, '');
 
     const previousItem = await myDataSource.getRepository(table).findOneBy({ id: prelimId });
 
