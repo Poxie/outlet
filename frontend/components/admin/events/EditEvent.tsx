@@ -218,7 +218,7 @@ export default function EditEvent({ params: { eventId } }: {
                     text={eventsLoading ? (
                         'Events'
                     ) : (
-                        !isCreatingEvent ? `Event: ${event.title}` : 'Create event'
+                        !isCreatingEvent ? `Events / ${event.title}` : 'Events / Create event'
                     )}
                     backPath={'/admin/events'}
                     options={hasChanges ? (
