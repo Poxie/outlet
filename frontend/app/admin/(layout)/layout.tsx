@@ -6,7 +6,13 @@ export default function AdminLayout({ children }: {
 }) {
     const { currentUser } = useAuth();
 
-    if(!currentUser) return null;
+    if(!currentUser) {
+        return(
+            <span className="font-medium text-lg text-light absolute left-2/4 top-2/4 -translate-x-2/4 -translate-y-2/4">
+                Authenticating...
+            </span>
+        )
+    };
 
     return children;
 }
