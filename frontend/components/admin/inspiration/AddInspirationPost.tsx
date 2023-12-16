@@ -193,9 +193,9 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
                 <AdminHeader 
                     backPath={'/admin/inspiration'}
                     text={isCreatingPost ? (
-                        'Inspiration: Create post'
+                        'Inspiration / Create post'
                     ) : (
-                        `Edit post: ${prevPost.title}`
+                        `Inspiration / ${prevPost.title}`
                     )}
                     options={hasChanges ? (
                         <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">

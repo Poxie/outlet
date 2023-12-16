@@ -94,7 +94,7 @@ export default function EditWeeklyDeal({ params: { date } }: {
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin/veckans-deal'}
-                    text={`Veckans deal: ${date}`}
+                    text={`Veckans deal / ${date}`}
                 />
                 {deals ? (
                     <>

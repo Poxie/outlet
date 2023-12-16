@@ -1,6 +1,5 @@
 "use client";
 import { useAppSelector } from "@/store";
-import { WeeklyDeal as WeeklyDealType } from "../../../../types";
 import AdminHeader from "../AdminHeader";
 import AdminTabs from "../AdminTabs";
 import WeeklyDealRow from "./WeeklyDealRow";

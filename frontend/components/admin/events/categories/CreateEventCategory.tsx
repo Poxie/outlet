@@ -178,7 +178,7 @@ export default function CreateEventCategory({ params: { categoryId } }: {
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin/events/categories'}
-                    text={`Events / Categories / ${isCreatingCategory ? 'Create' : prevCategory.name}`}
+                    text={`Events / Categories / ${isCreatingCategory ? 'Create category' : prevCategory.name}`}
                     options={canReset ? (
                         <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">
                             You have unsaved changes.

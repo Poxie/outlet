@@ -76,7 +76,7 @@ export default function CreateBanner({ params: { bannerId } }: {
             <AdminTabs />
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
-                    text={isCreatingBanner ? 'Create banner' : 'Edit banner: ' + prevBanner.text}
+                    text={isCreatingBanner ? 'Banners / Create banner' : 'Banners / ' + prevBanner.text}
                     backPath={'/admin/banners'}
                 />
                 {!bannersLoading ? (

@@ -123,7 +123,7 @@ export default function AddStore({ params: { storeId } }: {
             <div className="bg-light rounded-lg overflow-hidden">
                 <AdminHeader 
                     backPath={'/admin/stores'}
-                    text={isAddingStore ? 'Add store' : `Edit store: ${prevStore.name}`}
+                    text={isAddingStore ? 'Stores / Add store' : `Stores / ${prevStore.name}`}
                 />
                 <div className="grid md:grid-cols-[1fr_1px_1fr]">
                     <div className="flex-1">
