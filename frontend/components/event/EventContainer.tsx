@@ -34,7 +34,7 @@ export default function EventContainer({ event, photoId, className }: {
                         {event.title}
                     </h1>
                     <p className={twMerge(
-                        "relative mt-1 text-sm",
+                        "relative mt-1",
                         "text-center text-light-secondary px-[--padding]",
                         "sm:text-left sm:text-secondary sm:px-0"
                     )}>
