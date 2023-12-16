@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ImageWithSrc } from ".";
 import { BinIcon } from "@/assets/icons/BinIcon";
 import { HamIcon } from "@/assets/icons/HamIcon";
@@ -89,7 +89,7 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
                 left: containerLeft,
             }
         }
-        
+            
         const mousePosOffsetX = initialMousePos.current.left - initialContainerPos.current.left;
         const mousePosOffsetY = initialMousePos.current.top - initialContainerPos.current.top;
         
@@ -142,14 +142,7 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
                 >
                     <HamIcon className="w-5 text-primary" />
                 </div>
-                <Image 
-                    width={150}
-                    height={150}
-                    src={src}
-                    className="aspect-square w-full h-full object-cover rounded-md"
-                    draggable={false}
-                    alt={`Image ${position + 1}`}
-                />
+                <SortableItemImage src={src} />
                 <button 
                     className="shadow opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
                     aria-label="Delete image"
@@ -161,3 +154,18 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
         </div>
     )
 }
+
+const SortableItemImage = React.memo(({ src }: {
+    src: string;
+}) => {
+    return(
+        <Image 
+            width={150}
+            height={150}
+            src={src}
+            className="aspect-square w-full h-full object-cover rounded-md"
+            draggable={false}
+            alt={``}
+        />
+    )
+})
