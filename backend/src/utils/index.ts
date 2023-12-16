@@ -17,7 +17,7 @@ export const getCurrentWeeklyDealDate = () => {
 
 export const isDealDate = (date: string) => {
     const [day, month, year] = date.split('-');
-    const dateObject = new Date(Number(year), Number(day), Number(month + 1));
+    const dateObject = new Date(Number(year), Number(month) - 1, Number(day));
     return dateObject.getDay() === DEAL_DAY_ID;
 }
 
