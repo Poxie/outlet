@@ -27,5 +27,5 @@ export const IMAGE_TYPES = {
     deals: 'deals',
     events: 'events',
     inspiration: 'inspiration',
-}
+} as const;
 export type ImageType = keyof typeof IMAGE_TYPES;

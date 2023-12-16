@@ -2,7 +2,7 @@
 import * as imageDataURI from 'image-data-uri';
 import * as express from 'express';
 import * as fs from 'fs';
-import { ACCEPTED_IMAGE_TYPES, ImageType } from '../utils/constants';
+import { ACCEPTED_IMAGE_TYPES, IMAGE_TYPES, ImageType } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { myDataSource } from '../app-data-source';
 import { Events } from '../entity/events.entity';
@@ -18,7 +18,7 @@ const router = express.Router();
 
 const BASE_PATH = 'src/imgs'
 const imagePaths = {
-    events: ({ timestamp, eventId, imageId }: {
+    [IMAGE_TYPES.events]: ({ timestamp, eventId, imageId }: {
         timestamp: string;
         eventId: string;
         imageId: string;
@@ -26,10 +26,10 @@ const imagePaths = {
         const date = new Date(Number(timestamp));
         return `${BASE_PATH}/events/${date.getFullYear()}/${eventId}/${imageId}.png`;
     },
-    inspiration: ({ parentId, imageId }: { parentId: string, imageId: string }) => {
+    [IMAGE_TYPES.inspiration]: ({ parentId, imageId }: { parentId: string, imageId: string }) => {
         return `${BASE_PATH}/blog/${parentId}/${imageId}.png`;
     },
-    deals: ({ id, date }: {
+    [IMAGE_TYPES.deals]: ({ id, date }: {
         id: string;
         date: string;
     }) => {
@@ -63,7 +63,7 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
     if(!Array.isArray(images)) return next(new APIBadRequestError('images must be an array.'));
 
     let parent: Inspiration | Events | WeeklyDeal;
-    if(imageType === 'deals') {
+    if(imageType === IMAGE_TYPES.deals) {
         if(!isDealDate(relevantId)) {
             return next(new APIBadRequestError('Date is not a deal date.'));
         }
@@ -83,15 +83,15 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
         try {
             let imagePath = '';
             switch(imageType) {
-                case 'events': {
-                    imagePath = imagePaths.events({ imageId, timestamp: parent.timestamp, eventId: parent.id });
+                case IMAGE_TYPES.events: {
+                    imagePath = imagePaths[imageType]({ imageId, timestamp: parent.timestamp, eventId: parent.id });
                     break;
                 }
-                case 'inspiration': {
-                    imagePath = imagePaths.inspiration({ parentId: parent.id, imageId });
+                case IMAGE_TYPES.inspiration: {
+                    imagePath = imagePaths[imageType]({ parentId: parent.id, imageId });
                     break;
                 }
-                case 'deals': {
+                case IMAGE_TYPES.deals: {
                     const [day,month,year] = relevantId.split('-');
                     const date = new Date(Number(year), Number(month) - 1, Number(day));
                     if(date.getDay() !== WEEKLY_DEAL_DAY) {
@@ -141,8 +141,18 @@ router.delete('/images/:imageType/:relevantId', async (req, res, next) => {
     const imageIds = req.body.imageIds;
     if(!imageIds) return next(new APIBadRequestError('imageIds is required.'));
     if(!Array.isArray(imageIds)) return next(new APIBadRequestError('imageIds must be an array.'));
-
-    const parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: relevantId });
+    
+    let parent: Inspiration | Events | WeeklyDeal;
+    if(imageType === IMAGE_TYPES.deals) {
+        if(!isDealDate(relevantId)) {
+            return next(new APIBadRequestError('Date is not a deal date.'));
+        }
+    } else {
+        parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: relevantId });
+        if(!parent) {
+            return next(new APINotFoundError('Parent not found'));
+        }
+    }
 
     for(const imageId of imageIds) {
         const image = await myDataSource.getRepository(Images).findOneBy({ id: imageId });
@@ -155,15 +165,15 @@ router.delete('/images/:imageType/:relevantId', async (req, res, next) => {
 
         let imagePath = '';
         switch(imageType) {
-            case 'events': {
+            case IMAGE_TYPES.events: {
                 imagePath = imagePaths.events({ imageId, timestamp: parent.timestamp, eventId: parent.id });
                 break;
             }
-            case 'inspiration': {
+            case IMAGE_TYPES.inspiration: {
                 imagePath = imagePaths.inspiration({ parentId: parent.id, imageId });
                 break;
             }
-            case 'deals': {
+            case IMAGE_TYPES.deals: {
                 imagePath = imagePaths.deals({ date: relevantId, id: imageId });
                 break;
             }
