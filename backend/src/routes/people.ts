@@ -7,6 +7,8 @@ import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId, getUserIdFromHeaders } from '../utils';
 import { authHandler } from '../middleware/authHandler';
 import { APIUnauthorizedError } from '../errors/apiUnauthorizedError';
+import { APINotFoundError } from '../errors/apiNotFoundError';
+import { APIForbiddenError } from '../errors/apiForbiddenError';
 
 const MIN_USERNAME_LENGTH = 2;
 const MAX_USERNAME_LENGTH = 32;
@@ -90,6 +92,20 @@ router.post('/people', authHandler, async (req, res, next) => {
         user: { id, username },
         token,
     })
+})
+router.delete('/people/:userId', authHandler, async (req, res, next) => {
+    if(res.locals.userId === req.params.userId) {
+        return next(new APIForbiddenError('You cannot remove yourself.'));
+    }
+
+    const user = await myDataSource.getRepository(People).findOneBy({ id: req.params.userId });
+    if(!user) {
+        return next(new APINotFoundError('User not found.'));
+    }
+
+    await myDataSource.getRepository(People).delete(user);
+
+    res.send({});
 })
 
 export default router;
