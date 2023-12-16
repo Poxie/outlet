@@ -3,7 +3,7 @@ import { myDataSource } from '../app-data-source';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createUniqueIdFromName } from '../utils';
 import { Category } from '../entity/category.entity';
-import { ALLOWED_CATEGORY_PROPERTIES, REQUIRED_CATEGORY_PROPERTIES } from '../utils/constants';
+import { ALLOWED_CATEGORY_PROPERTIES, IMAGE_TYPES, REQUIRED_CATEGORY_PROPERTIES } from '../utils/constants';
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { In } from 'typeorm';
@@ -60,7 +60,7 @@ router.get('/categories/:categoryId/children', async (req, res, next) => {
     for(const event of events) {
         const images = await myDataSource.getRepository(Images)
             .createQueryBuilder('images')
-            .where('images.parentId = :parentId', { parentId: event.id })
+            .where('images.parentId = :parentId AND type = :type', { parentId: event.id, type: IMAGE_TYPES.events })
             .orderBy('images.position')
             .getMany();
 

@@ -1,20 +1,16 @@
-// @ts-ignore
-import * as imageDataURI from 'image-data-uri';
 import * as express from 'express';
-import * as fs from 'fs';
 import { myDataSource } from '../app-data-source';
 import { Inspiration } from '../entity/inspiration.entity';
-import { ALLOWED_INSPIRATION_PROPERTIES, REQUIRED_INSPIRATION_PROPERTIES } from '../utils/constants';
+import { ALLOWED_INSPIRATION_PROPERTIES, IMAGE_TYPES, REQUIRED_INSPIRATION_PROPERTIES } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { Images } from '../entity/images.entity';
-import { APIInternalServerError } from '../errors/apiInternalServerError';
 
 const router = express.Router();
 
 const getPostImages = async (parentId: string) => {
-    return (await myDataSource.getRepository(Images).findBy({ parentId })).sort((a,b) => a.position - b.position);
+    return (await myDataSource.getRepository(Images).findBy({ parentId, type: IMAGE_TYPES.inspiration })).sort((a,b) => a.position - b.position);
 }
 router.get('/inspiration', async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration).find();

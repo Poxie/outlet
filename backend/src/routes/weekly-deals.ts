@@ -43,6 +43,7 @@ router.get('/weekly-deals/all', async (req, res) => {
 
     const images = await myDataSource.getRepository(Images).findBy({
         parentId: In(Object.keys(deals)),
+        type: IMAGE_TYPES.deals,
     })
     for(const image of images) {
         if(deals[image.parentId]) {
