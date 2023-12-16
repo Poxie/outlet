@@ -13,6 +13,7 @@ import { APIInternalServerError } from '../errors/apiInternalServerError';
 import { WEEKLY_DEAL_DAY } from '../constants';
 import { Inspiration } from '../entity/inspiration.entity';
 import { WeeklyDeal } from '../entity/weekly-deal.entity';
+import { authHandler } from '../middleware/authHandler';
 
 const router = express.Router();
 
@@ -51,7 +52,7 @@ router.get('/images/:imageType/:relevantId', async (req, res, next) => {
 
     return res.send(images);
 })
-router.post('/images/:imageType/:relevantId', async (req, res, next) => {
+router.post('/images/:imageType/:relevantId', authHandler, async (req, res, next) => {
     const relevantId = req.params.relevantId;
     const imageType = req.params.imageType as ImageType;
     if(!ACCEPTED_IMAGE_TYPES.includes(imageType)) {
@@ -131,7 +132,7 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
     }
     return res.send(newImages);
 })
-router.delete('/images/:imageType/:relevantId', async (req, res, next) => {
+router.delete('/images/:imageType/:relevantId', authHandler, async (req, res, next) => {
     const relevantId = req.params.relevantId;
     const imageType = req.params.imageType as ImageType;
     if(!ACCEPTED_IMAGE_TYPES.includes(imageType)) {
@@ -205,7 +206,7 @@ router.delete('/images/:imageType/:relevantId', async (req, res, next) => {
     }
     return res.send({});
 })
-router.patch('/images/:imageType/:relevantId', async (req, res, next) => {
+router.patch('/images/:imageType/:relevantId', authHandler, async (req, res, next) => {
     const relevantId = req.params.relevantId;
     const imageType = req.params.imageType as ImageType;
     if(!ACCEPTED_IMAGE_TYPES.includes(imageType)) {

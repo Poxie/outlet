@@ -6,6 +6,7 @@ import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { Images } from '../entity/images.entity';
+import { authHandler } from '../middleware/authHandler';
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ router.get('/inspiration/:inspirationId', async (req, res, next) => {
         images,
     });
 })
-router.post('/inspiration', async (req, res, next) => {
+router.post('/inspiration', authHandler, async (req, res, next) => {
     for(const prop of REQUIRED_INSPIRATION_PROPERTIES) {
         if(!(prop in req.body)) return next(new APIBadRequestError(`${prop} is required.`));
     }
@@ -55,7 +56,7 @@ router.post('/inspiration', async (req, res, next) => {
 
     res.send(post);
 })
-router.patch('/inspiration/:inspirationId', async (req, res, next) => {
+router.patch('/inspiration/:inspirationId', authHandler, async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId });
     if(!inspiration) return next(new APINotFoundError('Post not found.'));
     
@@ -73,7 +74,7 @@ router.patch('/inspiration/:inspirationId', async (req, res, next) => {
     
     res.send(newInspiration);
 })
-router.delete('/inspiration/:inspirationId', async (req, res, next) => {
+router.delete('/inspiration/:inspirationId', authHandler, async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId });
     if(!inspiration) return next(new APINotFoundError('Post not found.'));
 

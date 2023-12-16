@@ -8,10 +8,11 @@ import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { In } from 'typeorm';
 import { Images } from '../entity/images.entity';
+import { authHandler } from '../middleware/authHandler';
 
 const router = express.Router();
 
-router.get('/categories', async (req, res, next) => {
+router.get('/categories', authHandler, async (req, res, next) => {
     const categories = await myDataSource.getRepository(Category).find();
 
     const categoriesWithEventCount = [];
@@ -25,7 +26,7 @@ router.get('/categories', async (req, res, next) => {
 
     res.send(categoriesWithEventCount);
 })
-router.post('/categories', async (req, res, next) => {
+router.post('/categories', authHandler, async (req, res, next) => {
     const properties: {[key: string]: any} = {};
     for(const [prop, val] of Object.entries(req.body)) {
         if(!ALLOWED_CATEGORY_PROPERTIES.includes(prop)) {
@@ -72,7 +73,7 @@ router.get('/categories/:categoryId/children', async (req, res, next) => {
 
     res.send(eventsWithImages);
 })
-router.patch('/categories/:categoryId', async (req, res, next) => {
+router.patch('/categories/:categoryId', authHandler, async (req, res, next) => {
     const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
     if(!category) return next(new APINotFoundError('Category not found.'));
 
@@ -105,7 +106,7 @@ router.patch('/categories/:categoryId', async (req, res, next) => {
 
     res.send(newCategory);
 })
-router.put('/categories/:categoryId/children', async (req, res, next) => {
+router.put('/categories/:categoryId/children', authHandler, async (req, res, next) => {
     const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
     if(!category) return next(new APINotFoundError('Category not found.'));
 
@@ -125,7 +126,7 @@ router.put('/categories/:categoryId/children', async (req, res, next) => {
 
     res.send({});
 })
-router.delete('/categories/:categoryId', async (req, res, next) => {
+router.delete('/categories/:categoryId', authHandler, async (req, res, next) => {
     const category = await myDataSource.getRepository(Category).findOneBy({ id: req.params.categoryId });
     if(!category) return next(new APINotFoundError('Category not found.'));
 

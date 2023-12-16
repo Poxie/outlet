@@ -4,6 +4,7 @@ import { Stores } from '../entity/stores.entity';
 import { ALLOWED_STORE_PROPERTIES, REQUIRED_STORE_PROPERTIES } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
+import { authHandler } from '../middleware/authHandler';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.get('/stores', async (req, res, next) => {
     const stores = await myDataSource.getRepository(Stores).find();
     res.send(stores);
 })
-router.put('/stores', async (req, res, next) => {
+router.put('/stores', authHandler, async (req, res, next) => {
     for(const prop of REQUIRED_STORE_PROPERTIES) {
         if(!req.body[prop]) return next(new APIBadRequestError(`${prop} is required.`));
     }
@@ -32,7 +33,7 @@ router.put('/stores', async (req, res, next) => {
 
     res.send(newStore);
 })
-router.delete('/stores/:storeId', async (req, res, next) => {
+router.delete('/stores/:storeId', authHandler, async (req, res, next) => {
     const store = await myDataSource.getRepository(Stores).findOneBy({ id: req.params.storeId });
     if(!store) return next(new APINotFoundError('Store was not found.'));
 
@@ -40,7 +41,7 @@ router.delete('/stores/:storeId', async (req, res, next) => {
 
     res.send({});
 })
-router.patch('/stores/:storeId', async (req, res, next) => {
+router.patch('/stores/:storeId', authHandler, async (req, res, next) => {
     const store = await myDataSource.getRepository(Stores).findOneBy({ id: req.params.storeId });
     if(!store) return next(new APINotFoundError('Store was not found.'));
 

@@ -4,6 +4,7 @@ import { Banners } from '../entity/banners.entity';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
+import { authHandler } from '../middleware/authHandler';
 
 const router = express.Router();
 
@@ -11,11 +12,11 @@ router.get('/banner', async (req, res, next) => {
     const banner = await myDataSource.getRepository(Banners).findOneBy({ active: true });
     res.send(banner || {});
 })
-router.get('/banners', async (req, res, next) => {
+router.get('/banners', authHandler, async (req, res, next) => {
     const banners = await myDataSource.getRepository(Banners).find();
     res.send(banners);
 })
-router.post('/banners', async (req, res, next) => {
+router.post('/banners', authHandler, async (req, res, next) => {
     const text = req.body.text;
     if(!text) return next(new APIBadRequestError('Text is a required property.'));
 
@@ -30,7 +31,7 @@ router.post('/banners', async (req, res, next) => {
 
     res.send(banner);
 })
-router.delete('/banners/:bannerId', async (req, res, next) => {
+router.delete('/banners/:bannerId', authHandler, async (req, res, next) => {
     const banner = await myDataSource.getRepository(Banners).findOneBy({ id: req.params.bannerId });
     if(!banner) return next(new APINotFoundError('Banner not found.'));
 
@@ -38,7 +39,7 @@ router.delete('/banners/:bannerId', async (req, res, next) => {
 
     res.send({});
 })
-router.patch('/banners/:bannerId', async (req, res, next) => {
+router.patch('/banners/:bannerId', authHandler, async (req, res, next) => {
     if(typeof req.body.text === 'string' && !req.body.text) {
         next(new APIBadRequestError('Text is required.'));
         return;

@@ -4,6 +4,7 @@ import { myDataSource } from '../app-data-source';
 import { COUNT_DEAL_WEEKS_AHEAD, DAYS_OF_THE_WEEK, IMAGE_TYPES } from '../utils/constants';
 import { Images } from '../entity/images.entity';
 import { In } from 'typeorm';
+import { authHandler } from '../middleware/authHandler';
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.get('/weekly-deals', async (req, res) => {
 })
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
-router.get('/weekly-deals/all', async (req, res) => {
+router.get('/weekly-deals/all', authHandler, async (req, res) => {
     const currentDealDate = getCurrentWeeklyDealDate();
 
     // Creating an object with empty arrays for each date

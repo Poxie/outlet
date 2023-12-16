@@ -11,6 +11,7 @@ import { ALLOWED_EVENT_PROPERTIES } from '../utils/constants';
 import { APIInternalServerError } from '../errors/apiInternalServerError';
 import { LessThan } from 'typeorm';
 import { Images } from '../entity/images.entity';
+import { authHandler } from '../middleware/authHandler';
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.get('/events', async (req, res, next) => {
 1
     res.send(events);
 })
-router.get('/events/all', async (req, res, next) => {
+router.get('/events/all', authHandler, async (req, res, next) => {
     const events = await myDataSource.getRepository(Events).createQueryBuilder('events')
         .orderBy('events.timestamp', 'DESC')
         .getMany();
@@ -37,7 +38,7 @@ router.get('/events/:eventId', async (req, res, next) => {
 })
 
 const EVENT_IMAGE_ID = 'image';
-router.post('/events', async (req, res, next) => {
+router.post('/events', authHandler, async (req, res, next) => {
     const { title, description, image, timestamp } = req.body;
     
     if(!title) return next(new APIBadRequestError("Title is required."));
@@ -68,7 +69,7 @@ router.post('/events', async (req, res, next) => {
 
     res.send(event);
 })
-router.patch('/events/:eventId', async (req, res, next) => {
+router.patch('/events/:eventId', authHandler, async (req, res, next) => {
     const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
     if(!event) return next(new APINotFoundError('Event was not found.'));
 
@@ -114,7 +115,7 @@ router.patch('/events/:eventId', async (req, res, next) => {
 
     res.send(updatedEvent);
 })
-router.delete('/events/:eventId', async (req, res, next) => {
+router.delete('/events/:eventId', authHandler, async (req, res, next) => {
     const event = await myDataSource.getRepository(Events).findOneBy({ id: req.params.eventId });
     if(!event) return next(new APINotFoundError('Event not found.'));
 
