@@ -161,6 +161,10 @@ export default function CreateEventCategory({ params: { categoryId } }: {
                 dispatch(editEvent({ eventId: event, changes: { parentId: categoryId } }));
                 dispatch(updateCategory({ categoryId, changes: { eventCount: eventChanges.length } }));
             }
+
+            if(!eventIds.length) {
+                dispatch(updateCategory({ categoryId, changes: { eventCount: 0 } }));
+            }
         }
 
         setLoading(false);
