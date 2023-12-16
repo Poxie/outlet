@@ -23,4 +23,9 @@ export const IMAGE_TYPE_REPOSITORIES = {
     inspiration: Inspiration,
 }
 
-export type ImageType = keyof typeof IMAGE_TYPE_REPOSITORIES;
+export const IMAGE_TYPES = {
+    deals: 'deals',
+    events: 'events',
+    inspiration: 'inspiration',
+}
+export type ImageType = keyof typeof IMAGE_TYPES;

@@ -8,9 +8,11 @@ import { myDataSource } from '../app-data-source';
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { Images } from '../entity/images.entity';
-import { createId, getParentRepository } from '../utils';
+import { createId, getParentRepository, isDealDate } from '../utils';
 import { APIInternalServerError } from '../errors/apiInternalServerError';
 import { WEEKLY_DEAL_DAY } from '../constants';
+import { Inspiration } from '../entity/inspiration.entity';
+import { WeeklyDeal } from '../entity/weekly-deal.entity';
 
 const router = express.Router();
 
@@ -43,7 +45,7 @@ router.get('/images/:imageType/:relevantId', async (req, res, next) => {
 
     const images = await myDataSource.getRepository(Images)
         .createQueryBuilder('images')
-        .where('images.parentId = :parentId', { parentId: req.params.relevantId })
+        .where('images.parentId = :parentId AND type = :type', { parentId: req.params.relevantId, type: imageType })
         .orderBy('images.position', 'ASC')
         .getMany();
 
@@ -60,7 +62,17 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
     if(!images) return next(new APIBadRequestError('images is required.'));
     if(!Array.isArray(images)) return next(new APIBadRequestError('images must be an array.'));
 
-    const parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: relevantId });
+    let parent: Inspiration | Events | WeeklyDeal;
+    if(imageType === 'deals') {
+        if(!isDealDate(relevantId)) {
+            return next(new APIBadRequestError('Date is not a deal date.'));
+        }
+    } else {
+        parent = await myDataSource.getRepository(getParentRepository(imageType)).findOneBy({ id: relevantId });
+        if(!parent) {
+            return next(new APINotFoundError('Parent not found'));
+        }
+    }
 
     let timestamp = parent?.timestamp;
     const newImages = [];
@@ -111,6 +123,7 @@ router.post('/images/:imageType/:relevantId', async (req, res, next) => {
             image: imageId,
             position: prevCount,
             parentId: relevantId,
+            type: imageType,
             timestamp: timestamp,
         })
         await myDataSource.getRepository(Images).save(newImage);
@@ -214,7 +227,7 @@ router.patch('/images/:imageType/:relevantId', async (req, res, next) => {
 
     const newImages = await myDataSource.getRepository(Images)
         .createQueryBuilder('images')
-        .where('images.parentId = :parentId', { parentId: relevantId })
+        .where('images.parentId = :parentId AND type = :type', { parentId: relevantId, type: imageType })
         .orderBy('images.position', 'ASC')
         .getMany();
 

@@ -15,6 +15,12 @@ export const getCurrentWeeklyDealDate = () => {
     return currentDealDate;
 }
 
+export const isDealDate = (date: string) => {
+    const [day, month, year] = date.split('-');
+    const dateObject = new Date(Number(year), Number(day), Number(month + 1));
+    return dateObject.getDay() === DEAL_DAY_ID;
+}
+
 type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category';
 const repositories = {
     'weekly_deal': WeeklyDeal,
