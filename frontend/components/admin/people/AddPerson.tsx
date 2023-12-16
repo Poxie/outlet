@@ -86,52 +86,49 @@ export default function AddPerson() {
     }
 
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    backPath="/admin/people"
-                    text="People / Add person"
-                />
-                {!loadingUsers ? (
-                    <>
-                    <div className="p-4 grid gap-2">
-                        <Input 
-                            placeholder="Username"
-                            onChange={text => update('username', text)}
-                        />
-                        <Input  
-                            type="password"
-                            placeholder="Password"
-                            onChange={text => update('password', text)}
-                        />
-                        <Input  
-                            type="password"
-                            placeholder="Repeat password"
-                            onChange={text => update('repeatedPassword', text)}
-                        />
-                    </div>
-                    {feedback && (
-                        <Feedback 
-                            {...feedback}
-                            className="mb-4"
-                        />
-                    )}
-                    <div className="p-4 flex justify-end gap-2 bg-light-secondary">
-                        <Button
-                            onClick={onSubmit}
-                            disabled={loading}
-                        >
-                            {!loading ? 'Add person': 'Adding person...'}
-                        </Button>
-                    </div>
-                    </>
-                ) : (
-                    <span className="py-24 flex-1 flex items-center justify-center text-secondary/80">
-                        Loading people...
-                    </span>
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                backPath="/admin/people"
+                text="People / Add person"
+            />
+            {!loadingUsers ? (
+                <>
+                <div className="p-4 grid gap-2">
+                    <Input 
+                        placeholder="Username"
+                        onChange={text => update('username', text)}
+                    />
+                    <Input  
+                        type="password"
+                        placeholder="Password"
+                        onChange={text => update('password', text)}
+                    />
+                    <Input  
+                        type="password"
+                        placeholder="Repeat password"
+                        onChange={text => update('repeatedPassword', text)}
+                    />
+                </div>
+                {feedback && (
+                    <Feedback 
+                        {...feedback}
+                        className="mb-4"
+                    />
                 )}
-            </div>
-        </main>
+                <div className="p-4 flex justify-end gap-2 bg-light-secondary">
+                    <Button
+                        onClick={onSubmit}
+                        disabled={loading}
+                    >
+                        {!loading ? 'Add person': 'Adding person...'}
+                    </Button>
+                </div>
+                </>
+            ) : (
+                <span className="py-24 flex-1 flex items-center justify-center text-secondary/80">
+                    Loading people...
+                </span>
+            )}
+        </div>
     )
 }

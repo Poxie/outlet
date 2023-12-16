@@ -72,45 +72,42 @@ export default function CreateBanner({ params: { bannerId } }: {
     }
 
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    text={isCreatingBanner ? 'Banners / Create banner' : 'Banners / ' + prevBanner.text}
-                    backPath={'/admin/banners'}
-                />
-                {!bannersLoading ? (
-                    <>
-                    <div className="p-4 grid">
-                        <span className="block text-sm text-secondary mb-1">
-                            Banner text
-                        </span>
-                        <Input 
-                            placeholder={'Banner text'}
-                            onChange={onChange}
-                            value={bannerText}
-                            minHeight={70}
-                            textArea
-                        />
-                    </div>
-                    {feedback && (
-                        <Feedback 
-                            {...feedback}
-                            className="mb-4"
-                        />
-                    )}
-                    <div className="p-4 flex justify-end bg-light-secondary">
-                        <Button onClick={createBanner}>
-                            {isCreatingBanner ? 'Create banner' : 'Update banner'}
-                        </Button>
-                    </div>
-                    </>
-                ) : (
-                    <span className="py-12 block text-center">
-                        Loading banner...
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                text={isCreatingBanner ? 'Banners / Create banner' : 'Banners / ' + prevBanner.text}
+                backPath={'/admin/banners'}
+            />
+            {!bannersLoading ? (
+                <>
+                <div className="p-4 grid">
+                    <span className="block text-sm text-secondary mb-1">
+                        Banner text
                     </span>
+                    <Input 
+                        placeholder={'Banner text'}
+                        onChange={onChange}
+                        value={bannerText}
+                        minHeight={70}
+                        textArea
+                    />
+                </div>
+                {feedback && (
+                    <Feedback 
+                        {...feedback}
+                        className="mb-4"
+                    />
                 )}
-            </div>
-        </main>
+                <div className="p-4 flex justify-end bg-light-secondary">
+                    <Button onClick={createBanner}>
+                        {isCreatingBanner ? 'Create banner' : 'Update banner'}
+                    </Button>
+                </div>
+                </>
+            ) : (
+                <span className="py-12 block text-center">
+                    Loading banner...
+                </span>
+            )}
+        </div>
     )
 }

@@ -6,6 +6,7 @@ import { PeopleIcon } from "@/assets/icons/PeopleIcon"
 import { StoresIcon } from "@/assets/icons/StoresIcon"
 import { WeeklyDealIcon } from "@/assets/icons/WeeklyDealIcon"
 import Link from "next/link"
+import LogoutButton from "./LogoutButton"
 
 export const dashboardLinks = [
     { text: 'Veckans deal', path: '/admin/veckans-deal', icon: <WeeklyDealIcon className="w-5 h-5" /> },
@@ -20,7 +21,7 @@ export const adminLinks = [
 
 export default function Admin() {
     return(
-        <main className="py-8 w-[900px] max-w-main mx-auto">
+        <main className="w-[900px] max-w-full mx-auto">
             <h1 className="text-light font-bold text-4xl text-center mb-3">
                 Admin Panel
             </h1>
@@ -55,6 +56,9 @@ export default function Admin() {
                         </li>
                     ))}
                 </ul>
+            </div>
+            <div className="mt-2 flex justify-end">
+                <LogoutButton />
             </div>
         </main>
     )

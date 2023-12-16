@@ -187,94 +187,91 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
     const hasChanges = hasInfoChanges() || hasImageChanges();
     const date = new Date(Number(postInfo.timestamp));
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    backPath={'/admin/inspiration'}
-                    text={isCreatingPost ? (
-                        'Inspiration / Create post'
-                    ) : (
-                        `Inspiration / ${prevPost.title}`
-                    )}
-                    options={hasChanges ? (
-                        <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">
-                            You have unsaved changes.
-                        </span>
-                    ) : undefined}
-                />
-                <div className="p-4">
-                    <span className="block text-sm mb-1">
-                        Title
-                    </span>
-                    <Input 
-                        value={postInfo.title}
-                        onChange={title => updateProperty('title', title)}
-                        placeholder={'Title...'}
-                        className="w-full"
-                    />
-                    <span className="block text-sm mt-2">
-                        Description
-                    </span>
-                    <Input 
-                        value={postInfo.description}
-                        onChange={description => updateProperty('description', description)}
-                        placeholder={'Description...'}
-                        className="w-full block"
-                        minHeight={70}
-                        textArea
-                    />
-                    <span className="block text-sm mt-2">
-                        Date
-                    </span>
-                    <button 
-                        type="button"
-                        className="p-3 flex items-center gap-1.5 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary"
-                        onClick={openTimeSelector}
-                        ref={openPopoutButton}
-                    >
-                        <ClockIcon className="w-4" />
-                        {date.toLocaleDateString('default', { dateStyle: 'long' })}
-                    </button>
-                    <div className="py-3 relative after:z-[1] after:w-full after:h-[1px] after:absolute after:left-0 after:top-2/4 after:-translate-y-2/4 after:bg-light-tertiary">
-                        <span className="pr-4 relative z-[2] inline-block text-sm bg-light">
-                            Post images
-                        </span>
-                    </div>
-                    <SortableImages 
-                        images={images}
-                        onChange={images => updateProperty('images', images)}
-                        parentId={postInfo.id}
-                    />
-                </div>
-                {feedback && (
-                    <Feedback 
-                        {...feedback}
-                        className="mb-4"
-                    />
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                backPath={'/admin/inspiration'}
+                text={isCreatingPost ? (
+                    'Inspiration / Create post'
+                ) : (
+                    `Inspiration / ${prevPost.title}`
                 )}
-                
-                <div className="p-4 flex justify-end gap-2 bg-light-secondary">
-                    {hasChanges && (
-                        <Button 
-                            type={'transparent'}
-                            onClick={reset}
-                        >
-                            Reset changes
-                        </Button>
-                    )}
-                    <Button
-                        onClick={onSubmit}
-                        disabled={loading}
-                    >
-                        {isCreatingPost ? (
-                            !loading ? 'Create post' : 'Creating post...'
-                        ) : (
-                            !loading ? 'Update post' : 'Updating post...'
-                        )}
-                    </Button>
+                options={hasChanges ? (
+                    <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">
+                        You have unsaved changes.
+                    </span>
+                ) : undefined}
+            />
+            <div className="p-4">
+                <span className="block text-sm mb-1">
+                    Title
+                </span>
+                <Input 
+                    value={postInfo.title}
+                    onChange={title => updateProperty('title', title)}
+                    placeholder={'Title...'}
+                    className="w-full"
+                />
+                <span className="block text-sm mt-2">
+                    Description
+                </span>
+                <Input 
+                    value={postInfo.description}
+                    onChange={description => updateProperty('description', description)}
+                    placeholder={'Description...'}
+                    className="w-full block"
+                    minHeight={70}
+                    textArea
+                />
+                <span className="block text-sm mt-2">
+                    Date
+                </span>
+                <button 
+                    type="button"
+                    className="p-3 flex items-center gap-1.5 bg-light-secondary border-[1px] border-light-tertiary rounded text-sm text-secondary"
+                    onClick={openTimeSelector}
+                    ref={openPopoutButton}
+                >
+                    <ClockIcon className="w-4" />
+                    {date.toLocaleDateString('default', { dateStyle: 'long' })}
+                </button>
+                <div className="py-3 relative after:z-[1] after:w-full after:h-[1px] after:absolute after:left-0 after:top-2/4 after:-translate-y-2/4 after:bg-light-tertiary">
+                    <span className="pr-4 relative z-[2] inline-block text-sm bg-light">
+                        Post images
+                    </span>
                 </div>
+                <SortableImages 
+                    images={images}
+                    onChange={images => updateProperty('images', images)}
+                    parentId={postInfo.id}
+                />
             </div>
-        </main>
+            {feedback && (
+                <Feedback 
+                    {...feedback}
+                    className="mb-4"
+                />
+            )}
+            
+            <div className="p-4 flex justify-end gap-2 bg-light-secondary">
+                {hasChanges && (
+                    <Button 
+                        type={'transparent'}
+                        onClick={reset}
+                    >
+                        Reset changes
+                    </Button>
+                )}
+                <Button
+                    onClick={onSubmit}
+                    disabled={loading}
+                >
+                    {isCreatingPost ? (
+                        !loading ? 'Create post' : 'Creating post...'
+                    ) : (
+                        !loading ? 'Update post' : 'Updating post...'
+                    )}
+                </Button>
+            </div>
+        </div>
     )
 }

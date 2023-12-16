@@ -4,8 +4,10 @@ export default function ModalHeader({ children, subHeader, className }: {
     className?: string;
 }) {
     return(
-        <div className="py-3.5 px-4 border-b-[1px] border-b-light-secondary">
-            <span className={className}>
+        <div className="grid sticky top-0 py-3.5 px-4 bg-lig border-b-[1px] border-b-light-secondary">
+            <span 
+                className={className}
+            >
                 {children}
             </span>
             {subHeader && (

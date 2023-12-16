@@ -74,72 +74,69 @@ export default function Banners() {
     const inactiveBanners = banners.filter(banner => !banner.active);
 
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    text="Banners"
-                    backPath={'/admin'}
-                    options={
-                        <Button 
-                            className="py-2.5 px-3 mr-1.5"
-                            href={'/admin/banners/create'}
-                        >
-                            Create banner
-                        </Button>
-                    }
-                />
-                {!loading ? (
-                    <div>
-                        <div className="p-4 flex items-start gap-2 border-b-[1px] border-b-light-secondary text-c-primary text-sm">
-                            <MegaphoneIcon className="w-5" />
-                            <span>
-                                Active banner
-                            </span>
-                        </div>
-                        <ul>
-                            {activeBanner ? (
-                                <BannerRow 
-                                    {...activeBanner}
-                                    toggleActivated={toggleActivated}
-                                    deleteBanner={deleteBanner}
-                                />
-                            ) : (
-                                <span className="block text-sm p-4">
-                                    No banners are currently active.
-                                </span>
-                            )}
-                        </ul>
-                        <div className="p-4 flex items-start gap-2 border-y-[1px] border-t-light-tertiary border-b-light-secondary text-secondary text-sm">
-                            <BannersIcon className="w-5 -mt-0.5" />
-                            <span>
-                                All banners
-                            </span>
-                        </div>
-                        <ul>
-                            {inactiveBanners.length > 0 ? (
-                                inactiveBanners.map(banner => (
-                                    <BannerRow 
-                                        {...banner}
-                                        deleteBanner={deleteBanner}
-                                        toggleActivated={toggleActivated}
-                                        key={banner.id}
-                                    />
-                                ))
-                            ) : (
-                                <span className="block text-sm p-4">
-                                    No banners to show.
-                                </span>
-                            )}
-                        </ul>
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                text="Banners"
+                backPath={'/admin'}
+                options={
+                    <Button 
+                        className="py-2.5 px-3 mr-1.5"
+                        href={'/admin/banners/create'}
+                    >
+                        Create banner
+                    </Button>
+                }
+            />
+            {!loading ? (
+                <div>
+                    <div className="p-4 flex items-start gap-2 border-b-[1px] border-b-light-secondary text-c-primary text-sm">
+                        <MegaphoneIcon className="w-5" />
+                        <span>
+                            Active banner
+                        </span>
                     </div>
-                ) : (
-                    <span className="py-24 block text-center">
-                        Loading banners...
-                    </span>
-                )}
-            </div>
-        </main>
+                    <ul>
+                        {activeBanner ? (
+                            <BannerRow 
+                                {...activeBanner}
+                                toggleActivated={toggleActivated}
+                                deleteBanner={deleteBanner}
+                            />
+                        ) : (
+                            <span className="block text-sm p-4">
+                                No banners are currently active.
+                            </span>
+                        )}
+                    </ul>
+                    <div className="p-4 flex items-start gap-2 border-y-[1px] border-t-light-tertiary border-b-light-secondary text-secondary text-sm">
+                        <BannersIcon className="w-5 -mt-0.5" />
+                        <span>
+                            All banners
+                        </span>
+                    </div>
+                    <ul>
+                        {inactiveBanners.length > 0 ? (
+                            inactiveBanners.map(banner => (
+                                <BannerRow 
+                                    {...banner}
+                                    deleteBanner={deleteBanner}
+                                    toggleActivated={toggleActivated}
+                                    key={banner.id}
+                                />
+                            ))
+                        ) : (
+                            <span className="block text-sm p-4">
+                                No banners to show.
+                            </span>
+                        )}
+                    </ul>
+                </div>
+            ) : (
+                <span className="py-24 block text-center">
+                    Loading banners...
+                </span>
+            )}
+        </div>
     )
 }
 

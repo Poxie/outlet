@@ -89,50 +89,47 @@ export default function EditWeeklyDeal({ params: { date } }: {
         src: deal.image.startsWith('data') ? deal.image : getWeeklyDealImage(deal.id, deal.parentId),
     })) || [];
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    backPath={'/admin/veckans-deal'}
-                    text={`Veckans deal / ${date}`}
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                backPath={'/admin/veckans-deal'}
+                text={`Veckans deal / ${date}`}
+            />
+            {deals ? (
+                <>
+                <SortableImages 
+                    className="p-4"
+                    images={images}
+                    onChange={onChange}
+                    parentId={date}
                 />
-                {deals ? (
-                    <>
-                    <SortableImages 
-                        className="p-4"
-                        images={images}
-                        onChange={onChange}
-                        parentId={date}
+                {feedback && (
+                    <Feedback 
+                        {...feedback}
+                        className="mb-4"
                     />
-                    {feedback && (
-                        <Feedback 
-                            {...feedback}
-                            className="mb-4"
-                        />
-                    )}
-                    <div className="p-4 flex justify-end gap-2 bg-light-secondary">
-                        {hasChanges && (
-                            <Button 
-                                type={'transparent'}
-                                onClick={reset}
-                            >
-                                Reset changes
-                            </Button>
-                        )}
-                        <Button
-                            onClick={onSubmit}
-                            disabled={loading}
-                        >
-                            {loading ? 'Updating deals...' : 'Update deals'}
-                        </Button>
-                    </div>
-                    </>
-                ) : (
-                    <span className="block text-center py-12">
-                        Loading deals...
-                    </span>
                 )}
-            </div>
-        </main>
+                <div className="p-4 flex justify-end gap-2 bg-light-secondary">
+                    {hasChanges && (
+                        <Button 
+                            type={'transparent'}
+                            onClick={reset}
+                        >
+                            Reset changes
+                        </Button>
+                    )}
+                    <Button
+                        onClick={onSubmit}
+                        disabled={loading}
+                    >
+                        {loading ? 'Updating deals...' : 'Update deals'}
+                    </Button>
+                </div>
+                </>
+            ) : (
+                <span className="block text-center py-12">
+                    Loading deals...
+                </span>
+            )}
+        </div>
     )
 }

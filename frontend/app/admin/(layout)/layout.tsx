@@ -1,10 +1,14 @@
 "use client";
+import AdminTabs from "@/components/admin/AdminTabs";
 import { useAuth } from "@/contexts/auth";
+import { usePathname } from "next/navigation";
 
+const DASHBOARD_PATH = '/admin';
 export default function AdminLayout({ children }: {
     children: React.ReactNode;
 }) {
     const { currentUser } = useAuth();
+    const pathname = usePathname();
 
     if(!currentUser) {
         return(
@@ -14,5 +18,13 @@ export default function AdminLayout({ children }: {
         )
     };
 
-    return children;
+    const isDasboardPath = pathname === DASHBOARD_PATH;
+    return(
+        <main className="py-8 w-main max-w-main mx-auto">
+            {!isDasboardPath && (
+                <AdminTabs />
+            )}
+            {children}
+        </main>
+    );
 }

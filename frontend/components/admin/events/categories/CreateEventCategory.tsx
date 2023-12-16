@@ -177,89 +177,86 @@ export default function CreateEventCategory({ params: { categoryId } }: {
     const isCreatingCategory = !prevCategory;
     const canReset = !isCreatingCategory && (hasChanges().events || hasChanges().info);
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    backPath={'/admin/events/categories'}
-                    text={`Events / Categories / ${isCreatingCategory ? 'Create category' : prevCategory.name}`}
-                    options={canReset ? (
-                        <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">
-                            You have unsaved changes.
-                        </span>
-                    ) : undefined}
-                />
-                <div className="flex">
-                    <div className="p-4 flex-1 border-r-[1px] border-r-light-secondary">
-                        <span className="block text-sm mb-1">
-                            Category name
-                        </span>
-                        <Input 
-                            value={categoryInfo.name}
-                            onChange={name => updateProperty('name', name)}
-                            placeholder={'Category name...'}
-                            className="w-full"
-                        />
-                        <span className="block text-sm mb-1 mt-2">
-                            Category description
-                        </span>
-                        <Input 
-                            value={categoryInfo.description || ''}
-                            onChange={description => updateProperty('description', description)}
-                            placeholder={'Category description...'}
-                            className="w-full"
-                            textArea
-                        />
-                    </div>
-                    <div className="p-4 flex-1">
-                        <span className="block text-sm mb-1">
-                            Assigned events
-                        </span>
-                        <div className="flex flex-col gap-1.5">
-                            {eventIds.map(eventId => (
-                                <AssignedEvent 
-                                    id={eventId}
-                                    key={eventId}
-                                />
-                            ))}
-                            <button 
-                                className="p-3 text-center hover:bg-light-secondary/50 transition-colors border-[1px] border-light-tertiary text-secondary rounded-md"
-                                onClick={openEventsPopout}
-                                ref={eventsPopoutButton}
-                            >
-                                Assgin event
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                {feedback && (
-                    <Feedback 
-                        className="mb-4"
-                        {...feedback}
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                backPath={'/admin/events/categories'}
+                text={`Events / Categories / ${isCreatingCategory ? 'Create category' : prevCategory.name}`}
+                options={canReset ? (
+                    <span className="block text-xs font-semibold p-2 mr-2 rounded-md bg-primary/40 border-[1px] border-c-primary">
+                        You have unsaved changes.
+                    </span>
+                ) : undefined}
+            />
+            <div className="flex">
+                <div className="p-4 flex-1 border-r-[1px] border-r-light-secondary">
+                    <span className="block text-sm mb-1">
+                        Category name
+                    </span>
+                    <Input 
+                        value={categoryInfo.name}
+                        onChange={name => updateProperty('name', name)}
+                        placeholder={'Category name...'}
+                        className="w-full"
                     />
-                )}
-                <div className="p-4 flex justify-end gap-2 bg-light-secondary">
-                    {canReset && (
-                        <Button 
-                            type={'transparent'}
-                            onClick={reset}
+                    <span className="block text-sm mb-1 mt-2">
+                        Category description
+                    </span>
+                    <Input 
+                        value={categoryInfo.description || ''}
+                        onChange={description => updateProperty('description', description)}
+                        placeholder={'Category description...'}
+                        className="w-full"
+                        textArea
+                    />
+                </div>
+                <div className="p-4 flex-1">
+                    <span className="block text-sm mb-1">
+                        Assigned events
+                    </span>
+                    <div className="flex flex-col gap-1.5">
+                        {eventIds.map(eventId => (
+                            <AssignedEvent 
+                                id={eventId}
+                                key={eventId}
+                            />
+                        ))}
+                        <button 
+                            className="p-3 text-center hover:bg-light-secondary/50 transition-colors border-[1px] border-light-tertiary text-secondary rounded-md"
+                            onClick={openEventsPopout}
+                            ref={eventsPopoutButton}
                         >
-                            Reset changes
-                        </Button>
-                    )}
-                    <Button
-                        onClick={onSubmit}
-                        disabled={loading}
-                    >
-                        {isCreatingCategory ? (
-                            !loading ? 'Create category' : 'Creating category...'
-                        ) : (
-                            !loading ? 'Update category' : 'Updating category...'
-                        )}
-                    </Button>
+                            Assgin event
+                        </button>
+                    </div>
                 </div>
             </div>
-        </main>
+            {feedback && (
+                <Feedback 
+                    className="mb-4"
+                    {...feedback}
+                />
+            )}
+            <div className="p-4 flex justify-end gap-2 bg-light-secondary">
+                {canReset && (
+                    <Button 
+                        type={'transparent'}
+                        onClick={reset}
+                    >
+                        Reset changes
+                    </Button>
+                )}
+                <Button
+                    onClick={onSubmit}
+                    disabled={loading}
+                >
+                    {isCreatingCategory ? (
+                        !loading ? 'Create category' : 'Creating category...'
+                    ) : (
+                        !loading ? 'Update category' : 'Updating category...'
+                    )}
+                </Button>
+            </div>
+        </div>
     )
 }
 

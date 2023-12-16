@@ -44,51 +44,48 @@ export default function People() {
     }
 
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    backPath="/admin"
-                    text="People"
-                    options={
-                        <Button 
-                            className="py-2.5 px-3 mr-1.5"
-                            href={'/admin/people/add'}
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                backPath="/admin"
+                text="People"
+                options={
+                    <Button 
+                        className="py-2.5 px-3 mr-1.5"
+                        href={'/admin/people/add'}
+                    >
+                        Add person
+                    </Button>
+                }
+            />
+            {!loading ? (
+                <ul>
+                    {users.map(user => (
+                        <li 
+                            className="flex items-center justify-between px-4 py-3 border-b-[1px] border-b-light-secondary last-of-type:border-b-0"
+                            key={user.id}
                         >
-                            Add person
-                        </Button>
-                    }
-                />
-                {!loading ? (
-                    <ul>
-                        {users.map(user => (
-                            <li 
-                                className="flex items-center justify-between px-4 py-3 border-b-[1px] border-b-light-secondary last-of-type:border-b-0"
-                                key={user.id}
-                            >
-                                {user.username}
+                            {user.username}
 
-                                {user.id !== currentUser?.id ? (
-                                    <button 
-                                        className="p-2 -m-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
-                                        onClick={() => openRemoveModal(user.id)}
-                                    >
-                                        <BinIcon className="w-5" />
-                                    </button>
-                                ) : (
-                                    <span className="text-sm text-secondary">
-                                        You
-                                    </span>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <span className="py-24 flex-1 flex items-center justify-center text-secondary/80">
-                        Loading people...
-                    </span>
-                )}
-            </div>
-        </main>
+                            {user.id !== currentUser?.id ? (
+                                <button 
+                                    className="p-2 -m-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
+                                    onClick={() => openRemoveModal(user.id)}
+                                >
+                                    <BinIcon className="w-5" />
+                                </button>
+                            ) : (
+                                <span className="text-sm text-secondary">
+                                    You
+                                </span>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <span className="py-24 flex-1 flex items-center justify-center text-secondary/80">
+                    Loading people...
+                </span>
+            )}
+        </div>
     )
 }

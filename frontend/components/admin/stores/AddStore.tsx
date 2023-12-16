@@ -118,160 +118,157 @@ export default function AddStore({ params: { storeId } }: {
     }
 
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
-            <AdminTabs />
-            <div className="bg-light rounded-lg overflow-hidden">
-                <AdminHeader 
-                    backPath={'/admin/stores'}
-                    text={isAddingStore ? 'Stores / Add store' : `Stores / ${prevStore.name}`}
-                />
-                <div className="grid md:grid-cols-[1fr_1px_1fr]">
-                    <div className="flex-1">
-                        <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
-                            <InfoIcon className="w-4 -mt-0.5" />
-                            <span className="text-sm">
-                                Store info
-                            </span>
-                        </div>
-                        <div className="p-4 grid gap-3">
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Store name
-                                    {' '}
-                                    <span className="text-c-primary">
-                                        *
-                                    </span>
-                                </span>
-                                <Input 
-                                    placeholder={'Store name'}
-                                    onChange={text => updateProperty('name', text)}
-                                    value={storeInfo.name}
-                                />
-                            </div>
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Store address
-                                    {' '}
-                                    <span className="text-c-primary">
-                                        *
-                                    </span>
-                                </span>
-                                <Input 
-                                    placeholder={'Store address'}
-                                    onChange={text => updateProperty('address', text)}
-                                    value={storeInfo.address}
-                                    minHeight={80}
-                                    textArea
-                                />
-                            </div>
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Store phone number
-                                </span>
-                                <Input 
-                                    placeholder={'Store phone number'}
-                                    onChange={text => updateProperty('phoneNumber', text)}
-                                    value={storeInfo.phoneNumber}
-                                />
-                            </div>
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Store email
-                                </span>
-                                <Input 
-                                    placeholder={'Store email'}
-                                    onChange={text => updateProperty('email', text)}
-                                    value={storeInfo.email}
-                                />
-                            </div>
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Store instagram
-                                </span>
-                                <Input 
-                                    placeholder={'Store instagram link'}
-                                    onChange={text => updateProperty('instagram', text)}
-                                    value={storeInfo.instagram}
-                                />
-                            </div>
-                        </div>
+        <div className="bg-light rounded-lg overflow-hidden">
+            <AdminHeader 
+                backPath={'/admin/stores'}
+                text={isAddingStore ? 'Stores / Add store' : `Stores / ${prevStore.name}`}
+            />
+            <div className="grid md:grid-cols-[1fr_1px_1fr]">
+                <div className="flex-1">
+                    <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
+                        <InfoIcon className="w-4 -mt-0.5" />
+                        <span className="text-sm">
+                            Store info
+                        </span>
                     </div>
-                    <div className="self-stretch min-h-[1px] bg-light-secondary" />
-                    <div className="flex-1">
-                        <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
-                            <ClockIcon className="w-4" />
-                            <span className="text-sm">
-                                Store opening hours
+                    <div className="p-4 grid gap-3">
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Store name
+                                {' '}
+                                <span className="text-c-primary">
+                                    *
+                                </span>
                             </span>
+                            <Input 
+                                placeholder={'Store name'}
+                                onChange={text => updateProperty('name', text)}
+                                value={storeInfo.name}
+                            />
                         </div>
-                        <div className="p-4 grid gap-3">
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Weekdays&apos;
-                                    {' '}
-                                    <span className="text-c-primary">
-                                        *
-                                    </span>
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Store address
+                                {' '}
+                                <span className="text-c-primary">
+                                    *
                                 </span>
-                                <Input 
-                                    placeholder={'Weekdays\' opening hours'}
-                                    onChange={text => updateProperty('weekdays', text)}
-                                    value={storeInfo.weekdays}
-                                />
-                            </div>
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Saturdays&apos;
-                                    {' '}
-                                    <span className="text-c-primary">
-                                        *
-                                    </span>
-                                </span>
-                                <Input 
-                                    placeholder={'Saturdays\' opening hours'}
-                                    onChange={text => updateProperty('saturdays', text)}
-                                    value={storeInfo.saturdays}
-                                />
-                            </div>
-                            <div className="grid gap-1">
-                                <span className="text-sm text-secondary">
-                                    Sundays&apos;
-                                    {' '}
-                                    <span className="text-c-primary">
-                                        *
-                                    </span>
-                                </span>
-                                <Input 
-                                    placeholder={'Sundays\' opening hours'}
-                                    onChange={text => updateProperty('sundays', text)}
-                                    value={storeInfo.sundays}
-                                />
-                            </div>
+                            </span>
+                            <Input 
+                                placeholder={'Store address'}
+                                onChange={text => updateProperty('address', text)}
+                                value={storeInfo.address}
+                                minHeight={80}
+                                textArea
+                            />
+                        </div>
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Store phone number
+                            </span>
+                            <Input 
+                                placeholder={'Store phone number'}
+                                onChange={text => updateProperty('phoneNumber', text)}
+                                value={storeInfo.phoneNumber}
+                            />
+                        </div>
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Store email
+                            </span>
+                            <Input 
+                                placeholder={'Store email'}
+                                onChange={text => updateProperty('email', text)}
+                                value={storeInfo.email}
+                            />
+                        </div>
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Store instagram
+                            </span>
+                            <Input 
+                                placeholder={'Store instagram link'}
+                                onChange={text => updateProperty('instagram', text)}
+                                value={storeInfo.instagram}
+                            />
                         </div>
                     </div>
                 </div>
-                {feedback && (
-                    <span className={twMerge(
-                        "block mx-4 mb-4 p-3 rounded-md text-sm border-[1px]",
-                        feedback.type === 'danger' && 'bg-red-400/50 border-red-400',
-                        feedback.type === 'success' && 'bg-green-300/50 border-green-300',
-                    )}>
-                        {feedback.text}
-                    </span>
-                )}
-                <div className="p-4 bg-light-secondary flex justify-end">
-                    <Button 
-                        onClick={addStore}
-                        disabled={loading}
-                    >
-                        {isAddingStore ? (
-                            !loading ? 'Add store' : 'Adding store...'
-                        ) : (
-                            !loading ? 'Update store' : 'Updating store...'
-                        )}
-                    </Button>
+                <div className="self-stretch min-h-[1px] bg-light-secondary" />
+                <div className="flex-1">
+                    <div className="p-4 flex gap-1.5 border-b-[1px] border-b-light-secondary text-secondary">
+                        <ClockIcon className="w-4" />
+                        <span className="text-sm">
+                            Store opening hours
+                        </span>
+                    </div>
+                    <div className="p-4 grid gap-3">
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Weekdays&apos;
+                                {' '}
+                                <span className="text-c-primary">
+                                    *
+                                </span>
+                            </span>
+                            <Input 
+                                placeholder={'Weekdays\' opening hours'}
+                                onChange={text => updateProperty('weekdays', text)}
+                                value={storeInfo.weekdays}
+                            />
+                        </div>
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Saturdays&apos;
+                                {' '}
+                                <span className="text-c-primary">
+                                    *
+                                </span>
+                            </span>
+                            <Input 
+                                placeholder={'Saturdays\' opening hours'}
+                                onChange={text => updateProperty('saturdays', text)}
+                                value={storeInfo.saturdays}
+                            />
+                        </div>
+                        <div className="grid gap-1">
+                            <span className="text-sm text-secondary">
+                                Sundays&apos;
+                                {' '}
+                                <span className="text-c-primary">
+                                    *
+                                </span>
+                            </span>
+                            <Input 
+                                placeholder={'Sundays\' opening hours'}
+                                onChange={text => updateProperty('sundays', text)}
+                                value={storeInfo.sundays}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </main>
+            {feedback && (
+                <span className={twMerge(
+                    "block mx-4 mb-4 p-3 rounded-md text-sm border-[1px]",
+                    feedback.type === 'danger' && 'bg-red-400/50 border-red-400',
+                    feedback.type === 'success' && 'bg-green-300/50 border-green-300',
+                )}>
+                    {feedback.text}
+                </span>
+            )}
+            <div className="p-4 bg-light-secondary flex justify-end">
+                <Button 
+                    onClick={addStore}
+                    disabled={loading}
+                >
+                    {isAddingStore ? (
+                        !loading ? 'Add store' : 'Adding store...'
+                    ) : (
+                        !loading ? 'Update store' : 'Updating store...'
+                    )}
+                </Button>
+            </div>
+        </div>
     )
 }
