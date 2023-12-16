@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { BinIcon } from "@/assets/icons/BinIcon";
 import SortableImages, { ImageWithSrc } from "@/components/sortable-images";
+import Feedback from "@/components/feedback";
 
 const createDummyEvent: () => Event = () => ({
     id: Math.random().toString(),
@@ -225,15 +226,6 @@ export default function EditEvent({ params: { eventId } }: {
                     </span>
                 ) : undefined}
             />
-            {feedback && (
-                <span className={twMerge(
-                    "block mx-4 mt-4 p-3 rounded-md text-sm border-[1px]",
-                    feedback.type === 'danger' && 'bg-red-400/50 border-red-400',
-                    feedback.type === 'success' && 'bg-green-300/50 border-green-300',
-                )}>
-                    {feedback.text}
-                </span>
-            )}
             {(!eventsLoading && (!!prevImages || isCreatingEvent)) ? (
                 <>
                 <div>
@@ -320,6 +312,12 @@ export default function EditEvent({ params: { eventId } }: {
                         images={images}
                         className="p-4 pt-0"
                     />
+                    {feedback && (
+                        <Feedback 
+                            {...feedback}
+                            className="mb-4"
+                        />
+                    )}
                 </div>
                 <div className="p-4 flex justify-end gap-2 bg-light-secondary">
                     {hasChanges && (

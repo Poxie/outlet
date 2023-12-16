@@ -12,6 +12,7 @@ import { addStore as _addStore, selectStoreById, updateStore } from "@/store/sli
 import { Store } from "../../../../types";
 import { InfoIcon } from "@/assets/icons/InfoIcon";
 import { ClockIcon } from "@/assets/icons/ClockIcon";
+import Feedback from "@/components/feedback";
 
 const getDummyStore = () => ({
     name: '',
@@ -249,13 +250,10 @@ export default function AddStore({ params: { storeId } }: {
                 </div>
             </div>
             {feedback && (
-                <span className={twMerge(
-                    "block mx-4 mb-4 p-3 rounded-md text-sm border-[1px]",
-                    feedback.type === 'danger' && 'bg-red-400/50 border-red-400',
-                    feedback.type === 'success' && 'bg-green-300/50 border-green-300',
-                )}>
-                    {feedback.text}
-                </span>
+                <Feedback 
+                    {...feedback}
+                    className="mb-4"
+                />
             )}
             <div className="p-4 bg-light-secondary flex justify-end">
                 <Button 
