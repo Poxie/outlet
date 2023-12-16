@@ -74,9 +74,9 @@ export default function InspirationOptions({ isArchived, postId }: {
     }
 
     return(
-        <div className="flex">
+        <div className="flex items-center">
             <Link
-                className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                className="p-2 rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                 aria-label="Edit event"
                 href={`/admin/inspiration/${postId}`}
             >
@@ -84,7 +84,7 @@ export default function InspirationOptions({ isArchived, postId }: {
             </Link>
             {!isArchived ? (
                 <button 
-                    className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                    className="p-2 rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                     onClick={openArchiveModal}
                     aria-label="Edit event"
                 >
@@ -92,7 +92,7 @@ export default function InspirationOptions({ isArchived, postId }: {
                 </button>
             ) : (
                 <button 
-                    className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                    className="p-2 rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                     onClick={openUnarchiveModal}
                     aria-label="Edit event"
                 >
@@ -100,7 +100,7 @@ export default function InspirationOptions({ isArchived, postId }: {
                 </button>
             )}
             <button 
-                className="p-2 flex items-center justify-center text-c-primary aspect-square rounded-full"
+                className="p-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                 onClick={openRemoveModal}
             >
                 <BinIcon className="w-5" />

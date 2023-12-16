@@ -74,9 +74,9 @@ export default function CategoryOptions({ isArchived, categoryId }: {
     }
 
     return(
-        <div className="flex">
+        <div className="flex items-center">
             <Link
-                className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                className="p-2 rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                 aria-label="Edit category"
                 href={`/admin/events/categories/${categoryId}`}
             >
@@ -84,7 +84,7 @@ export default function CategoryOptions({ isArchived, categoryId }: {
             </Link>
             {!isArchived ? (
                 <button 
-                    className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                    className="p-2 rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                     onClick={openArchiveModal}
                     aria-label="Edit category"
                 >
@@ -92,7 +92,7 @@ export default function CategoryOptions({ isArchived, categoryId }: {
                 </button>
             ) : (
                 <button 
-                    className="p-2 flex items-center justify-center text-primary aspect-square rounded-full"
+                    className="p-2 rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                     onClick={openUnarchiveModal}
                     aria-label="Edit category"
                 >
@@ -100,7 +100,7 @@ export default function CategoryOptions({ isArchived, categoryId }: {
                 </button>
             )}
             <button 
-                className="p-2 flex items-center justify-center text-c-primary aspect-square rounded-full"
+                className="p-2 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-secondary transition-colors"
                 onClick={openRemoveModal}
             >
                 <BinIcon className="w-5" />
