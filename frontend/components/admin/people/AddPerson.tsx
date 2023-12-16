@@ -6,7 +6,7 @@ import { useState } from "react";
 import Button from "@/components/button";
 import Feedback from "@/components/feedback";
 import { useAuth } from "@/contexts/auth";
-import { User } from "../../../../types";
+import { AuthResponse } from "../../../../types";
 import { addUser, selectUsersLoading } from "@/store/slices/users";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useRouter } from "next/navigation";
@@ -70,9 +70,9 @@ export default function AddPerson() {
         }
 
         setLoading(true);
-        post<User>('/people', { username, password })
-            .then(user => {
-                dispatch(addUser(user));
+        post<AuthResponse>('/people', { username, password })
+            .then(data => {
+                dispatch(addUser(data.user));
                 router.replace('/admin/people');
             })
             .catch(error => {
