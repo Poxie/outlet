@@ -1,7 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { User } from "../../../types";
+import { useRouter } from "next/navigation";
 
 const AuthContext = React.createContext<null | {
+    currentUser: User | null;
     get: <T>(query: string) => Promise<T>;
     put: <T>(query: string, body?: Record<string, any>) => Promise<T>;
     post: <T>(query: string, body?: Record<string, any>) => Promise<T>;
@@ -15,18 +18,42 @@ export const useAuth = () => {
     return context;
 }
 
+const isAuthError = (message: string) => message === 'Missing or invalid token.';
+
 export default function AuthProvider({ children }: {
     children: React.ReactNode;
 }) {
+    const router = useRouter();
+
+    const [currentUser, setCurrentUser] = useState<User | null>(null)
+
+    const getToken = () => window.localStorage.getItem('token');
+
+    useEffect(() => {
+        get<User>(`/people/me`).then(setCurrentUser);
+    }, []);
+
     async function request<T>(method: 'GET' | 'PUT' | 'POST' | 'PATCH' | 'DELETE', query: string, body?: Record<string, any>) {
+        const token = getToken();
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}${query}`, {
             method,
             body: method === 'GET' ? undefined : JSON.stringify(body),
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
             }
         })
-        if(!res.ok) throw new Error((await res.json()).message);
+
+        if(!res.ok) {
+            const message = (await res.json()).message;
+            if(isAuthError(message)) {
+                router.replace('/admin/login');
+                return;
+            }
+            throw new Error(message);
+        }
+
         return await res.json() as T;
     }
 
@@ -57,6 +84,7 @@ export default function AuthProvider({ children }: {
         post,
         patch,
         _delete,
+        currentUser,
     }
     return(
         <AuthContext.Provider value={value}>

@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { myDataSource } from '../app-data-source';
 import { People } from '../entity/people.entity';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
-import { createId } from '../utils';
+import { createId, getUserIdFromHeaders } from '../utils';
 import { authHandler } from '../middleware/authHandler';
 import { APIUnauthorizedError } from '../errors/apiUnauthorizedError';
 
@@ -43,6 +43,19 @@ router.get('/people', authHandler, async (req, res, next) => {
         .getMany();
 
     res.send(people);
+})
+router.get('/people/me', authHandler, async (req, res, next) => {
+    const userId = res.locals.userId;
+    if(!userId) {
+        return next(new APIBadRequestError('User not found.'));
+    }
+
+    const user = await myDataSource.getRepository(People).findOneBy({ id: userId });
+    if(!user) {
+        return next(new APIBadRequestError('User not found.'));
+    }
+
+    res.send({ username: user.username, id: user.id });
 })
 router.post('/people', authHandler, async (req, res, next) => {
     const { username, password } = req.body;

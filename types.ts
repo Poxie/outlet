@@ -57,3 +57,11 @@ export type BlogPost = {
     images: Image[];
     archived: boolean;
 }
+export type User = {
+    id: string;
+    username: string;
+}
+export type AuthResponse = {
+    token: string;
+    user: User;
+}
