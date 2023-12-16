@@ -1,15 +1,7 @@
-// @ts-ignore
-import * as imageDataURI from 'image-data-uri';
-import * as fs from 'fs';
 import * as express from 'express';
-import { createId, dateToReadableString, getCurrentWeeklyDealDate } from '../utils';
+import { dateToReadableString, getCurrentWeeklyDealDate } from '../utils';
 import { myDataSource } from '../app-data-source';
-import { WeeklyDeal } from '../entity/weekly-deal.entity';
-import { WEEKLY_DEAL_DAY } from '../constants';
-import { APIForbiddenError } from '../errors/apiForbiddenError';
-import { APIBadRequestError } from '../errors/apiBadRequestError';
-import { COUNT_DEAL_WEEKS_AHEAD, DAYS_OF_THE_WEEK } from '../utils/constants';
-import { APINotFoundError } from '../errors/apiNotFoundError';
+import { COUNT_DEAL_WEEKS_AHEAD, DAYS_OF_THE_WEEK, IMAGE_TYPES } from '../utils/constants';
 import { Images } from '../entity/images.entity';
 import { In } from 'typeorm';
 
@@ -23,7 +15,7 @@ const getWeeklyDealByDate = async (date: Date) => {
     const dateString = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
     const deals = await myDataSource.getRepository(Images)
         .createQueryBuilder('images')
-        .where('images.parentId = :parentId', { parentId: dateString })
+        .where('images.parentId = :parentId AND type = :type', { parentId: dateString, type: IMAGE_TYPES.deals })
         .orderBy('images.position', 'ASC')
         .getMany();
 
