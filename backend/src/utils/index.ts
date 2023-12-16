@@ -1,4 +1,4 @@
-import { EntityTarget, ObjectLiteral } from "typeorm";
+import * as jwt from 'jsonwebtoken';
 import { myDataSource } from "../app-data-source";
 import { WeeklyDeal } from "../entity/weekly-deal.entity";
 import { DEAL_DAY_ID, IMAGE_TYPE_REPOSITORIES } from "./constants";
@@ -6,6 +6,8 @@ import { Events } from "../entity/events.entity";
 import { Images } from "../entity/images.entity";
 import { Banners } from "../entity/banners.entity";
 import { Inspiration } from "../entity/inspiration.entity";
+import { People } from "../entity/people.entity";
+import { Request } from "express";
 
 export const dateToReadableString = (date: Date) => `${String(date.getDate()).padStart(2,'0')}-${String(date.getMonth() + 1).padStart(2,'0')}-${date.getFullYear()}`
 
@@ -21,13 +23,14 @@ export const isDealDate = (date: string) => {
     return dateObject.getDay() === DEAL_DAY_ID;
 }
 
-type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category';
+type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category' | 'people';
 const repositories = {
     'weekly_deal': WeeklyDeal,
     events: Events,
     images: Images,
     banners: Banners,
     inspiration: Inspiration,
+    people: People,
 }
 
 const generateRandomNumbers = (length: number) => {
@@ -76,3 +79,16 @@ export const createUniqueIdFromName = async (name: string, table: DatabaseTable)
 }
 
 export const getParentRepository = (imageType: keyof typeof IMAGE_TYPE_REPOSITORIES) => IMAGE_TYPE_REPOSITORIES[imageType];
+
+export const getUserIdFromHeaders: ((headers: Request['headers']) => Promise<string | null>) = async (headers) => {
+    const accessToken = headers.authorization?.split(' ')[1];
+
+    return new Promise((res, rej) => {
+        jwt.verify(accessToken, process.env.JWT_PRIVATE_TOKEN, async (error, decoded?: { 
+            id: string 
+        }) => {
+            if(error || !decoded) return res(null);
+            res(decoded.id);
+        })
+    })
+}
