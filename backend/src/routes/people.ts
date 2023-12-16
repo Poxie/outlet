@@ -6,6 +6,7 @@ import { People } from '../entity/people.entity';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
 import { authHandler } from '../middleware/authHandler';
+import { APIUnauthorizedError } from '../errors/apiUnauthorizedError';
 
 const MIN_USERNAME_LENGTH = 2;
 const MAX_USERNAME_LENGTH = 32;
@@ -14,6 +15,27 @@ const MAX_PASSWORD_LENGTH = 64;
 
 const router = express.Router();
 
+const createAuthToken = (id: string) => jwt.sign({ id }, process.env.JWT_PRIVATE_TOKEN);
+
+router.post('/login', async (req, res, next) => {
+    const { username, password } = req.body;
+    
+    if(!username) return next(new APIBadRequestError('Username is required.'));
+    if(!password) return next(new APIBadRequestError('Password is required.'));
+
+    const user = await myDataSource.getRepository(People).findOneBy({ username });
+    if(!user) return next(new APIUnauthorizedError('Invalid credentials.'))
+
+    const match = await bcrypt.compare(password, user.password);
+    if(!match) return next(new APIUnauthorizedError('Invalid credentials.'))
+
+    const token = createAuthToken(user.id);
+
+    res.send({ token, user: {
+        id: user.id,
+        username: user.username,
+    } });
+})
 router.get('/people', authHandler, async (req, res, next) => {
     const people = await myDataSource.getRepository(People)
         .createQueryBuilder('people')
@@ -49,7 +71,7 @@ router.post('/people', authHandler, async (req, res, next) => {
     })
     await myDataSource.getRepository(People).save(person);
 
-    const token = jwt.sign({ id }, process.env.JWT_PRIVATE_TOKEN);
+    const token = createAuthToken(id);
     
     res.send({
         user: { id, username },
