@@ -28,7 +28,7 @@ export default function ImagePreviewModal({ src, path }: {
                 </Button>
                 <button
                     onClick={close}
-                    aria-label={'Säng förhandsvisning'}
+                    aria-label={'Stäng förhandsvisning'}
                     className="aspect-square text-secondary rounded hover:bg-light-secondary hover:text-primary transition-colors"
                 >
                     <CloseIcon className="w-8" />
