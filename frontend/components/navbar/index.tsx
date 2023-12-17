@@ -21,7 +21,7 @@ export default function Navbar() {
 
     const isSmall = ['xs', 'sm'].includes(screenSize);
     useEffect(() => {
-        close()
+        close();
 
         if(!isSmall) return;
         const handleClickOutside = (e: Event) => {
@@ -53,23 +53,26 @@ export default function Navbar() {
                         height={50} 
                     />
                 </Link>
-                {isSmall && (
-                    <button 
-                        className="p-1.5 -m-1.5 text-light hover:bg-primary transition-colors rounded-md"
-                        onClick={() => setOpen(!open)}
-                        ref={buttonRef}
-                    >
-                        <HamIcon className="w-7" strokeWidth={3} />
-                    </button>
-                )}
+                <button 
+                    className={twMerge(
+                        "p-1.5 -m-1.5 text-light hover:bg-primary transition-colors rounded-md",
+                        "block md:hidden"
+                    )}
+                    onClick={() => setOpen(!open)}
+                    ref={buttonRef}
+                    aria-label={open ? 'Stäng navigeringsmenyn' : 'Öppna navigeringsmenyn'}
+                >
+                    <HamIcon className="w-7" strokeWidth={3} />
+                </button>
                 <div className={twMerge(
-                    isSmall && "grid grid-rows-[0fr] absolute top-full left-0 w-full z-20 overflow-hidden transition-[grid-template-rows,box-shadow] duration-500",
+                    "grid grid-rows-[0fr] absolute top-full left-0 w-full z-20 overflow-hidden transition-[grid-template-rows,box-shadow] duration-500",
+                    "md:flex md:relative md:top-[unset] md:left-[unset] md:w-[unset] md:overflow-[unset]",
                     open && 'grid-rows-[1fr] shadow-lg',
                 )}>
                     <ul 
                         className={twMerge(
-                            !isSmall && 'flex gap-4',
-                            isSmall && "min-h-0 grid gap-6 place-items-center bg-primary transition-[padding] duration-500",
+                            "min-h-0 grid gap-6 place-items-center bg-primary transition-[padding] duration-500",
+                            'md:flex md:gap-4 md:bg-transparent md:place-items-[unset]',
                             open && 'p-6'
                         )}
                         ref={listRef}
@@ -80,8 +83,7 @@ export default function Navbar() {
                                     href={link.path}
                                     onClick={close}
                                     className={twMerge(
-                                        "text-light text-sm",
-                                        isSmall && "text-lg",
+                                        "text-light text-lg md:text-sm",
                                     )}
                                 >
                                     {link.text}
