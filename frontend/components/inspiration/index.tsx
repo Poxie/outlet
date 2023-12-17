@@ -11,7 +11,7 @@ export default async function Inspiration() {
     return(
         <main>
             <header className="bg-primary py-12 sm:py-24 flex flex-col gap-4 text-center text-light">
-                <h1 className="text-4xl uppercase font-extrabold">
+                <h1 className="text-4xl font-extrabold">
                     Inspiration
                 </h1>
                 <p className="text-lg w-[660px] max-w-main mx-auto">
