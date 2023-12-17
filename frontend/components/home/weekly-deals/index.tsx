@@ -24,22 +24,22 @@ export default async function WeeklyDeals() {
 
     return(
         <section className="py-8 w-main max-w-main mx-auto">
-            <div className="mb-2 p-2 flex items-center justify-between text-sm bg-light rounded-lg">
-                <div className="px-2 flex items-center gap-3">
-                    <span className="text-xl font-semibold">
-                        Veckans deal
-                    </span>
-                    <span className="text-secondary mt-1">
-                        Gäller t.o.m. {endString}. Risk för utsäljning.
-                    </span>
+            <div className="mb-2 py-4 sm:py-2 px-4 grid sm:flex sm:gap-3 items-center text-sm bg-light rounded-lg">
+                <span className="text-2xl sm:text-xl font-semibold">
+                    Veckans deal
+                </span>
+                <span className="text-secondary mt-1">
+                    Gäller t.o.m. {endString}. Risk för utsäljning.
+                </span>
+                <div className="flex-1 flex sm:justify-end mt-1 sm:mt-0">
+                    <Link 
+                        className="p-2 -ml-2 sm:ml-0 -mb-2 sm:mb-0 flex items-center gap-1 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-tertiary/60 transition-colors"
+                        href={`/veckans-deal`}
+                    >
+                        Visa alla deals
+                        <ArrowIcon className="-mr-0.5 w-4 rotate-90" />
+                    </Link>
                 </div>
-                <Link 
-                    className="p-2 flex gap-1 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-tertiary/60 transition-colors"
-                    href={`/veckans-deal`}
-                >
-                    Visa alla deals
-                    <ArrowIcon className="-mr-0.5 w-4 rotate-90" />
-                </Link>
             </div>
             <div className='p-4 bg-light rounded-lg'>
                 <Carousel 
