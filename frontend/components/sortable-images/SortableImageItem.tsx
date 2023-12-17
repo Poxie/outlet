@@ -5,6 +5,7 @@ import { BinIcon } from "@/assets/icons/BinIcon";
 import { HamIcon } from "@/assets/icons/HamIcon";
 import { twMerge } from "tailwind-merge";
 import { Image as ImageType } from "../../../types";
+import SortableItemImage from "./SortableItemImage";
 
 export default function SortableImageItem({ id, src, position, onMouseUp: _onMouseUp, handleRemove, onOrderChange }: ImageWithSrc & {
     onMouseUp: () => void;
@@ -169,18 +170,3 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
         </div>
     )
 }
-
-const SortableItemImage = React.memo(({ src }: {
-    src: string;
-}) => {
-    return(
-        <Image 
-            width={150}
-            height={150}
-            src={src}
-            className="aspect-square w-full h-full object-cover rounded-md"
-            draggable={false}
-            alt={``}
-        />
-    )
-})
