@@ -44,11 +44,11 @@ export default function InspirationPost({ id, title, description, timestamp, ima
                         </span>
                     )}
                 </h2>
-                <p className="text-secondary w-[800px] max-w-full">
+                <p className="text-secondary md:w-9/12 max-w-full">
                     {description}
                 </p>
             </header>
-            <div className="grid grid-cols-4 gap-2 mt-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-2 mt-4">
                 {images.map((image, key) => (
                     <ExpandableImage
                         alt={`Blog image ${key}`}
