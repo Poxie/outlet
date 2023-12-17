@@ -187,7 +187,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
         src: image.image.startsWith('data') ? image.image : getBlogImage(image.parentId, image.id),
     }))
 
-    const hasChanges = hasInfoChanges() || hasImageChanges();
+    const hasChanges = !isCreatingPost && (hasInfoChanges() || hasImageChanges());
     const date = new Date(Number(postInfo.timestamp));
     return(
         <div className="bg-light rounded-lg overflow-hidden">
