@@ -100,8 +100,11 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
 
         if(isCreatingPost) {
             setLoading(true);
-            const blogPost = await post('/inspiration', postInfo);
+            const blogPost = await post<BlogPost>('/inspiration', postInfo);
             dispatch(addInspiration(blogPost));
+
+            await updateImages(blogPost.id);
+            
             router.replace('/admin/inspiration');
         } else {
             if(!hasInfoChanges() && !hasImageChanges()) {
@@ -118,7 +121,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
                 await patch(`/inspiration/${prevPost.id}`, changes);
                 dispatch(editInspiration({ inspirationId, changes }));
             }
-            await updateImages()
+            await updateImages(prevPost.id);
 
             setLoading(false);
             setFeedback({
@@ -127,7 +130,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
             })
         }
     }
-    const updateImages = async () => {
+    const updateImages = async (inspirationId: string) => {
         const { addedImages, removedImages, changedPositions } = getImageDiff(prevImages, postInfo.images);
         if(!addedImages.length && !removedImages.length && !changedPositions.length) return;
         

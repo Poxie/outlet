@@ -3,7 +3,7 @@ import { myDataSource } from '../app-data-source';
 import { Inspiration } from '../entity/inspiration.entity';
 import { ALLOWED_INSPIRATION_PROPERTIES, IMAGE_TYPES, REQUIRED_INSPIRATION_PROPERTIES } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
-import { createId } from '../utils';
+import { createUniqueIdFromName } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { Images } from '../entity/images.entity';
 import { authHandler } from '../middleware/authHandler';
@@ -47,14 +47,17 @@ router.post('/inspiration', authHandler, async (req, res, next) => {
         changes[prop] = req.body[prop];
     }
 
-    const id = await createId('inspiration')
+    const id = await createUniqueIdFromName(req.body.title, 'inspiration');
     const post = myDataSource.getRepository(Inspiration).create({
         id,
         ...changes,
     })
     await myDataSource.getRepository(Inspiration).save(post);
 
-    res.send(post);
+    res.send({
+        ...post,
+        images: [],
+    });
 })
 router.patch('/inspiration/:inspirationId', authHandler, async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId });
