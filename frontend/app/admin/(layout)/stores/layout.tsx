@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/auth';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { selectStoresLoading, setStores } from '@/store/slices/stores';
 import { useEffect } from 'react';
-import { Store } from '../../../../types';
+import { Store } from '../../../../../types';
 
 export default function StoresLayout({ children }: {
     children: React.ReactNode;

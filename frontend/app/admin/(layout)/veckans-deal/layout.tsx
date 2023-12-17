@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAuth } from "@/contexts/auth";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setDeals } from "@/store/slices/deals";
-import { WeeklyDeal } from "../../../../types";
+import { WeeklyDeal } from "../../../../../types";
 
 export default function WeeklyDealsLayout({ children }: {
     children: React.ReactNode;

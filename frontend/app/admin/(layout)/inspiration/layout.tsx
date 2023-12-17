@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAuth } from "@/contexts/auth";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectInspirationLoading, setInspiration } from "@/store/slices/inspiration";
-import { BlogPost } from '../../../../types';
+import { BlogPost } from '../../../../../types';
 
 export default function InspirationLayout({ children }: {
     children: React.ReactNode;

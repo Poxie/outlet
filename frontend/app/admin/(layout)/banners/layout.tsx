@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAuth } from "@/contexts/auth";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectBannersLoading, setBanners } from "@/store/slices/banners";
-import { Banner } from '../../../../types';
+import { Banner } from '../../../../../types';
 
 export default function BannersLayout({ children }: {
     children: React.ReactNode;

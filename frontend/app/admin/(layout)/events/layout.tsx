@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAuth } from "@/contexts/auth";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setEvents } from '@/store/slices/events';
-import { Event } from '../../../../types';
+import { Event } from '../../../../../types';
 import { setCategories } from '@/store/slices/categories';
 
 export default function EventsLayout({ children }: {
