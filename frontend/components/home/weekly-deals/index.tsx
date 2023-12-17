@@ -41,7 +41,7 @@ export default async function WeeklyDeals() {
                     </Link>
                 </div>
             </div>
-            <div className='p-4 bg-light rounded-lg'>
+            <div className='p-4 bg-light rounded-lg mb-[calc(3rem+.5rem)] md:mb-0'>
                 <Carousel 
                     items={deals.map(deal => ({
                         id: deal.id,

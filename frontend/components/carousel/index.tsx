@@ -38,14 +38,21 @@ export default function Carousel({ items, itemsPerPage }: {
 
     const atEnd = items.length < columnCount || Math.floor((translate + 100) / columnPercentage) === items.length;
     return(
-        <div className="relative">
-            <CarouselNavButton 
-                onClick={back}
-                disabled={index === 0}
-            />
+        <div className="[--space-from-edge:1rem] [--button-width:3rem] [--padding:.5rem] relative">
+            <div className="pointer-events-none flex justify-between absolute w-full top-[calc(100%+var(--button-width)/2+var(--padding))] md:w-[calc(100%+var(--button-width)*2+var(--padding)*2+var(--space-from-edge)*2)] md:-left-[calc(var(--button-width)+var(--padding)+var(--space-from-edge))] md:top-2/4 md:-translate-y-2/4 z-20">
+                <CarouselNavButton 
+                    onClick={back}
+                    disabled={index === 0}
+                />
+                <CarouselNavButton
+                    onClick={next}
+                    disabled={atEnd}
+                    className="left-[calc(100%+var(--from-container))] rotate-90"
+                />
+            </div>
             <div className='overflow-hidden'>
                 <ul 
-                    className="[--spacing:8px] flex transition-transform -mr-[--spacing]"
+                    className="flex transition-transform -mr-[--padding]"
                     style={{
                         transform: `translateX(${-1 * translate}%)`,
                         '--column-count': columnCount,
@@ -70,11 +77,6 @@ export default function Carousel({ items, itemsPerPage }: {
                     })}
                 </ul>
             </div>
-            <CarouselNavButton
-                onClick={next}
-                disabled={atEnd}
-                className="left-[calc(100%+var(--from-container))] rotate-90"
-            />
         </div>
     )
 }
