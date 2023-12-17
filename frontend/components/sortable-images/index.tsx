@@ -126,7 +126,7 @@ function SortableImages({ parentId, images, className, onChange, addImageLabel='
 
     return(
         <div className={twMerge(
-            "grid gap-2 -grid-cols-2 md:grid-cols-4 lg:grid-cols-6",
+            "grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6",
             className,
         )}>
             {sortableImages.map((image, key) => (

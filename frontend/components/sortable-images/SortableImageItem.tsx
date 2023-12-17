@@ -38,11 +38,17 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
         onMouseUpRef.current = _onMouseUp;
     }, [_onMouseUp])
     
-    const onMouseDown = (e: React.MouseEvent) => {
+    const onMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
         setDragging(true);
+
+        if('touches' in e) {
+            document.body.style.overflow = 'hidden';
+        }
 
         document.addEventListener('mouseup', onMouseUp);
         document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('touchstart', onMouseUp);
+        document.addEventListener('touchmove', onMouseMove);
         document.body.style.userSelect = 'none';
 
         if(!container.current) return;
@@ -53,12 +59,14 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
         container.current.style.zIndex = '3';
         document.body.style.cursor = 'grab';
     }
-    const onMouseUp = (e: MouseEvent) => {
+    const onMouseUp = (e: MouseEvent | TouchEvent) => {
         onMouseUpRef.current();
         setDragging(false);
 
         document.removeEventListener('mouseup', onMouseUp);
         document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('touchstart', onMouseUp);
+        document.removeEventListener('touchmove', onMouseMove);
         document.body.style.userSelect = '';
         initialMousePos.current = null;
         initialContainerPos.current = null;
@@ -71,16 +79,22 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
         container.current.style.pointerEvents = '';
         container.current.style.zIndex = '';
         document.body.style.cursor = '';
+        document.body.style.overflow = '';
     }
-    const onMouseMove = (e: MouseEvent) => {
+    const onMouseMove = (e: MouseEvent | TouchEvent) => {
         if(!container.current) return;
+
+        const isTouchEvent = 'touches' in e;
+
+        const clientX = isTouchEvent ? e.touches[0].clientX : e.clientX;
+        const clientY = isTouchEvent ? e.touches[0].clientY : e.clientY;
 
         const { left: containerLeft, top: containerTop, width: containerWidth, height: containerHeight } = container.current.getBoundingClientRect();
 
         if(!initialMousePos.current) {
             initialMousePos.current = {
-                top: e.clientY,
-                left: e.clientX,
+                top: clientY,
+                left: clientX,
             }
         }
         if(!initialContainerPos.current) {
@@ -93,8 +107,8 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
         const mousePosOffsetX = initialMousePos.current.left - initialContainerPos.current.left;
         const mousePosOffsetY = initialMousePos.current.top - initialContainerPos.current.top;
         
-        const left = e.clientX - mousePosOffsetX;
-        const top = e.clientY - mousePosOffsetY;
+        const left = clientX - mousePosOffsetX;
+        const top = clientY - mousePosOffsetY;
 
         container.current.style.left = `${left}px`;
         // window.scrollY to counteract scroll offset
@@ -134,17 +148,18 @@ export default function SortableImageItem({ id, src, position, onMouseUp: _onMou
             >
                 <div 
                     className={twMerge(
-                        "shadow opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 cursor-grab absolute top-2 left-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded-md",
+                        "shadow md:opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 cursor-grab absolute top-2 left-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded-md",
                         dragging && 'opacity-100',
                     )}
                     onMouseDown={onMouseDown}
+                    onTouchStart={onMouseDown}
                     draggable
                 >
                     <HamIcon className="w-5 text-primary" />
                 </div>
                 <SortableItemImage src={src} />
                 <button 
-                    className="shadow opacity-0 focus:opacity-100 group-hover:opacity-100 p-1 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
+                    className="p-1 shadow md:opacity-0 focus:opacity-100 group-hover:opacity-100 absolute top-2 right-2 z-[1] bg-light hover:bg-opacity-80 transition-[background-color,opacity] rounded"
                     aria-label="Delete image"
                     onClick={() => handleRemove(id)}
                 >
