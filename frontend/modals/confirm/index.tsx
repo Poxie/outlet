@@ -3,6 +3,7 @@ import Modal from "../Modal";
 import ModalHeader from "../ModalHeader";
 import { useState } from "react";
 import { useModal } from "@/contexts/modal";
+import ModalFooter from "../ModalFooter";
 
 export default function ConfirmModal<T>({ header, subHeader, cancelText='Cancel', confirmText='Confirm', confirmLoadingText='Confirming...', confirmFunction, onConfirm, closeOnCancel=false }: {
     header: string;
@@ -18,11 +19,12 @@ export default function ConfirmModal<T>({ header, subHeader, cancelText='Cancel'
 
     const [loading, setLoading] = useState(false);
 
-    const handleConfirm = async () => {
+    const handleConfirm = () => {
         setLoading(true);
-        const data = await confirmFunction();
-        onConfirm(data);
-        close();
+        confirmFunction().then(data => {
+            onConfirm(data);
+            close();
+        })
     }
 
     return(
@@ -33,24 +35,12 @@ export default function ConfirmModal<T>({ header, subHeader, cancelText='Cancel'
             >
                 {header}
             </ModalHeader>
-            <div className="p-4 flex justify-end gap-2 bg-light-secondary/40">
-                <Button 
-                    className="bg-transparent text-secondary"
-                    disabled={loading}
-                    onClick={() => {
-                        if(!closeOnCancel) return;
-                        close();
-                    }}
-                >
-                    {cancelText}
-                </Button>
-                <Button
-                    onClick={handleConfirm}
-                    disabled={loading}
-                >
-                    {!loading ? confirmText : confirmLoadingText}
-                </Button>
-            </div>
+            <ModalFooter 
+                confirmText={!loading ? confirmText : confirmLoadingText}
+                onConfirm={handleConfirm}
+                loading={loading}
+                closeOnCancel
+            />
         </Modal>
     )
 }

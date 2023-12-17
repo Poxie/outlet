@@ -4,7 +4,6 @@ import Input from "@/components/input";
 import { useModal } from "@/contexts/modal";
 import { usePopout } from "@/contexts/popout";
 import { useEvents } from "@/hooks/useEvents";
-import AddEventModal from "@/modals/events/AddEventModal";
 import CategoryPopout from "@/popouts/categories";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectCategoriesLength, selectCategoryById } from "@/store/slices/categories";
@@ -26,12 +25,6 @@ export default function EventPanel() {
     const categoryCount = useAppSelector(selectCategoriesLength);
     const sortByCategory = useAppSelector(state => selectCategoryById(state, categoryId || ''));
 
-    const resetCategoryFilters = () => dispatch(setCategoryId(null));
-    const openAddEventModal = () => setModal(
-        <AddEventModal 
-            onEventAdd={addEvent}
-        />
-    )
     const openCategoryPopout = (e: React.MouseEvent) => {
         if(resetCategoryButton.current && resetCategoryButton.current.contains(e.target as HTMLElement)) {
             return;
@@ -46,6 +39,7 @@ export default function EventPanel() {
             options: { position: 'right' },
         })
     }
+    const resetCategoryFilters = () => dispatch(setCategoryId(null));
     const resetFilters = () => {
         dispatch(setSearch(''));
         dispatch(setCategoryId(null));

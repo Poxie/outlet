@@ -1,5 +1,6 @@
 import { useScreenSize } from '@/hooks/useScreenSize';
 import { motion } from 'framer-motion';
+import { twMerge } from 'tailwind-merge';
 
 export default function Modal({ children }: {
     children: React.ReactNode;
@@ -14,7 +15,10 @@ export default function Modal({ children }: {
             transition={{ duration: .2, ease: 'easeInOut' }}
             className="fixed z-30 top-0 left-0 w-full h-full flex justify-center items-center pointer-events-none"
         >
-            <div className="h-full sm:h-[unset] sm:w-[600px] sm:max-w-main max-h-full overflow-auto pointer-events-auto bg-light sm:rounded-lg">
+            <div className={twMerge(
+                "h-full sm:h-[unset] sm:w-[600px] sm:max-w-main max-h-full overflow-auto pointer-events-auto bg-light sm:rounded-lg",
+                isSmall && 'w-full flex flex-col justify-between'
+            )}>
                 {children}
             </div>
         </motion.div>
