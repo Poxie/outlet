@@ -41,6 +41,7 @@ export default async function Category({
                         "py-8",
                         index !== 0 && 'border-t-[1px] border-t-light-secondary/50',
                     )}
+                    key={event.id}
                 />
             ))}
         </main>
