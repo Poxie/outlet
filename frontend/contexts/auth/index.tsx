@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { User } from "../../../types";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const AuthContext = React.createContext<null | {
     currentUser: User | null;
@@ -20,18 +20,21 @@ export const useAuth = () => {
 
 const isAuthError = (message: string) => message === 'Missing or invalid token.';
 
+const ADMIN_PATH = '/admin';
 export default function AuthProvider({ children }: {
     children: React.ReactNode;
 }) {
     const router = useRouter();
+    const pathname = usePathname();
 
     const [currentUser, setCurrentUser] = useState<User | null>(null)
 
     const getToken = () => window.localStorage.getItem('token');
 
     useEffect(() => {
+        if(currentUser || !pathname.startsWith(ADMIN_PATH)) return;
         get<User>(`/people/me`).then(setCurrentUser);
-    }, []);
+    }, [pathname, currentUser]);
 
     async function request<T>(method: 'GET' | 'PUT' | 'POST' | 'PATCH' | 'DELETE', query: string, body?: Record<string, any>) {
         const token = getToken();
