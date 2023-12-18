@@ -18,7 +18,7 @@ export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
             <div className="[--padding:16px] relative p-[--padding] flex flex-col gap-3 rounded-lg bg-light sm:flex-row">
                 <Image 
                     className="w-full max-h-[200px] aspect-[2.2/1] rounded-md object-cover sm:w-80 sm:h-[unset]"
-                    src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/weekly-deals/image.png`}
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_ENDPOINT}/weekly-deals/image.png`}
                     width={400}
                     height={200}
                     alt=""
