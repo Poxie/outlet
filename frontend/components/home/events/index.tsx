@@ -10,6 +10,8 @@ const getEvents = async () => {
 
 export default async function Events() {
     const events = await getEvents();
+    if(!events.length) return null;
+
     return(
         <section className="py-8 bg-primary">
             <ul className="w-main max-w-main mx-auto grid sm:grid-cols-2 lg:grid-cols-3 bg-light rounded-lg overflow-hidden">
