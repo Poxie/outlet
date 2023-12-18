@@ -2,6 +2,7 @@ declare global {
     namespace NodeJS {
         interface ProcessEnv {
             NEXT_PUBLIC_API_ENDPOINT: string;
+            NEXT_PUBLIC_IMAGE_ENDPOINT: string;
             GOOGLE_MAPS_BASE_URL: string;
             GOOGLE_MAPS_API_KEY: string;
         }
