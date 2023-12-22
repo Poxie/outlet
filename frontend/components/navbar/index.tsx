@@ -46,7 +46,7 @@ export default function Navbar() {
             <div className="w-main max-w-main mx-auto flex items-center justify-between">
                 <Link href="/">
                     <Image 
-                        className="w-40 sm:w-48"
+                        className="w-[11.5rem] sm:w-48"
                         alt="Outlet logo"
                         src="/logo.png"
                         width={250}
