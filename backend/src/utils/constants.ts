@@ -20,6 +20,7 @@ export const MAX_EVENT_TITLE_LENGTH = 255;
 export const MAX_EVENT_DESCRIPTION_LENGTH = 1000;
 export const MAX_POST_TITLE_LENGTH = 255;
 export const MAX_POST_DESCRIPTION_LENGTH = 1000;
+export const MAX_BANNER_LENGTH = 100;
 
 export const ACCEPTED_IMAGE_TYPES = ['deals', 'events', 'inspiration'];
 export const IMAGE_TYPE_REPOSITORIES = {

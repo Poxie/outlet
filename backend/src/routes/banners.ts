@@ -5,6 +5,7 @@ import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { authHandler } from '../middleware/authHandler';
+import { MAX_BANNER_LENGTH } from '../utils/constants';
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get('/banners', authHandler, async (req, res, next) => {
 router.post('/banners', authHandler, async (req, res, next) => {
     const text = req.body.text;
     if(!text) return next(new APIBadRequestError('Text is a required property.'));
+    if(text.length > MAX_BANNER_LENGTH) return next(new APIBadRequestError(`Text must be less than ${MAX_BANNER_LENGTH}.`));
 
     const id = await createId('banners');
 
@@ -40,9 +42,9 @@ router.delete('/banners/:bannerId', authHandler, async (req, res, next) => {
     res.send({});
 })
 router.patch('/banners/:bannerId', authHandler, async (req, res, next) => {
-    if(typeof req.body.text === 'string' && !req.body.text) {
-        next(new APIBadRequestError('Text is required.'));
-        return;
+    if(typeof req.body.text === 'string') {
+        if(!req.body.text) return next(new APIBadRequestError('Text is required.'));
+        if(req.body.text.length > MAX_BANNER_LENGTH) return next(new APIBadRequestError(`Text must be less than ${MAX_BANNER_LENGTH}.`));
     }
     if(req.body.active !== undefined && ![true, false].includes(req.body.active)) {
         next(new APIBadRequestError('Active property must be a boolean.'));
