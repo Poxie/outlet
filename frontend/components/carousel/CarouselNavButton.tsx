@@ -2,10 +2,11 @@
 import { ArrowIcon } from '@/assets/icons/ArrowIcon';
 import { twMerge } from 'tailwind-merge';
 
-export default function CarouselNavButton({ onClick, className, disabled }: {
+export default function CarouselNavButton({ onClick, className, disabled, ariaLabel }: {
     disabled?: boolean;
     onClick: () => void;
     className?: string;
+    ariaLabel: string;
 }) {
     return(
         <button
@@ -16,6 +17,7 @@ export default function CarouselNavButton({ onClick, className, disabled }: {
                 disabled && 'opacity-0',
                 className,
             )}
+            aria-label={ariaLabel}
         >
             <ArrowIcon strokeWidth={2} className="w-[50%]" />
         </button>

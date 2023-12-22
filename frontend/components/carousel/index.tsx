@@ -43,11 +43,13 @@ export default function Carousel({ items, itemsPerPage }: {
                 <CarouselNavButton 
                     onClick={back}
                     disabled={index === 0}
+                    ariaLabel='Gå till föregående slide'
                 />
                 <CarouselNavButton
                     onClick={next}
                     disabled={atEnd}
                     className="left-[calc(100%+var(--from-container))] rotate-90"
+                    ariaLabel='Gå till nästa slide'
                 />
             </div>
             <div className='overflow-hidden'>
