@@ -62,7 +62,7 @@ export default function InspirationSection({ header, headerIcon, posts, search }
                 key={post.id}
             >
                 <td className="px-4 py-4">
-                    <span>
+                    <span style={{ wordBreak: 'break-word' }}>
                         {post.title}
                     </span>
                 </td>

@@ -73,7 +73,9 @@ export default function EventTableSection({ events, header, headerIcon }: {
                             className="aspect-video object-cover rounded"
                             alt=""
                         />
-                        {event.title}
+                        <span style={{ wordBreak: 'break-word' }}>
+                            {event.title}
+                        </span>
                     </div>
                 </td>
                 <td className="px-4 py-4 text-secondary">
