@@ -53,12 +53,32 @@ export default function CreateBanner({ params: { bannerId } }: {
 
         setLoading(true);
         if(isCreatingBanner) {
-            const banner = await post<Banner>(`/banners`, { text: bannerText });
-            dispatch(addBanner(banner));
+            try {
+                const banner = await post<Banner>(`/banners`, { text: bannerText });
+                dispatch(addBanner(banner));
+            } catch(error: any) {
+                setFeedback({
+                    text: error.message,
+                    type: 'danger',
+                })
+                setLoading(false);
+                return;
+            }
+            
             router.replace('/admin/banners');
         } else {
-            const banner = await patch<Banner>(`/banners/${bannerId}`, { text: bannerText });
-            dispatch(updateBanner({ bannerId, changes: { text: bannerText } }));
+            try {
+                const banner = await patch<Banner>(`/banners/${bannerId}`, { text: bannerText });
+                dispatch(updateBanner({ bannerId, changes: { text: bannerText } }));
+            } catch(error: any) {
+                setFeedback({
+                    text: error.message,
+                    type: 'danger',
+                })
+                setLoading(false);
+                return;
+            }
+
             setLoading(false);
             setFeedback({
                 text: 'Banner has been updated.',
