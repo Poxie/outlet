@@ -146,7 +146,7 @@ const BannerRow: React.FC<Banner & {
 }> = ({ id, text, active, deleteBanner, toggleActivated }) => {
     return(
         <li className="p-4 flex justify-between items-center border-b-[1px] border-b-light-secondary last-of-type:border-b-0">
-            <span>
+            <span style={{ wordBreak: 'break-word' }}>
                 {text}
             </span>
             <div className="flex">

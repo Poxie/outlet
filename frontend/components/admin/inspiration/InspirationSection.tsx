@@ -67,7 +67,7 @@ export default function InspirationSection({ header, headerIcon, posts, search }
                     </span>
                 </td>
                 <td className="px-4 py-4 text-secondary">
-                    <span className="line-clamp-2">
+                    <span className="line-clamp-2" style={{ wordBreak: 'break-word' }}>
                         {post.description}
                     </span>
                 </td>
