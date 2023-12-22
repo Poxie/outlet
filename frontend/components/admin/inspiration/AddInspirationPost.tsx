@@ -116,12 +116,21 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
             }
 
             setLoading(true);
-            if(hasInfoChanges()) {
-                const changes = getChanges();
-                await patch(`/inspiration/${prevPost.id}`, changes);
-                dispatch(editInspiration({ inspirationId, changes }));
+            try {
+                if(hasInfoChanges()) {
+                    const changes = getChanges();
+                    await patch(`/inspiration/${prevPost.id}`, changes);
+                    dispatch(editInspiration({ inspirationId, changes }));
+                }
+                await updateImages(prevPost.id);
+            } catch(error: any) {
+                setFeedback({
+                    text: error.message,
+                    type: 'danger',
+                })
+                setLoading(false);
+                return;
             }
-            await updateImages(prevPost.id);
 
             setLoading(false);
             setFeedback({
@@ -177,7 +186,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
         setPopout({
             popout: <TimeSelector onChange={onChange} />,
             ref: openPopoutButton,
-            options: { position: 'right' }
+            options: { position: 'right' },
         })
     }
     const reset = () => setPostInfo(prevPost || getDummyPost());
@@ -248,6 +257,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
                     parentId={postInfo.id}
                 />
             </div>
+
             {feedback && (
                 <Feedback 
                     {...feedback}
