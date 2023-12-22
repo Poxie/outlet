@@ -43,6 +43,9 @@ const config: Config = {
       maxWidth: {
         main: '90%',
       },
+      fontFamily: {
+        sans: ['var(--font-HKGrotesk)'],
+      }
     },
   },
   plugins: [],
