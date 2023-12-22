@@ -21,6 +21,7 @@ export default async function Stores() {
                 src={getMapsURL('Ahlens Outlet Sweden')}
                 referrerPolicy="no-referrer-when-downgrade"
                 className="w-full aspect-[1.8/1] rounded-lg bg-light"
+                title="Varuhus karta"
             />
 
             <div className="py-4 relative text-sm text-light font-semibold after:bg-light after:h-[1px] after:w-full after:absolute after:left-0 after:top-2/4 after:-translate-2/4">
@@ -89,6 +90,7 @@ export default async function Stores() {
                             src={getMapsURL(`Ahlens outlet ${store.name} ${store.address}`, 10)}
                             referrerPolicy="no-referrer-when-downgrade"
                             className="w-full aspect-video sm:w-2/4 sm:aspect-[unset]"
+                            title={`${store.name} karta`}
                         />
                     </li>
                 ))}
