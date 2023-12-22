@@ -33,7 +33,7 @@ export default async function WeeklyDeals() {
                 </span>
                 <div className="flex-1 flex sm:justify-end mt-1 sm:mt-0">
                     <Link 
-                        className="p-2 -ml-2 sm:ml-0 -mb-2 sm:mb-0 flex items-center gap-1 text-c-primary rounded hover:bg-light-secondary/60 active:bg-light-tertiary/60 transition-colors"
+                        className="p-2 -ml-2 sm:ml-0 -mb-2 sm:mb-0 sm:-mr-2 flex items-center gap-1 text-secondary rounded hover:bg-light-secondary/80 active:bg-light-tertiary/80 transition-colors"
                         href={`/veckans-deal`}
                     >
                         Visa alla deals
