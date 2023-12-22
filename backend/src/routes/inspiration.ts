@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { myDataSource } from '../app-data-source';
 import { Inspiration } from '../entity/inspiration.entity';
-import { ALLOWED_INSPIRATION_PROPERTIES, IMAGE_TYPES, REQUIRED_INSPIRATION_PROPERTIES } from '../utils/constants';
+import { ALLOWED_INSPIRATION_PROPERTIES, IMAGE_TYPES, MAX_POST_DESCRIPTION_LENGTH, MAX_POST_TITLE_LENGTH, REQUIRED_INSPIRATION_PROPERTIES } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createUniqueIdFromName } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
@@ -39,6 +39,9 @@ router.get('/inspiration/:inspirationId', async (req, res, next) => {
 })
 router.post('/inspiration', authHandler, async (req, res, next) => {
     for(const prop of REQUIRED_INSPIRATION_PROPERTIES) {
+        if(prop === 'title' && req.body[prop].length > MAX_POST_TITLE_LENGTH) return next(new APIBadRequestError(`Title must be less than ${MAX_POST_TITLE_LENGTH} characters.`));
+        if(prop === 'description' && req.body[prop].length > MAX_POST_DESCRIPTION_LENGTH) return next(new APIBadRequestError(`Description must be less than ${MAX_POST_DESCRIPTION_LENGTH} characters.`));
+
         if(!(prop in req.body)) return next(new APIBadRequestError(`${prop} is required.`));
     }
 
@@ -66,6 +69,10 @@ router.patch('/inspiration/:inspirationId', authHandler, async (req, res, next) 
     const changes: {[key: string]: string} = {};
     for(const prop of ALLOWED_INSPIRATION_PROPERTIES) {
         if(!(prop in req.body)) continue;
+        
+        if(prop === 'title' && req.body[prop].length > MAX_POST_TITLE_LENGTH) return next(new APIBadRequestError(`Title must be less than ${MAX_POST_TITLE_LENGTH} characters.`));
+        if(prop === 'description' && req.body[prop].length > MAX_POST_DESCRIPTION_LENGTH) return next(new APIBadRequestError(`Description must be less than ${MAX_POST_DESCRIPTION_LENGTH} characters.`));
+
         changes[prop] = req.body[prop];
     }
     if(!Object.keys(changes).length) return next(new APIBadRequestError('No properties to update were provided'));
