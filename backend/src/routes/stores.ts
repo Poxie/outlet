@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { myDataSource } from '../app-data-source';
 import { Stores } from '../entity/stores.entity';
-import { ALLOWED_STORE_PROPERTIES, REQUIRED_STORE_PROPERTIES } from '../utils/constants';
+import { ALLOWED_STORE_PROPERTIES, REQUIRED_STORE_PROPERTIES, STORE_LENGTHS } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { authHandler } from '../middleware/authHandler';
@@ -19,7 +19,15 @@ router.put('/stores', authHandler, async (req, res, next) => {
 
     const props = {};
     for(const prop of ALLOWED_STORE_PROPERTIES) {
-        props[prop] = req.body[prop];
+        const value = req.body[prop];
+
+        const limit = STORE_LENGTHS[prop].max;
+        if(value.length > limit) {
+            next(new APIBadRequestError(`${prop} must be less than ${limit} characters.`));
+            return;
+        }
+
+        props[prop] = value;
     }
 
     const id = req.body.name.toLowerCase().replaceAll(' ', '-');
@@ -47,12 +55,16 @@ router.patch('/stores/:storeId', authHandler, async (req, res, next) => {
 
     const changes = {};
     for(const prop of ALLOWED_STORE_PROPERTIES) {
-        if(!req.body[prop]) continue;
-        if(REQUIRED_STORE_PROPERTIES.includes(prop) && !req.body[prop]) {
-            return next(new APIBadRequestError(`${prop} is a required property.`));
+        const value = req.body[prop]
+        if(!value) continue;
+        
+        const limit = STORE_LENGTHS[prop].max;
+        if(value.length > limit) {
+            next(new APIBadRequestError(`${prop} must be less than ${limit} characters.`));
+            return;
         }
 
-        changes[prop] = req.body[prop];
+        changes[prop] = value;
     }
 
     const newStore = await myDataSource.getRepository(Stores).save({

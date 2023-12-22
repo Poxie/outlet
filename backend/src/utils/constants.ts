@@ -21,6 +21,16 @@ export const MAX_EVENT_DESCRIPTION_LENGTH = 1000;
 export const MAX_POST_TITLE_LENGTH = 255;
 export const MAX_POST_DESCRIPTION_LENGTH = 1000;
 export const MAX_BANNER_LENGTH = 100;
+export const STORE_LENGTHS = {
+    name: { max: 50 },
+    address: { max: 255 },
+    phoneNumber: { max: 13 },
+    email: { max: 30 },
+    instagram: { max: 255 },
+    weekdays: { max: 20 },
+    saturdays: { max: 20 },
+    sundays: { max: 20 },
+}
 
 export const ACCEPTED_IMAGE_TYPES = ['deals', 'events', 'inspiration'];
 export const IMAGE_TYPE_REPOSITORIES = {
