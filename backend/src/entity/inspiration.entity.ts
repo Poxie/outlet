@@ -8,7 +8,7 @@ export class Inspiration {
     @Column()
     title: string;
 
-    @Column()
+    @Column({ type: 'text' })
     description: string;
 
     @Column({ default: false })

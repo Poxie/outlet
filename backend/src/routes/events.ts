@@ -7,7 +7,7 @@ import { createId, createUniqueIdFromName } from '../utils';
 import { myDataSource } from '../app-data-source';
 import { Events } from '../entity/events.entity';
 import { APINotFoundError } from '../errors/apiNotFoundError';
-import { ALLOWED_EVENT_PROPERTIES } from '../utils/constants';
+import { ALLOWED_EVENT_PROPERTIES, MAX_EVENT_DESCRIPTION_LENGTH, MAX_EVENT_TITLE_LENGTH } from '../utils/constants';
 import { APIInternalServerError } from '../errors/apiInternalServerError';
 import { LessThan } from 'typeorm';
 import { Images } from '../entity/images.entity';
@@ -45,6 +45,9 @@ router.post('/events', authHandler, async (req, res, next) => {
     if(!description) return next(new APIBadRequestError("Description is required."));
     if(!image) return next(new APIBadRequestError("Image is required."));
     if(!timestamp) return next(new APIBadRequestError("Timestamp is required."));
+
+    if(title.length > MAX_EVENT_TITLE_LENGTH) return next(new APIBadRequestError(`Title must be less than ${MAX_EVENT_TITLE_LENGTH} characters.`));
+    if(description.length > MAX_EVENT_DESCRIPTION_LENGTH) return next(new APIBadRequestError(`Description must be less than ${MAX_EVENT_DESCRIPTION_LENGTH} characters.`));
 
     const date = new Date(Number(timestamp));
     if(!date.getTime()) return next(new APIBadRequestError("Invalid timestamp was provided."));
@@ -103,6 +106,10 @@ router.patch('/events/:eventId', authHandler, async (req, res, next) => {
         if(key === 'archived') {
             if(!(typeof props[key] === 'boolean')) return next(new APIBadRequestError("Archived property must be a boolean."));
         }
+        
+        if(key === 'title' && props[key].length > MAX_EVENT_TITLE_LENGTH) return next(new APIBadRequestError(`Title must be less than ${MAX_EVENT_TITLE_LENGTH} characters.`));
+        if(key === 'description' && props[key].length > MAX_EVENT_DESCRIPTION_LENGTH) return next(new APIBadRequestError(`Description must be less than ${MAX_EVENT_DESCRIPTION_LENGTH} characters.`));
+        
         propsToUpdate[key] = props[key];
     }    
 

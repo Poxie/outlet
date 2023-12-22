@@ -11,7 +11,7 @@ export class Events {
     @Column()
     title: string;
     
-    @Column()
+    @Column({ type: 'text' })
     description: string;
 
     @Column()

@@ -139,11 +139,20 @@ export default function EditEvent({ params: { eventId } }: {
             }
 
             setLoading(true);
-            const createdEvent = await post<Event>('/events', eventInfo);
+            
+            try {
+                const createdEvent = await post<Event>('/events', eventInfo);
+                await updateImages(createdEvent.id);
+                dispatch(addEvent(createdEvent));
+            } catch(error: any) {
+                setFeedback({
+                    text: error.message,
+                    type: 'danger',
+                })
+                setLoading(false);
+                return;
+            }
 
-            await updateImages(createdEvent.id);
-
-            dispatch(addEvent(createdEvent));
             router.replace('/admin/events');
         } else {
             const hasInfoChanges = hasInfodiff();
@@ -156,8 +165,17 @@ export default function EditEvent({ params: { eventId } }: {
 
             setLoading(true);
             if(hasInfoChanges) {
-                const updatedEvent = await patch(`/events/${eventInfo.id}`, getInfoDiff());
-                dispatch(editEvent({ eventId, changes: updatedEvent }));
+                try {
+                    const updatedEvent = await patch(`/events/${eventInfo.id}`, getInfoDiff());
+                    dispatch(editEvent({ eventId, changes: updatedEvent }));
+                } catch(error: any) {
+                    setFeedback({
+                        text: error.message,
+                        type: 'danger',
+                    })
+                    setLoading(false);
+                    return;
+                }
             }
             if(hasImageChanges) {
                 await updateImages(eventId);

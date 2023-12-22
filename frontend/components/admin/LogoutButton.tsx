@@ -22,10 +22,10 @@ export default function LogoutButton({ className, iconClassName, textClassName }
             <ConfirmModal 
                 confirmFunction={confirmFunction}
                 onConfirm={onConfirm}
-                header={'Logout'}
-                subHeader={'Are you sure you want to logout?'}
-                confirmText="Log out"
-                confirmLoadingText="Logging out..."
+                header={'Sign out'}
+                subHeader={'Are you sure you want to sign out?'}
+                confirmText="Sign out"
+                confirmLoadingText="Signing out..."
             />
         )
     }
