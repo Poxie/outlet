@@ -68,7 +68,7 @@ export default function AddStore({ params: { storeId } }: {
             const formatter = new Intl.ListFormat('default', { style: 'long', type: 'conjunction' });
             const formattedString = formatter.format(invalidProps)
             const firstLetterUppercase = formattedString.slice(0,1).toUpperCase() + formattedString.slice(1);
-            return setFeedback({
+            setFeedback({
                 text: `${firstLetterUppercase} ${invalidProps.length > 1 ? 'are' : 'is'} required.`,
                 type: 'danger',
             });
@@ -77,7 +77,7 @@ export default function AddStore({ params: { storeId } }: {
 
         const timesAreInvalid = ['weekdays', 'saturdays', 'sundays'].filter(prop => !storeInfo[prop as keyof typeof storeInfo]);
         if(timesAreInvalid.length) {
-            return setFeedback({
+            setFeedback({
                 text: `Store opening hours are required.`,
                 type: 'danger',
             });
@@ -87,8 +87,19 @@ export default function AddStore({ params: { storeId } }: {
         
         if(isAddingStore) {
             setLoading(true);
-            const store = await put('/stores', storeInfo);
-            dispatch(_addStore(store));
+
+            try {
+                const store = await put('/stores', storeInfo);
+                dispatch(_addStore(store));
+            } catch(error: any) {
+                setFeedback({
+                    text: error.message,
+                    type: 'danger',
+                })
+                setLoading(false);
+                return;
+            }
+
             router.replace('/admin/stores');
         } else {
             if(!Object.keys(changes).length) {
@@ -101,8 +112,18 @@ export default function AddStore({ params: { storeId } }: {
 
             setLoading(true);
 
-            const store = await patch(`/stores/${storeId}`, changes);
-            dispatch(updateStore({ storeId, changes }));
+            try {
+                const store = await patch(`/stores/${storeId}`, changes);
+                dispatch(updateStore({ storeId, changes }));
+            } catch(error: any) {
+                setFeedback({
+                    text: error.message,
+                    type: 'danger',
+                })
+                setLoading(false);
+                return;
+            }
+
             setFeedback({
                 text: 'Store has been updated.',
                 type: 'success',
