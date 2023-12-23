@@ -10,15 +10,17 @@ export default async function Inspiration() {
     const inspiration = await getInspiration();
     return(
         <>
-        <header className="bg-primary py-12 sm:py-24 flex flex-col gap-4 text-center text-light">
-            <h1 className="text-4xl font-extrabold">
-                Inspiration
-            </h1>
-            <p className="text-lg w-[660px] max-w-main mx-auto">
-                Här i vår inspirationsblogg visar vi upp nya fynd från varuhuset. Försäljning sker via våra varuhus, vi har tyvärr idag ingen möjlighet att sälja online.
-            </p>
+        <header className="py-12 sm:py-12 flex flex-col gap-4 border-b-[1px] border-b-light-secondary">
+            <div className="w-main max-w-main mx-auto">
+                <h1 className="text-4xl font-extrabold mb-4">
+                    Inspiration
+                </h1>
+                <p className="w-3/4 text-secondary">
+                    Här i vår inspirationsblogg visar vi upp nya fynd från varuhuset. Försäljning sker via våra varuhus, vi har tyvärr idag ingen möjlighet att sälja online.
+                </p>
+            </div>
         </header>
-        <div className="py-12 sm:py-24">
+        <div className="py-12 sm:py-12">
             <div className="grid w-main max-w-main mx-auto">
                 {inspiration.map(post => (
                     <InspirationPost 
