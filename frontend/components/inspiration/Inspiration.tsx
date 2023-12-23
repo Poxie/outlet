@@ -24,7 +24,7 @@ export default async function Inspiration({
                     className="p-2 -m-2 flex items-center gap-2 hover:bg-light-secondary/60 active:bg-light-secondary transition-colors rounded"
                     href={'/inspiration'}
                 >
-                    <ArrowIcon className="w-4 -rotate-90" />
+                    <ArrowIcon className="-ml-0.5 w-4 -rotate-90" />
                     Inspiration / {post.title}
                 </Link>
             </div>
