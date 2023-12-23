@@ -17,7 +17,7 @@ export default function Footer() {
         <div className="py-8 bg-primary shadow-footer">
             <ul className="flex gap-6 justify-center mb-5">
                 {socials.map(social => (
-                    <li>
+                    <li key={social.text}>
                         <a  
                             target="_blank"
                             className="p-3 block bg-light hover:bg-light-secondary active:bg-light-tertiary transition-colors rounded-full text-c-primary"
@@ -32,7 +32,7 @@ export default function Footer() {
             </ul>
             <ul className="w-main max-w-main mx-auto flex gap-6 justify-center">
                 {links.map(link => (
-                    <li>
+                    <li key={link.path}>
                         <Link
                             className="text-sm text-light font-semibold"
                             href={link.path}
