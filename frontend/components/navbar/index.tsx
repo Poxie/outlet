@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-const links = [
+export const links = [
     { path: '/', text: 'Startsida' },
     { path: '/veckans-deal', text: 'Veckans deal'},
     { path: '/vara-varuhus', text: 'Våra varuhus' },
