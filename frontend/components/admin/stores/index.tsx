@@ -94,7 +94,7 @@ export default function Stores() {
                 </div>
                 </>
             ) : (
-                <span className="py-12 block text-center text-secondary">
+                <span className="py-24 block text-center text-secondary">
                     Loading stores...
                 </span>
             )}
