@@ -29,7 +29,7 @@ export default async function Inspiration({
                     </Link>
                 </div>
             </div>
-            <div className="w-main max-w-main mx-auto">
+            <div className="w-main max-w-main mx-auto pb-8">
                 <InspirationPost 
                     {...post}
                     activePhotoId={photo}
