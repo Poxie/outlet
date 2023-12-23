@@ -14,7 +14,10 @@ const getPostImages = async (parentId: string) => {
     return (await myDataSource.getRepository(Images).findBy({ parentId, type: IMAGE_TYPES.inspiration })).sort((a,b) => a.position - b.position);
 }
 router.get('/inspiration', async (req, res, next) => {
-    const inspiration = await myDataSource.getRepository(Inspiration).find();
+    const inspiration = await myDataSource.getRepository(Inspiration)
+        .createQueryBuilder('inspiration')
+        .orderBy('inspiration.timestamp', 'DESC')
+        .getMany();
 
     const inspirationWithImages = [];
     for(const post of inspiration) {
