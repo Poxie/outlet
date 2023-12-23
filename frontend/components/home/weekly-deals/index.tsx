@@ -25,7 +25,7 @@ export default async function WeeklyDeals() {
     return(
         <section className="overflow-hidden">
             <div className="py-8 w-main max-w-main mx-auto">
-                <div className="mb-2 py-4 sm:py-2 px-4 grid sm:flex sm:gap-3 items-center text-sm bg-light rounded-lg">
+                <div className="py-4 sm:py-2 px-4 grid sm:flex sm:gap-3 items-center text-sm bg-light rounded-t-lg border-b-[1px] border-b-light-secondary">
                     <span className="text-2xl sm:text-xl font-semibold">
                         Veckans deal
                     </span>
@@ -42,7 +42,7 @@ export default async function WeeklyDeals() {
                         </Link>
                     </div>
                 </div>
-                <div className='p-4 bg-light rounded-lg mb-[calc(3rem+.5rem)] md:mb-0'>
+                <div className='p-4 bg-light rounded-b-lg mb-[calc(3rem+.5rem)] md:mb-0'>
                     <Carousel 
                         items={deals.map(deal => ({
                             id: deal.id,
