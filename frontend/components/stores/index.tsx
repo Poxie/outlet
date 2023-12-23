@@ -13,7 +13,7 @@ export default async function Stores() {
     const stores = await getStores();
 
     return(
-        <main className="py-12 w-[800px] max-w-main mx-auto">
+        <div className="py-12 w-[800px] max-w-main mx-auto">
             <h1 className="mb-4 text-center text-4xl text-light-secondary font-semibold">
                 Här hittar ni oss.
             </h1>
@@ -95,6 +95,6 @@ export default async function Stores() {
                     </li>
                 ))}
             </ul>
-        </main>
+        </div>
     )
 }

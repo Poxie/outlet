@@ -20,11 +20,11 @@ export default function AdminLayout({ children }: {
 
     const isDasboardPath = pathname === DASHBOARD_PATH;
     return(
-        <main className="py-8 w-main max-w-main mx-auto">
+        <div className="py-8 w-main max-w-main mx-auto">
             {!isDasboardPath && (
                 <AdminTabs />
             )}
             {children}
-        </main>
+        </div>
     );
 }

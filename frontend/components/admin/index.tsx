@@ -21,7 +21,7 @@ export const adminLinks = [
 
 export default function Admin() {
     return(
-        <main className="w-[900px] max-w-full mx-auto">
+        <div className="w-[900px] max-w-full mx-auto">
             <h1 className="text-light font-bold text-4xl text-center mb-3">
                 Admin Panel
             </h1>
@@ -60,6 +60,6 @@ export default function Admin() {
             <div className="mt-2 flex justify-end">
                 <LogoutButton />
             </div>
-        </main>
+        </div>
     )
 }

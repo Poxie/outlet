@@ -69,7 +69,7 @@ export default function Login() {
     }
 
     return(
-        <main className="py-8">
+        <div className="py-8">
             <h1 className="mb-2 text-center text-4xl font-bold text-light">
                 Admin login
             </h1>
@@ -96,6 +96,6 @@ export default function Login() {
                     {!loading ? 'Sign in' : 'Signing in...'}
                 </Button>
             </form>
-        </main>
+        </div>
     )
 }

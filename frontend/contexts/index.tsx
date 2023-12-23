@@ -19,6 +19,7 @@ export default function Providers({ children }: {
     return(
         <body className={twMerge(
             roboto.className,
+            'min-h-[100dvh] flex flex-col',
             isLightPath ? 'bg-light' : 'bg-secondary',
         )}>
             <StoreProvider>
