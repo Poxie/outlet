@@ -34,7 +34,7 @@ export default function Footer() {
                 {links.map(link => (
                     <li key={link.path}>
                         <Link
-                            className="text-sm text-light font-semibold"
+                            className="text-xs sm:text-sm text-light font-semibold"
                             href={link.path}
                         >
                             {link.text}
