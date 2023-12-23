@@ -14,7 +14,7 @@ export default function Footer() {
     if(pathname.startsWith('/admin')) return null;
 
     return(
-        <div className="py-8 bg-primary shadow-footer">
+        <footer className="py-8 bg-primary shadow-footer">
             <ul className="flex gap-6 justify-center mb-5">
                 {socials.map(social => (
                     <li key={social.text}>
@@ -42,6 +42,6 @@ export default function Footer() {
                     </li>
                 ))}
             </ul>
-        </div>
+        </footer>
     )
 }
