@@ -15,7 +15,7 @@ export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
     const deals = await getActiveDeals();
     return(
         <div className="w-main max-w-main mx-auto py-8">
-            <div className="[--padding:16px] relative p-[--padding] flex flex-col gap-3 rounded-lg bg-light sm:flex-row">
+            <div className="[--padding:16px] relative p-[--padding] flex flex-col gap-3 rounded-t-lg bg-light sm:flex-row border-b-[1px] border-b-light-secondary">
                 <Image 
                     className="w-full max-h-[200px] aspect-[2.2/1] rounded-md object-cover sm:w-80 sm:h-[unset]"
                     src={`${process.env.NEXT_PUBLIC_IMAGE_ENDPOINT}/weekly-deals/image.png`}
@@ -44,7 +44,7 @@ export default async function WeeklyDeals({ searchParams: { deal: dealId } }: {
                 </div>
             </div>
             {deals.length? (
-                <ul className="mt-2 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <ul className="p-4 grid gap-2 bg-light rounded-b-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {deals.map(deal => (
                         <li key={deal.id}>
                             <ExpandableImage 

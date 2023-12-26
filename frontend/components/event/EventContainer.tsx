@@ -14,7 +14,7 @@ export default function EventContainer({ event, photoId, className }: {
             className={className}
             id={event.id}
         >
-            <div className="[--padding:16px] relative p-[--padding] flex flex-col gap-3 rounded-lg bg-light sm:flex-row">
+            <div className="[--padding:16px] relative p-[--padding] flex flex-col gap-3 rounded-t-lg bg-light sm:flex-row border-b-[1px] border-b-light-secondary">
                 <Image 
                     className="w-full max-h-[200px] aspect-[1.7/1] rounded-md object-cover sm:w-60 sm:h-[unset]"
                     src={getEventImage(event.id, event.image, event.timestamp)}
@@ -43,7 +43,7 @@ export default function EventContainer({ event, photoId, className }: {
                 </div>
             </div>
             {event.images.length? (
-                <ul className="mt-2 p-4 grid gap-2 bg-light rounded-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <ul className="p-4 grid gap-2 bg-light rounded-b-lg sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {event.images.map(image => (
                         <li 
                             key={image.id}
