@@ -15,7 +15,7 @@ export default async function Inspiration() {
                 <h1 className="text-4xl font-extrabold mb-4">
                     Inspiration
                 </h1>
-                <p className="w-3/4 text-secondary">
+                <p className="sm:w-3/4 text-secondary">
                     Här i vår inspirationsblogg visar vi upp nya fynd från varuhuset. Försäljning sker via våra varuhus, vi har tyvärr idag ingen möjlighet att sälja online.
                 </p>
             </div>
