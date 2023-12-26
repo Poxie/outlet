@@ -15,7 +15,7 @@ export default function InspirationLayout({ children }: {
 
     useEffect(() => {
         if(!loading) return;
-        get<BlogPost[]>(`/inspiration`).then(posts => dispatch(setInspiration(posts)));
+        get<BlogPost[]>(`/inspiration/all`).then(posts => dispatch(setInspiration(posts)));
     }, [loading]);
 
     

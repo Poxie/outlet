@@ -31,6 +31,23 @@ router.get('/inspiration', async (req, res, next) => {
 
     res.send(inspirationWithImages);
 })
+router.get('/inspiration/all', authHandler, async (req, res, next) => {
+    const inspiration = await myDataSource.getRepository(Inspiration)
+        .createQueryBuilder('inspiration')
+        .orderBy('inspiration.timestamp', 'DESC')
+        .getMany();
+
+    const inspirationWithImages = [];
+    for(const post of inspiration) {
+        const images = await getPostImages(post.id);
+        inspirationWithImages.push({
+            ...post,
+            images,
+        })
+    }
+
+    res.send(inspirationWithImages);
+})
 router.get('/inspiration/:inspirationId', async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId, archived: false });
     if(!inspiration) return next(new APINotFoundError('Post not found.'));
