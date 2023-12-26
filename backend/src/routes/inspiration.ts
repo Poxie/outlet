@@ -16,6 +16,7 @@ const getPostImages = async (parentId: string) => {
 router.get('/inspiration', async (req, res, next) => {
     const inspiration = await myDataSource.getRepository(Inspiration)
         .createQueryBuilder('inspiration')
+        .where('inspiration.archived = false')
         .orderBy('inspiration.timestamp', 'DESC')
         .getMany();
 
@@ -31,7 +32,7 @@ router.get('/inspiration', async (req, res, next) => {
     res.send(inspirationWithImages);
 })
 router.get('/inspiration/:inspirationId', async (req, res, next) => {
-    const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId });
+    const inspiration = await myDataSource.getRepository(Inspiration).findOneBy({ id: req.params.inspirationId, archived: false });
     if(!inspiration) return next(new APINotFoundError('Post not found.'));
 
     const images = await getPostImages(inspiration.id);
