@@ -13,6 +13,8 @@ export async function generateMetadata({
     searchParams: { photo?: string };
 }) {
     const res = await fetch(basePath(inspirationId), opts);
+    if(!res.ok) return;
+
     const post = await res.json() as BlogPost;
 
     const title = `${post.title} - Åhlens Outlet`;
