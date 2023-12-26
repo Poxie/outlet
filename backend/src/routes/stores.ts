@@ -56,11 +56,15 @@ router.patch('/stores/:storeId', authHandler, async (req, res, next) => {
 
     const changes = {};
     for(const prop of ALLOWED_STORE_PROPERTIES) {
-        const value = req.body[prop]
-        if(!value) continue;
+        const value = req.body[prop];
+        
+        if(typeof value === 'undefined') continue;
+        if(REQUIRED_STORE_PROPERTIES.includes(prop) && !value) {
+            return next(new APIBadRequestError(`${prop} is required.`));
+        }
         
         const limit = STORE_LENGTHS[prop].max;
-        if(value.length > limit) {
+        if(value && value.length > limit) {
             next(new APIBadRequestError(`${prop} must be less than ${limit} characters.`));
             return;
         }
