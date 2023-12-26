@@ -106,6 +106,9 @@ router.patch('/events/:eventId', authHandler, async (req, res, next) => {
         if(key === 'archived') {
             if(!(typeof props[key] === 'boolean')) return next(new APIBadRequestError("Archived property must be a boolean."));
         }
+
+        if(key === 'title' && !props[key].length) return next(new APIBadRequestError('Title is required.'));
+        if(key === 'description' && !props[key].length) return next(new APIBadRequestError('Description is required.'));
         
         if(key === 'title' && props[key].length > MAX_EVENT_TITLE_LENGTH) return next(new APIBadRequestError(`Title must be less than ${MAX_EVENT_TITLE_LENGTH} characters.`));
         if(key === 'description' && props[key].length > MAX_EVENT_DESCRIPTION_LENGTH) return next(new APIBadRequestError(`Description must be less than ${MAX_EVENT_DESCRIPTION_LENGTH} characters.`));
