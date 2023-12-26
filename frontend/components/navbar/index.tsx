@@ -83,7 +83,7 @@ export default function Navbar() {
                                     href={link.path}
                                     onClick={close}
                                     className={twMerge(
-                                        "text-light text-lg md:text-sm font-semibold",
+                                        "text-light text-lg md:text-sm font-semibold uppercase",
                                     )}
                                 >
                                     {link.text}
