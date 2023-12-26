@@ -1,6 +1,6 @@
 import Event from "@/components/event";
 import { Event as EventType } from "../../../../types";
-import { getEventImage } from "@/utils";
+    import { getEventImage } from "@/utils";
 
 const basePath = (eventId: string) => `${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${eventId}`;
 const opts = { next: { revalidate: 0 } };
@@ -13,6 +13,8 @@ export async function generateMetadata({
     searchParams: { imageId?: string };
 }) {
     const res = await fetch(basePath(eventId), opts);
+    if(!res.ok) return;
+
     const event = await res.json() as EventType;
 
     const title = `${event.title} - Åhlens Outlet`;
@@ -21,6 +23,7 @@ export async function generateMetadata({
         title,
         description,
         openGraph: {
+            url: 
             title,
             description,
             images: imageId ? [getEventImage(eventId, imageId, event.timestamp)] : [],

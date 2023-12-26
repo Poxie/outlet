@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { getEventImage } from "@/utils";
 import ExpandableImage from "../expandable-image";
 import EventContainer from "./EventContainer";
+import { notFound } from "next/navigation";
 
 const getEvent = async (eventId: string) => {
     const basePath = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/events/${eventId}`;
@@ -15,6 +16,7 @@ const getEvent = async (eventId: string) => {
             fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/events/${eventId}`, opts).then(res => res.json())
         ]
     )
+    if(event.message) return undefined;
 
     return {
         event: event as Event,
@@ -29,7 +31,10 @@ export default async function Event({
     params: { eventId: string };
     searchParams: { photoId?: string };
 }) {
-    const { event, images } = await getEvent(eventId);
+    const info = await getEvent(eventId);
+    if(!info) notFound();
+
+    const { event, images } = info;
 
     return(
         <div className="w-main max-w-main mx-auto py-8">
