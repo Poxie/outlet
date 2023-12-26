@@ -206,29 +206,6 @@ export const TimeSelector: React.FC<{
                     </span>
                 ))}
             </div>
-            <div className="flex justify-between gap-3 mt-3 pb-4 border-b-[1px] border-b-light-secondary">
-                <input 
-                    className="outline-none py-3 flex-1 border-[1px] border-light-secondary bg-light text-lg text-center rounded"
-                    onChange={e => onTimeChange('hour', e.target.valueAsNumber)}
-                    type="number" 
-                    defaultValue={DEFAULT_HOUR}
-                    min="0"
-                    max={DEFAULT_HOUR}
-                />
-                <div className="flex items-center text-xl font-semibold text-secondary -mt-[3px]">
-                    <span>
-                        :
-                    </span>
-                </div>
-                <input 
-                    className="outline-none py-3 flex-1 border-[1px] border-light-secondary bg-light text-lg text-center rounded"
-                    onChange={e => onTimeChange('minute', e.target.valueAsNumber)}
-                    type="number" 
-                    defaultValue={DEFAULT_MINUTE}
-                    min="0"
-                    max={DEFAULT_MINUTE}
-                />
-            </div>
             <button
                 className="block mx-auto mt-2 pt-2 px-4 text-sm text-center text-c-primary"
                 onClick={reset}
