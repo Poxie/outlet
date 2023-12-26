@@ -8,6 +8,7 @@ import { Banners } from "../entity/banners.entity";
 import { Inspiration } from "../entity/inspiration.entity";
 import { People } from "../entity/people.entity";
 import { Request } from "express";
+import { Stores } from '../entity/stores.entity';
 
 export const dateToReadableString = (date: Date) => `${String(date.getDate()).padStart(2,'0')}-${String(date.getMonth() + 1).padStart(2,'0')}-${date.getFullYear()}`
 
@@ -23,7 +24,7 @@ export const isDealDate = (date: string) => {
     return dateObject.getDay() === DEAL_DAY_ID;
 }
 
-type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category' | 'people';
+type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category' | 'people' | 'stores';
 const repositories = {
     'weekly_deal': WeeklyDeal,
     events: Events,
@@ -31,6 +32,7 @@ const repositories = {
     banners: Banners,
     inspiration: Inspiration,
     people: People,
+    stores: Stores,
 }
 
 const generateRandomNumbers = (length: number) => {

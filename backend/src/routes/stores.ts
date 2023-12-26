@@ -5,6 +5,7 @@ import { ALLOWED_STORE_PROPERTIES, REQUIRED_STORE_PROPERTIES, STORE_LENGTHS } fr
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { authHandler } from '../middleware/authHandler';
+import { createUniqueIdFromName } from '../utils';
 
 const router = express.Router();
 
@@ -31,8 +32,7 @@ router.put('/stores', authHandler, async (req, res, next) => {
         props[prop] = value;
     }
 
-    const id = req.body.name.toLowerCase().replaceAll(' ', '-');
-
+    const id = await createUniqueIdFromName(req.body.name, 'stores');
     const newStore = myDataSource.getRepository(Stores).create({
         id,
         addedAt: Date.now().toString(),
