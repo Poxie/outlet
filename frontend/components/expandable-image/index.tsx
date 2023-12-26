@@ -5,7 +5,7 @@ import { useModal } from "@/contexts/modal";
 import { twMerge } from "tailwind-merge";
 import { useEffect } from 'react';
 
-export default function ExpandableImage({ src, path, width, height, className, alt, defaultActive }: {
+export default function ExpandableImage({ src, path, width, height, className, alt, defaultActive, priority }: {
     src: string;
     path: string;
     width: number;
@@ -13,6 +13,7 @@ export default function ExpandableImage({ src, path, width, height, className, a
     className: string;
     alt: string;
     defaultActive?: boolean;
+    priority?: boolean;
 }) {
     const { setModal } = useModal();
 
@@ -38,6 +39,7 @@ export default function ExpandableImage({ src, path, width, height, className, a
                 className,
             )}
             onClick={showPreview}
+            priority={priority}
             alt={alt}
         />
     )

@@ -5,9 +5,10 @@ import Image from "next/image";
 import CarouselNavButton from "./CarouselNavButton";
 import ExpandableImage from '../expandable-image';
 
-export default function Carousel({ items, itemsPerPage }: {
+export default function Carousel({ items, itemsPerPage, priority }: {
     items: { id: string, image: string, path: string }[];
     itemsPerPage: number;
+    priority?: boolean;
 }) {
     const screenSize = useScreenSize();
     const columnCount = ['xs', 'sm'].includes(screenSize) ? (
@@ -71,8 +72,9 @@ export default function Carousel({ items, itemsPerPage }: {
                                     className='rounded-md w-full aspect-square object-cover'
                                     path={item.path}
                                     src={item.image}
-                                    height={400}
-                                    width={400}
+                                    height={300}
+                                    width={300}
+                                    priority={priority}
                                 />
                             </li>
                         )

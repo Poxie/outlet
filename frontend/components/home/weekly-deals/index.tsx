@@ -50,6 +50,7 @@ export default async function WeeklyDeals() {
                             path: `/veckans-deal?deal=${deal.id}`,
                         }))}
                         itemsPerPage={3}
+                        priority
                     />
                 </div>
             </div>
