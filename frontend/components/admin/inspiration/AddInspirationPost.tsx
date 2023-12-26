@@ -215,7 +215,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
             />
             <div className="p-4">
                 <span className="block text-sm mb-1">
-                    Title
+                    Title <span className="text-c-primary">*</span>
                 </span>
                 <Input 
                     value={postInfo.title}
@@ -224,7 +224,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
                     className="w-full"
                 />
                 <span className="block text-sm mt-2">
-                    Description
+                    Description <span className="text-c-primary">*</span>
                 </span>
                 <Input 
                     value={postInfo.description}
@@ -235,7 +235,7 @@ export default function AddInspirationPost({ params: { inspirationId } }: {
                     textArea
                 />
                 <span className="block text-sm mt-2">
-                    Date
+                    Date <span className="text-c-primary">*</span>
                 </span>
                 <button 
                     type="button"

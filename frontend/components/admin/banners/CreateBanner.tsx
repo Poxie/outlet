@@ -101,7 +101,7 @@ export default function CreateBanner({ params: { bannerId } }: {
                 <>
                 <div className="p-4 grid">
                     <span className="block text-sm text-secondary mb-1">
-                        Banner text
+                        Banner text <span className="text-c-primary">*</span>
                     </span>
                     <Input 
                         placeholder={'Banner text'}

@@ -250,7 +250,7 @@ export default function EditEvent({ params: { eventId } }: {
                     <div className="p-4 pb-0 flex gap-3 flex-col md:flex-row">
                         <div className="flex flex-col">
                             <span className="block text-sm mb-1">
-                                Header image
+                                Header image <span className="text-c-primary">*</span>
                             </span>
                             <button 
                                 className={twMerge(
@@ -286,7 +286,7 @@ export default function EditEvent({ params: { eventId } }: {
                         </div>
                         <div className="flex-1">
                             <span className="block text-sm mb-1">
-                                Title
+                                Title <span className="text-c-primary">*</span>
                             </span>
                             <Input 
                                 value={eventInfo.title}
@@ -295,7 +295,7 @@ export default function EditEvent({ params: { eventId } }: {
                                 className="w-full"
                             />
                             <span className="block text-sm mb-1 mt-2">
-                                Description
+                                Description <span className="text-c-primary">*</span>
                             </span>
                             <Input 
                                 value={eventInfo.description}
@@ -306,7 +306,7 @@ export default function EditEvent({ params: { eventId } }: {
                                 textArea
                             />
                             <span className="block text-sm mb-1">
-                                Event start
+                                Event start <span className="text-c-primary">*</span>
                             </span>
                             <button 
                                 type="button"
