@@ -11,14 +11,14 @@ export class Stores {
     @Column()
     address: string;
 
-    @Column()
-    phoneNumber?: string;
+    @Column({ default: null })
+    phoneNumber: string | null;
 
-    @Column()
-    email?: string;
+    @Column({ default: null })
+    email: string | null;
 
-    @Column()
-    instagram?: string;
+    @Column({ default: null })
+    instagram: string | null;
 
     @Column()
     weekdays: string;
