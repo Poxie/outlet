@@ -73,7 +73,7 @@ export default function Navbar() {
                         className={twMerge(
                             "min-h-0 grid gap-6 place-items-center bg-primary transition-[padding] duration-500",
                             'md:flex md:gap-6 md:bg-transparent md:place-items-[unset]',
-                            open && 'p-6'
+                            open && 'p-10'
                         )}
                         ref={listRef}
                     >
