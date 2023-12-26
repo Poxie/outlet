@@ -20,6 +20,7 @@ router.put('/stores', authHandler, async (req, res, next) => {
     const props = {};
     for(const prop of ALLOWED_STORE_PROPERTIES) {
         const value = req.body[prop];
+        if(!value) continue;
 
         const limit = STORE_LENGTHS[prop].max;
         if(value.length > limit) {
