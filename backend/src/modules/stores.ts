@@ -5,4 +5,13 @@ export default class Stores {
     static async all() {
         return await myDataSource.getRepository(Store).find();
     }
+    static async put(store: Store) {
+        const newStore = myDataSource.getRepository(Store).create(store);
+        await myDataSource.getRepository(Store).save(newStore);
+        return newStore;
+    }
+    static async get(id: string) {
+        const store = await myDataSource.getRepository(Store).findOneBy({ id });
+        return store;
+    }
 }

@@ -3,10 +3,10 @@ import { myDataSource } from '../app-data-source';
 import { ALLOWED_STORE_PROPERTIES, REQUIRED_STORE_PROPERTIES, STORE_LENGTHS } from '../utils/constants';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
-import { authHandler } from '../middleware/authHandler';
-import { createUniqueIdFromName } from '../utils';
+import { cleanString, createUniqueIdFromName } from '../utils';
 import Stores from '../modules/stores';
 import { Store } from '../entity/store.entity';
+import authHandler from '../middleware/authHandler';
 
 const router = express.Router();
 
@@ -15,33 +15,28 @@ router.get('/stores', async (req, res, next) => {
     res.send(stores);
 })
 router.put('/stores', authHandler, async (req, res, next) => {
-    for(const prop of REQUIRED_STORE_PROPERTIES) {
-        if(!req.body[prop]) return next(new APIBadRequestError(`${prop} is required.`));
-    }
+    if(!Object.keys(req.body).length) return next(new APIBadRequestError('No store data was provided.'));
 
-    const props = {};
-    for(const prop of ALLOWED_STORE_PROPERTIES) {
-        const value = req.body[prop];
-        if(!value) continue;
-
-        const limit = STORE_LENGTHS[prop].max;
-        if(value.length > limit) {
-            next(new APIBadRequestError(`${prop} must be less than ${limit} characters.`));
-            return;
+    const storeProperties: Omit<Store, 'id' | 'addedAt'> = req.body;
+    for(const prop of Object.keys(storeProperties)) {
+        if(!ALLOWED_STORE_PROPERTIES.includes(prop)) {
+            return next(new APIBadRequestError(`${prop} is not a valid property.`));
         }
-
-        props[prop] = value;
+    }
+    for(const prop of REQUIRED_STORE_PROPERTIES) {
+        if(!storeProperties[prop]) {
+            return next(new APIBadRequestError(`${prop} is required.`));
+        }
     }
 
-    const id = await createUniqueIdFromName(req.body.name, 'stores');
-    const newStore = myDataSource.getRepository(Store).create({
+    const id = cleanString(storeProperties.name);
+    const createdStore = await Stores.put({
         id,
         addedAt: Date.now().toString(),
-        ...props,
-    });
-    await myDataSource.getRepository(Store).save(newStore);
+        ...storeProperties,
+    })
 
-    res.send(newStore);
+    res.send(createdStore);
 })
 router.delete('/stores/:storeId', authHandler, async (req, res, next) => {
     const store = await myDataSource.getRepository(Store).findOneBy({ id: req.params.storeId });

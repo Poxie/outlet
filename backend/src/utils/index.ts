@@ -9,6 +9,17 @@ import { Inspiration } from "../entity/inspiration.entity";
 import { People } from "../entity/people.entity";
 import { Request } from "express";
 import { Stores } from '../entity/stores.entity';
+import { Store } from '../entity/store.entity';
+
+export const cleanString = (str: string) => (
+    str.toLowerCase().split(' ').join('-')
+        .replace(/å/g, 'a')
+        .replace(/ä/g, 'a')
+        .replace(/ö/g, 'o')
+        .replace(/!/g, '')
+        .replace(/\?/g, '')
+        .replace(/=/g, '')
+)
 
 export const dateToReadableString = (date: Date) => `${String(date.getDate()).padStart(2,'0')}-${String(date.getMonth() + 1).padStart(2,'0')}-${date.getFullYear()}`
 
@@ -24,7 +35,7 @@ export const isDealDate = (date: string) => {
     return dateObject.getDay() === DEAL_DAY_ID;
 }
 
-type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category' | 'people' | 'stores';
+type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category' | 'people' | 'stores' | 'store';
 const repositories = {
     'weekly_deal': WeeklyDeal,
     events: Events,
@@ -33,6 +44,7 @@ const repositories = {
     inspiration: Inspiration,
     people: People,
     stores: Stores,
+    store: Store,
 }
 
 const generateRandomNumbers = (length: number) => {
