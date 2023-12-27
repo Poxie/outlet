@@ -5,10 +5,10 @@ import { myDataSource } from '../app-data-source';
 import { People } from '../entity/people.entity';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId, getUserIdFromHeaders } from '../utils';
-import { authHandler } from '../middleware/authHandler';
 import { APIUnauthorizedError } from '../errors/apiUnauthorizedError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { APIForbiddenError } from '../errors/apiForbiddenError';
+import authHandler from '../middleware/authHandler';
 
 const MIN_USERNAME_LENGTH = 2;
 const MAX_USERNAME_LENGTH = 32;

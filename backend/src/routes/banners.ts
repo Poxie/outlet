@@ -4,8 +4,8 @@ import { Banners } from '../entity/banners.entity';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
-import { authHandler } from '../middleware/authHandler';
 import { MAX_BANNER_LENGTH } from '../utils/constants';
+import authHandler from '../middleware/authHandler';
 
 const router = express.Router();
 

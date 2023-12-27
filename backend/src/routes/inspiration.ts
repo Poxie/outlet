@@ -6,7 +6,7 @@ import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createUniqueIdFromName } from '../utils';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { Images } from '../entity/images.entity';
-import { authHandler } from '../middleware/authHandler';
+import authHandler from '../middleware/authHandler';
 
 const router = express.Router();
 

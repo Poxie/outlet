@@ -11,7 +11,7 @@ import { ALLOWED_EVENT_PROPERTIES, MAX_EVENT_DESCRIPTION_LENGTH, MAX_EVENT_TITLE
 import { APIInternalServerError } from '../errors/apiInternalServerError';
 import { LessThan } from 'typeorm';
 import { Images } from '../entity/images.entity';
-import { authHandler } from '../middleware/authHandler';
+import authHandler from '../middleware/authHandler';
 
 const router = express.Router();
 

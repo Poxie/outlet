@@ -13,7 +13,7 @@ import { APIInternalServerError } from '../errors/apiInternalServerError';
 import { WEEKLY_DEAL_DAY } from '../constants';
 import { Inspiration } from '../entity/inspiration.entity';
 import { WeeklyDeal } from '../entity/weekly-deal.entity';
-import { authHandler } from '../middleware/authHandler';
+import authHandler from '../middleware/authHandler';
 
 const router = express.Router();
 

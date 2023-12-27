@@ -5,7 +5,7 @@ import { myDataSource } from "../app-data-source";
 import { People } from "../entity/people.entity";
 import { APINotFoundError } from "../errors/apiNotFoundError";
 
-export const authHandler = async (req: Request, res: Response, next: NextFunction) => {
+const authHandler = async (req: Request, res: Response, next: NextFunction) => {
     const selfId = await getUserIdFromHeaders(req.headers);
     if(!selfId) return next(new APIUnauthorizedError('Missing or invalid token.'));
 
@@ -15,3 +15,4 @@ export const authHandler = async (req: Request, res: Response, next: NextFunctio
     res.locals.userId = selfId;
     next();
 }
+export default authHandler;

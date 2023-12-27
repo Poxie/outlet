@@ -4,7 +4,7 @@ import { myDataSource } from '../app-data-source';
 import { COUNT_DEAL_WEEKS_AHEAD, DAYS_OF_THE_WEEK, IMAGE_TYPES } from '../utils/constants';
 import { Images } from '../entity/images.entity';
 import { In } from 'typeorm';
-import { authHandler } from '../middleware/authHandler';
+import authHandler from '../middleware/authHandler';
 
 const router = express.Router();
 
