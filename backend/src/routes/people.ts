@@ -10,11 +10,7 @@ import { APIForbiddenError } from '../errors/apiForbiddenError';
 import authHandler from '../middleware/authHandler';
 import { Person } from '../entity/person.entity';
 import People from '../modules/people';
-
-const MIN_USERNAME_LENGTH = 2;
-const MAX_USERNAME_LENGTH = 32;
-const MIN_PASSWORD_LENGTH = 6;
-const MAX_PASSWORD_LENGTH = 64;
+import { MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH, MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH } from '../utils/constants';
 
 const router = express.Router();
 
