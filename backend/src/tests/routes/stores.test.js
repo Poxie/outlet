@@ -7,7 +7,7 @@ jest.mock('../../modules/stores');
 jest.mock('../../middleware/authHandler', () => jest.fn((req, res, next) => next()));
 
 import routes from '../../routes/stores';
-import { REQUIRED_STORE_PROPERTIES } from '../../utils/constants';
+import { ALLOWED_STORE_PROPERTIES, REQUIRED_STORE_PROPERTIES } from '../../utils/constants';
 
 const app = express();
 app.use(bodyParser.json({ limit: '50mb' }))
@@ -69,5 +69,64 @@ describe('PUT /stores', () => {
         
         expect(res.status).toBe(200);
         expect(res.body).toEqual(mockDatabaseStore);
+    })
+})
+describe('PATCH /stores', () => {
+    const mockStore = { name: 'Test Store', id: '123', addedAt: '123', address: 'Test Address', saturdays: 'Test Saturdays', sundays: 'Test Sundays', weekdays: 'Test Weekdays', email: 'Test Email', phoneNumber: 'Test Phone',  instagram: 'Test Instagram' };
+    const mockChanges = { name: 'New Test Store' };
+
+    beforeEach(() => {
+        Stores.get.mockResolvedValue(mockStore);
+    })
+    
+    it('should return 404 if store does not exist', async () => {
+        Stores.get.mockResolvedValue(undefined);
+
+        const res = await request(app)
+            .patch(`/stores/${mockStore.id}`)
+            .send(mockChanges)
+            .set('Content-Type', 'application/json');
+        
+        expect(res.status).toBe(404);
+    })
+
+    it('should return 400 if no changes are sent', async () => {
+        const res = await request(app)
+            .patch(`/stores/${mockStore.id}`)
+            .send()
+            .set('Content-Type', 'application/json');
+            
+        expect(res.status).toBe(400);
+    })
+    it('should return 400 if invalid changes are sent', async () => {
+        const res = await request(app)
+            .patch(`/stores/${mockStore.id}`)
+            .send({ ...mockChanges, notAStoreProperty: 1 })
+            .set('Content-Type', 'application/json');
+        
+        expect(res.status).toBe(400);
+    })
+    it('should return 400 if unchangable properties are sent', async () => {
+        const unchangableProperties = Object.keys(mockStore).filter(key => !ALLOWED_STORE_PROPERTIES.includes(key));
+
+        for(const key of unchangableProperties) {
+            const res = await request(app)
+                .patch(`/stores/${mockStore.id}`)
+                .send({ [key]: 'Test' })
+                .set('Content-Type', 'application/json');
+            
+            expect(res.status).toBe(400);
+        }
+    })
+    it('should update and return a store', async () => {
+        Stores.patch.mockResolvedValue(mockStore);
+
+        const res = await request(app)
+            .patch(`/stores/${mockStore.id}`)
+            .send(mockChanges)
+            .set('Content-Type', 'application/json');
+        
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(mockStore);
     })
 })

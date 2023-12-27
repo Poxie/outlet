@@ -38,6 +38,23 @@ router.put('/stores', authHandler, async (req, res, next) => {
 
     res.send(createdStore);
 })
+router.patch('/stores/:storeId', authHandler, async (req, res, next) => {
+    const store = await Stores.get(req.params.storeId);
+    if(!store) return next(new APINotFoundError('Store was not found.'));
+
+    if(!Object.keys(req.body).length) return next(new APIBadRequestError('No changes were provided.'));
+
+    const storeProperties: Partial<Store> = req.body;
+    for(const prop of Object.keys(storeProperties)) {
+        if(!ALLOWED_STORE_PROPERTIES.includes(prop)) {
+            return next(new APIBadRequestError(`${prop} is not a valid property.`));
+        }
+    }
+
+    const newStore = await Stores.patch(req.params.storeId, storeProperties);
+
+    res.send(newStore);
+})
 router.delete('/stores/:storeId', authHandler, async (req, res, next) => {
     const store = await myDataSource.getRepository(Store).findOneBy({ id: req.params.storeId });
     if(!store) return next(new APINotFoundError('Store was not found.'));
@@ -45,35 +62,6 @@ router.delete('/stores/:storeId', authHandler, async (req, res, next) => {
     await myDataSource.getRepository(Store).remove(store);
 
     res.send({});
-})
-router.patch('/stores/:storeId', authHandler, async (req, res, next) => {
-    const store = await myDataSource.getRepository(Store).findOneBy({ id: req.params.storeId });
-    if(!store) return next(new APINotFoundError('Store was not found.'));
-
-    const changes = {};
-    for(const prop of ALLOWED_STORE_PROPERTIES) {
-        const value = req.body[prop];
-        
-        if(typeof value === 'undefined') continue;
-        if(REQUIRED_STORE_PROPERTIES.includes(prop) && !value) {
-            return next(new APIBadRequestError(`${prop} is required.`));
-        }
-        
-        const limit = STORE_LENGTHS[prop].max;
-        if(value && value.length > limit) {
-            next(new APIBadRequestError(`${prop} must be less than ${limit} characters.`));
-            return;
-        }
-
-        changes[prop] = value;
-    }
-
-    const newStore = await myDataSource.getRepository(Store).save({
-        ...store,
-        ...changes,
-    })
-
-    res.send(newStore);
 })
 
 export default router;

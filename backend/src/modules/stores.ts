@@ -14,4 +14,11 @@ export default class Stores {
         const store = await myDataSource.getRepository(Store).findOneBy({ id });
         return store;
     }
+    static async patch(id: string, changes: Partial<Store>) {
+        const newStore = await myDataSource.getRepository(Store).save({
+            id,
+            ...changes,
+        });
+        return newStore;
+    }
 }
