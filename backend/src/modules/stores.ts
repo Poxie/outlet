@@ -21,4 +21,8 @@ export default class Stores {
         });
         return newStore;
     }
+    static async delete(id: string) {
+        await myDataSource.getRepository(Store).delete({ id });
+        return {};
+    }
 }

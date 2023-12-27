@@ -56,12 +56,12 @@ router.patch('/stores/:storeId', authHandler, async (req, res, next) => {
     res.send(newStore);
 })
 router.delete('/stores/:storeId', authHandler, async (req, res, next) => {
-    const store = await myDataSource.getRepository(Store).findOneBy({ id: req.params.storeId });
+    const store = await Stores.get(req.params.storeId);
     if(!store) return next(new APINotFoundError('Store was not found.'));
 
-    await myDataSource.getRepository(Store).remove(store);
+    const response = await Stores.delete(req.params.storeId);
 
-    res.send({});
+    res.send(response);
 })
 
 export default router;

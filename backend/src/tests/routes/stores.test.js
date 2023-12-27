@@ -78,7 +78,7 @@ describe('PATCH /stores', () => {
     beforeEach(() => {
         Stores.get.mockResolvedValue(mockStore);
     })
-    
+
     it('should return 404 if store does not exist', async () => {
         Stores.get.mockResolvedValue(undefined);
 
@@ -128,5 +128,32 @@ describe('PATCH /stores', () => {
         
         expect(res.status).toBe(200);
         expect(res.body).toEqual(mockStore);
+    })
+})
+describe('DELETE /stores', () => {
+    const mockStore = { name: 'Test Store', id: '123', addedAt: '123', address: 'Test Address', saturdays: 'Test Saturdays', sundays: 'Test Sundays', weekdays: 'Test Weekdays', email: 'Test Email', phoneNumber: 'Test Phone',  instagram: 'Test Instagram' };
+
+    beforeEach(() => {
+        Stores.get.mockResolvedValue(mockStore);
+    })
+
+    it('should return 404 if store does not exist', async () => {
+        Stores.get.mockResolvedValue(undefined);
+
+        const res = await request(app)
+            .delete(`/stores/${mockStore.id}`)
+            .set('Content-Type', 'application/json');
+        
+        expect(res.status).toBe(404);
+    })
+    it('should delete and return a store', async () => {
+        Stores.delete.mockResolvedValue({});
+
+        const res = await request(app)
+            .delete(`/stores/${mockStore.id}`)
+            .set('Content-Type', 'application/json');
+        
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({});
     })
 })
