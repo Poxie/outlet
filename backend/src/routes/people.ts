@@ -2,13 +2,14 @@ import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { myDataSource } from '../app-data-source';
-import { People } from '../entity/people.entity';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
 import { createId, getUserIdFromHeaders } from '../utils';
 import { APIUnauthorizedError } from '../errors/apiUnauthorizedError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { APIForbiddenError } from '../errors/apiForbiddenError';
 import authHandler from '../middleware/authHandler';
+import { Person } from '../entity/person.entity';
+import People from '../modules/people';
 
 const MIN_USERNAME_LENGTH = 2;
 const MAX_USERNAME_LENGTH = 32;
@@ -25,7 +26,7 @@ router.post('/login', async (req, res, next) => {
     if(!username) return next(new APIBadRequestError('Username is required.'));
     if(!password) return next(new APIBadRequestError('Password is required.'));
 
-    const user = await myDataSource.getRepository(People).findOneBy({ username });
+    const user = await myDataSource.getRepository(Person).findOneBy({ username });
     if(!user) return next(new APIUnauthorizedError('Invalid credentials.'))
 
     const match = await bcrypt.compare(password, user.password);
@@ -39,11 +40,7 @@ router.post('/login', async (req, res, next) => {
     } });
 })
 router.get('/people', authHandler, async (req, res, next) => {
-    const people = await myDataSource.getRepository(People)
-        .createQueryBuilder('people')
-        .select(['people.id', 'people.username'])
-        .getMany();
-
+    const people = await People.all();
     res.send(people);
 })
 router.get('/people/me', authHandler, async (req, res, next) => {
@@ -52,7 +49,7 @@ router.get('/people/me', authHandler, async (req, res, next) => {
         return next(new APIBadRequestError('User not found.'));
     }
 
-    const user = await myDataSource.getRepository(People).findOneBy({ id: userId });
+    const user = await myDataSource.getRepository(Person).findOneBy({ id: userId });
     if(!user) {
         return next(new APIBadRequestError('User not found.'));
     }
@@ -61,49 +58,42 @@ router.get('/people/me', authHandler, async (req, res, next) => {
 })
 router.post('/people', authHandler, async (req, res, next) => {
     const { username, password } = req.body;
-    
+
     if(!username) return next(new APIBadRequestError('Username is required.'));
-    if(username.length < MIN_USERNAME_LENGTH || username.length > MAX_USERNAME_LENGTH) {
-        return next(new APIBadRequestError(`Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH}.`));
-    }
-
     if(!password) return next(new APIBadRequestError('Password is required.'));
+    
+    if(username.length < MIN_USERNAME_LENGTH || username.length > MAX_USERNAME_LENGTH) {
+        return next(new APIBadRequestError(`Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters.`));
+    }
     if(password.length < MIN_PASSWORD_LENGTH || password.length > MAX_PASSWORD_LENGTH) {
-        return next(new APIBadRequestError(`Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH}.`));
+        return next(new APIBadRequestError(`Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters.`));
     }
 
-    const exists = await myDataSource.getRepository(People).findOneBy({ username });
-    if(exists) return next(new APIBadRequestError('Username is taken.'));
-    
-    const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_SALT_ROUNDS));
-    const encryptedPassword = await bcrypt.hash(password, salt);
+    const existingUser = await People.getByUsername(username);
+    if(existingUser) return next(new APIUnauthorizedError('Username is already taken.'));
 
-    const id = await createId('people');
-    const person = myDataSource.getRepository(People).create({
-        id,
+    const hashedPassword = await bcrypt.hash(password, process.env.BCRYPT_SALT_ROUNDS);
+
+    const createdUser = await People.post({
         username,
-        password: encryptedPassword,
+        password: hashedPassword,
     })
-    await myDataSource.getRepository(People).save(person);
 
-    const token = createAuthToken(id);
+    const token = createAuthToken(createdUser.id);
     
-    res.send({
-        user: { id, username },
-        token,
-    })
+    res.send({ token, user: createdUser });
 })
 router.delete('/people/:userId', authHandler, async (req, res, next) => {
     if(res.locals.userId === req.params.userId) {
         return next(new APIForbiddenError('You cannot remove yourself.'));
     }
 
-    const user = await myDataSource.getRepository(People).findOneBy({ id: req.params.userId });
+    const user = await myDataSource.getRepository(Person).findOneBy({ id: req.params.userId });
     if(!user) {
         return next(new APINotFoundError('User not found.'));
     }
 
-    await myDataSource.getRepository(People).delete(user);
+    await myDataSource.getRepository(Person).delete(user);
 
     res.send({});
 })
