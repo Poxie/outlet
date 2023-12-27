@@ -5,7 +5,10 @@ jest.mock('jsonwebtoken', () => ({
     sign: jest.fn(() => 'token'),
 }));
 jest.mock('../../modules/people');
-jest.mock('../../middleware/authHandler', () => jest.fn((req, res, next) => next()));
+jest.mock('../../middleware/authHandler', () => jest.fn((req, res, next) => {
+    res.locals.userId = '123';
+    return next();
+}));
 
 import express from 'express';
 import request from 'supertest';
@@ -89,5 +92,32 @@ describe('POST /people', () => {
             token: expect.any(String),
             user: mockPersonData,
         });
+    })
+})
+describe('DELETE /people/:userId', () => {
+    const mockPerson = { username: 'person', id: '123' };
+    const mockPersonTwo = { username: 'person2', id: '456' };
+
+    it('should return 404 if person does not exist', async () => {
+        People.getById.mockResolvedValue(undefined);
+
+        const res = await request(app).delete(`/people/${mockPerson.id}`);
+
+        expect(res.status).toBe(404);
+    })
+    it('should return 403 if person is the same as the logged in user', async () => {
+        People.getById.mockResolvedValue(mockPerson);
+
+        const res = await request(app).delete(`/people/${mockPerson.id}`);
+        expect(res.status).toBe(403);
+    })
+    it('should delete a person', async () => {
+        People.getById.mockResolvedValue(mockPersonTwo);
+        People.delete.mockResolvedValue({});
+
+        const res = await request(app).delete(`/people/${mockPersonTwo.id}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({});
     })
 })

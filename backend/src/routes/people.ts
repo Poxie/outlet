@@ -80,16 +80,12 @@ router.post('/people', authHandler, async (req, res, next) => {
     res.send({ token, user: createdUser });
 })
 router.delete('/people/:userId', authHandler, async (req, res, next) => {
-    if(res.locals.userId === req.params.userId) {
-        return next(new APIForbiddenError('You cannot remove yourself.'));
-    }
+    const user = await People.getById(req.params.userId);
+    if(!user) return next(new APINotFoundError('User not found.'));
 
-    const user = await myDataSource.getRepository(Person).findOneBy({ id: req.params.userId });
-    if(!user) {
-        return next(new APINotFoundError('User not found.'));
+    if(user.id === res.locals.userId) {
+        return next(new APIForbiddenError('You cannot delete yourself.'));
     }
-
-    await myDataSource.getRepository(Person).delete(user);
 
     res.send({});
 })
