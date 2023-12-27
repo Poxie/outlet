@@ -2,13 +2,13 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Banners {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'varchar' })
     id: string;
 
-    @Column()
+    @Column({ type: 'text' })
     text: string;
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     active: boolean;
 
     @Column({ type: 'bigint' })

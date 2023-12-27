@@ -3,19 +3,19 @@ import { ImageType } from "../utils/constants";
 
 @Entity()
 export class Images {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'varchar' })
     id: string;
     
-    @Column()
+    @Column({ type: 'varchar' })
     image: string;
     
-    @Column()
+    @Column({ type: 'varchar' })
     parentId: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     type: ImageType;
 
-    @Column()
+    @Column({ type: 'bigint' })
     position: number;
 
     @Column({ type: 'bigint' })

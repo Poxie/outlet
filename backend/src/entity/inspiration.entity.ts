@@ -2,16 +2,16 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Inspiration {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'varchar' })
     id: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     title: string;
 
     @Column({ type: 'text' })
     description: string;
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     archived: boolean;
 
     @Column({ type: 'bigint' })

@@ -2,18 +2,18 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Category {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'varchar' })
     id: string;
 
     @Column({ type: 'bigint' })
     timestamp: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     name: string;
     
-    @Column({ default: null })
+    @Column({ type: 'text', default: null, nullable: true })
     description: string | null;
 
-    @Column({ default: false })
+    @Column({ type: 'boolean', default: false })
     archived: boolean;
 }

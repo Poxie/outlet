@@ -2,10 +2,10 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class WeeklyDeal {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'varchar' })
     id: string;
 
-    @Column()
+    @Column({ type: 'varchar' })
     date: string;
 
     @Column({ type: 'bigint' })
