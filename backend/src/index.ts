@@ -15,7 +15,7 @@ myDataSource
         console.error("Error during Data Source initialization:", err)
     })
 
-const app = express();
+export const app = express();
 app.use(cors({ 
     origin: process.env.FRONTEND_ORIGIN
 }));
