@@ -22,7 +22,7 @@ router.post('/login', async (req, res, next) => {
     if(!username) return next(new APIBadRequestError('Username is required.'));
     if(!password) return next(new APIBadRequestError('Password is required.'));
 
-    const user = await myDataSource.getRepository(Person).findOneBy({ username });
+    const user = await People.getByUsername(username, true);
     if(!user) return next(new APIUnauthorizedError('Invalid credentials.'))
 
     const match = await bcrypt.compare(password, user.password);
@@ -30,27 +30,19 @@ router.post('/login', async (req, res, next) => {
 
     const token = createAuthToken(user.id);
 
-    res.send({ token, user: {
-        id: user.id,
-        username: user.username,
-    } });
+    const userWithoutPassword = await People.getById(user.id);
+
+    res.send({ token, user: userWithoutPassword });
 })
 router.get('/people', authHandler, async (req, res, next) => {
     const people = await People.all();
     res.send(people);
 })
 router.get('/people/me', authHandler, async (req, res, next) => {
-    const userId = res.locals.userId;
-    if(!userId) {
-        return next(new APIBadRequestError('User not found.'));
-    }
+    const user = await People.getById(res.locals.userId);
+    if(!user) return next(new APINotFoundError('User not found.'));
 
-    const user = await myDataSource.getRepository(Person).findOneBy({ id: userId });
-    if(!user) {
-        return next(new APIBadRequestError('User not found.'));
-    }
-
-    res.send({ username: user.username, id: user.id });
+    res.send(user);
 })
 router.post('/people', authHandler, async (req, res, next) => {
     const { username, password } = req.body;

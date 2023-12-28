@@ -1,5 +1,6 @@
 jest.mock('bcrypt', () => ({
     hash: jest.fn(() => Promise.resolve('hashedPassword')),
+    compare: jest.fn(() => Promise.resolve(true)),
 }));
 jest.mock('jsonwebtoken', () => ({
     sign: jest.fn(() => 'token'),
@@ -10,6 +11,7 @@ jest.mock('../../middleware/authHandler', () => jest.fn((req, res, next) => {
     return next();
 }));
 
+import bcrypt from 'bcrypt';
 import express from 'express';
 import request from 'supertest';
 import bodyParser from 'body-parser';
@@ -22,6 +24,77 @@ const app = express();
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use('', routes);
 
+describe('POST /login', () => {
+    const mockPerson = { username: 'person', id: '123' };
+    const mockPersonData = { username: 'person', password: 'test1234' };
+
+    it('should return 400 if no username or password is sent', async () => {
+        for(const key of Object.keys(mockPersonData)) {
+            const res = await request(app)
+                .post('/login')
+                .send({ ...mockPersonData, [key]: undefined })
+                .set('Content-Type', 'application/json');
+
+            expect(res.status).toBe(400);
+        }
+    })
+    it('should return 401 if user does not exist', async () => {
+        People.getByUsername.mockResolvedValue(undefined);
+
+        const res = await request(app)
+            .post('/login')
+            .send(mockPersonData)
+            .set('Content-Type', 'application/json');
+
+        expect(res.status).toBe(401);
+    })
+    it('should return 401 if user and password do not match', async () => {
+        People.getByUsername.mockResolvedValue(mockPersonData);
+        bcrypt.compare.mockResolvedValue(false);
+
+        const res = await request(app)
+            .post('/login')
+            .send({ ...mockPersonData, password: 'wrongPassword' })
+            .set('Content-Type', 'application/json');
+
+        expect(res.status).toBe(401);
+    })
+    it('should return token and user if username and password match', async () => {
+        People.getByUsername.mockResolvedValue(mockPersonData);
+        People.getById.mockResolvedValue(mockPerson);
+        bcrypt.compare.mockResolvedValue(true);
+
+        const res = await request(app)
+            .post('/login')
+            .send(mockPersonData)
+            .set('Content-Type', 'application/json');
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            token: expect.any(String),
+            user: mockPerson,
+        });
+    })
+})
+
+describe('GET /people/me', () => {
+    it('should return 404 if person is not logged in or does not exist', async () => {
+        People.getById.mockResolvedValue(undefined);
+
+        const res = await request(app).get('/people/me');
+
+        expect(res.status).toBe(404);
+    })
+    it('should return the logged in person', async () => {
+        const mockPerson = { username: 'person', id: '123' };
+        People.getById.mockResolvedValue(mockPerson);
+
+        const res = await request(app).get('/people/me');
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(mockPerson);
+    })
+})
 describe('GET /people', () => {
     it('should return all people', async () => {
         const people = [
