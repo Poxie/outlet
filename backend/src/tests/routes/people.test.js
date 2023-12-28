@@ -1,6 +1,7 @@
 jest.mock('bcrypt', () => ({
     hash: jest.fn(() => Promise.resolve('hashedPassword')),
     compare: jest.fn(() => Promise.resolve(true)),
+    genSalt: jest.fn(() => Promise.resolve('salt')),
 }));
 jest.mock('jsonwebtoken', () => ({
     sign: jest.fn(() => 'token'),
@@ -93,6 +94,7 @@ describe('GET /people/me', () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(mockPerson);
+        expect(People.getById).toHaveBeenCalled();
     })
 })
 describe('GET /people', () => {
@@ -106,6 +108,7 @@ describe('GET /people', () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual(people);
+        expect(People.all).toHaveBeenCalled();
     });
 })
 describe('POST /people', () => {
@@ -165,6 +168,7 @@ describe('POST /people', () => {
             token: expect.any(String),
             user: mockPersonData,
         });
+        expect(People.post).toHaveBeenCalled();
     })
 })
 describe('DELETE /people/:userId', () => {
@@ -192,5 +196,6 @@ describe('DELETE /people/:userId', () => {
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({});
+        expect(People.delete).toHaveBeenCalled();
     })
 })

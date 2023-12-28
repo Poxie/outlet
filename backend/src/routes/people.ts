@@ -77,6 +77,8 @@ router.delete('/people/:userId', authHandler, async (req, res, next) => {
         return next(new APIForbiddenError('You cannot delete yourself.'));
     }
 
+    await People.delete(req.params.userId);
+
     res.send({});
 })
 
