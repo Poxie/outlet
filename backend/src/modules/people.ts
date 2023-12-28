@@ -9,7 +9,7 @@ export default class People {
         const people = await myDataSource.getRepository(Person)
             .createQueryBuilder('person')
             .select(VISIBLE_PEOPLE_PROPS)
-            .getMany();
+            .getRawMany<Person>();
 
         return people;
     }
@@ -18,7 +18,7 @@ export default class People {
             .createQueryBuilder('person')
             .select(withPassword ? ALL_PEOPLE_PROPS : VISIBLE_PEOPLE_PROPS)
             .where('person.id = :id', { id })
-            .getOne();
+            .getRawOne<Person | null>();
 
         return person;
     }
@@ -27,7 +27,7 @@ export default class People {
             .createQueryBuilder('person')
             .select(withPassword ? ALL_PEOPLE_PROPS : VISIBLE_PEOPLE_PROPS)
             .where('person.username = :username', { username })
-            .getOne();
+            .getRawOne<Person | null>();
 
         return person;
     }
