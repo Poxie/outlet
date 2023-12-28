@@ -1,14 +1,11 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
-import { myDataSource } from '../app-data-source';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
-import { createId, getUserIdFromHeaders } from '../utils';
 import { APIUnauthorizedError } from '../errors/apiUnauthorizedError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { APIForbiddenError } from '../errors/apiForbiddenError';
 import authHandler from '../middleware/authHandler';
-import { Person } from '../entity/person.entity';
 import People from '../modules/people';
 import { MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH, MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH } from '../utils/constants';
 
