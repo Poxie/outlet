@@ -6,8 +6,8 @@ import { Events } from "../entity/events.entity";
 import { Images } from "../entity/images.entity";
 import { Banners } from "../entity/banners.entity";
 import { Inspiration } from "../entity/inspiration.entity";
-import { People } from "../entity/people.entity";
 import { Request } from "express";
+import { Person } from '../entity/person.entity';
 
 export const cleanString = (str: string) => (
     str.toLowerCase().split(' ').join('-')
@@ -33,14 +33,14 @@ export const isDealDate = (date: string) => {
     return dateObject.getDay() === DEAL_DAY_ID;
 }
 
-type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category' | 'people' | 'stores';
+type DatabaseTable = 'weekly_deal' | 'events' | 'images' | 'banners' | 'inspiration' | 'category' | 'person' | 'stores';
 const repositories = {
     'weekly_deal': WeeklyDeal,
     events: Events,
     images: Images,
     banners: Banners,
     inspiration: Inspiration,
-    people: People,
+    person: Person,
 }
 
 const generateRandomNumbers = (length: number) => {

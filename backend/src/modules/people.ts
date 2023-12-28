@@ -32,7 +32,7 @@ export default class People {
         return person;
     }
     static async post(person: Omit<Person, 'id'>) {
-        const id = await createId('people');
+        const id = await createId('person');
 
         const newPerson = myDataSource.getRepository(Person).create({
             id,
