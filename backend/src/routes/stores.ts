@@ -49,6 +49,9 @@ router.patch('/stores/:storeId', authHandler, async (req, res, next) => {
         if(!ALLOWED_STORE_PROPERTIES.includes(prop)) {
             return next(new APIBadRequestError(`${prop} is not a valid property.`));
         }
+        if(REQUIRED_STORE_PROPERTIES.includes(prop) && !storeProperties[prop]) {
+            return next(new APIBadRequestError(`${prop} is required.`));
+        }
     }
 
     const newStore = await Stores.patch(req.params.storeId, storeProperties);
