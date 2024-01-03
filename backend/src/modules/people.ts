@@ -39,7 +39,8 @@ export default class People {
             ...person,
         });
         await myDataSource.getRepository(Person).save(newPerson);
-        return newPerson;
+
+        return await People.getById(id);
     }
     static async delete(id: string) {
         await myDataSource.getRepository(Person).delete({ id });

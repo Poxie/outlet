@@ -55,7 +55,7 @@ router.post('/people', authHandler, async (req, res, next) => {
     }
 
     const existingUser = await People.getByUsername(username);
-    if(existingUser) return next(new APIUnauthorizedError('Username is already taken.'));
+    if(existingUser) return next(new APIBadRequestError('Username is already taken.'));
 
     const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_SALT_ROUNDS));
     const hashedPassword = await bcrypt.hash(password, salt);
