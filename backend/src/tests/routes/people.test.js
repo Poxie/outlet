@@ -40,14 +40,18 @@ const mockPersonData = {
     username: 'Test Username',
     password: 'Test Password',
 };
-const mockPerson = {
-    id: '123',
-    username: 'Test Username',
-};
 const mockDatabasePerson = {
     id: '123',
     username: 'Test Username',
     password: 'Test Password',
+};
+const mockPerson = {
+    id: '123',
+    username: 'Test Username',
+};
+const mockPersonTwo = {
+    id: '456',
+    username: 'Test Username Two',
 };
 
 describe('POST /people', () => {
@@ -121,5 +125,54 @@ describe('POST /people', () => {
         expect(bcrypt.hash).toHaveBeenCalledWith(mockPersonData.password, BCRYPT_SALT);
         expect(jwt.sign).toHaveBeenCalledWith({ id: mockDatabasePerson.id }, process.env.JWT_SECRET);
         expect(People.post).toHaveBeenCalledWith({ ...mockPersonData, password: BCRYPT_HASHED_PASSWORD });
+    })
+})
+describe('GET /people', () => {
+    it('should return all people', async () => {
+        People.all.mockResolvedValue([mockPerson]);
+
+        const res = await request(app).get('/people');
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual([mockPerson]);
+        expect(People.all).toHaveBeenCalled();
+    })
+})
+describe('DELETE /people/:id', () => {
+    afterEach(() => {
+        People.getById.mockReset();
+    })
+
+    it('should return 404 if no person is found', async () => {
+        People.getById.mockResolvedValue(null);
+
+        const res = await request(app).delete('/people/123');
+
+        expect(res.status).toBe(404);
+        expect(People.getById).toHaveBeenCalledWith('123');
+    })
+    it('should return 403 if person is self', async () => {
+        People.getById
+            .mockResolvedValueOnce(mockPerson)
+            .mockResolvedValueOnce(mockPerson);
+
+        const res = await request(app).delete('/people/123');
+
+        expect(res.status).toBe(403);
+        expect(People.getById).toHaveBeenCalledTimes(2);
+        expect(People.getById).toHaveBeenCalledWith('123');
+        expect(People.getById).toHaveBeenCalledWith('123');
+    })
+    it('should delete the person', async () => {
+        People.delete.mockResolvedValue();
+        People.getById
+            .mockResolvedValueOnce(mockPerson)
+            .mockResolvedValueOnce(mockPersonTwo);
+
+        const res = await request(app).delete('/people/456');
+
+        expect(res.status).toBe(200);
+        expect(People.getById).toHaveBeenCalledTimes(2);
+        expect(People.delete).toHaveBeenCalledWith('456');
     })
 })

@@ -73,7 +73,8 @@ router.delete('/people/:userId', authHandler, async (req, res, next) => {
     const user = await People.getById(req.params.userId);
     if(!user) return next(new APINotFoundError('User not found.'));
 
-    if(user.id === res.locals.userId) {
+    const self = await People.getById(res.locals.userId);
+    if(user.id === self.id) {
         return next(new APIForbiddenError('You cannot delete yourself.'));
     }
 
