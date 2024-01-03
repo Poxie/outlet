@@ -156,12 +156,12 @@ describe('DELETE /people/:id', () => {
             .mockResolvedValueOnce(mockPerson)
             .mockResolvedValueOnce(mockPerson);
 
-        const res = await request(app).delete('/people/123');
+        const res = await request(app).delete(`/people/${mockPerson.id}`);
 
         expect(res.status).toBe(403);
         expect(People.getById).toHaveBeenCalledTimes(2);
-        expect(People.getById).toHaveBeenCalledWith('123');
-        expect(People.getById).toHaveBeenCalledWith('123');
+        expect(People.getById).toHaveBeenCalledWith(mockPerson.id);
+        expect(People.getById).toHaveBeenCalledWith(mockPerson.id);
     })
     it('should delete the person', async () => {
         People.delete.mockResolvedValue();
@@ -169,10 +169,10 @@ describe('DELETE /people/:id', () => {
             .mockResolvedValueOnce(mockPerson)
             .mockResolvedValueOnce(mockPersonTwo);
 
-        const res = await request(app).delete('/people/456');
+        const res = await request(app).delete(`/people/${mockPersonTwo.id}`);
 
         expect(res.status).toBe(200);
         expect(People.getById).toHaveBeenCalledTimes(2);
-        expect(People.delete).toHaveBeenCalledWith('456');
+        expect(People.delete).toHaveBeenCalledWith(mockPersonTwo.id);
     })
 })
