@@ -1,36 +1,15 @@
 import * as express from 'express';
-import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { APIBadRequestError } from '../errors/apiBadRequestError';
-import { APIUnauthorizedError } from '../errors/apiUnauthorizedError';
 import { APINotFoundError } from '../errors/apiNotFoundError';
 import { APIForbiddenError } from '../errors/apiForbiddenError';
 import authHandler from '../middleware/authHandler';
 import People from '../modules/people';
 import { MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH, MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH } from '../utils/constants';
+import { createAuthToken } from '../utils';
 
 const router = express.Router();
 
-const createAuthToken = (id: string) => jwt.sign({ id }, process.env.JWT_PRIVATE_TOKEN);
-
-router.post('/login', async (req, res, next) => {
-    const { username, password } = req.body;
-    
-    if(!username) return next(new APIBadRequestError('Username is required.'));
-    if(!password) return next(new APIBadRequestError('Password is required.'));
-
-    const user = await People.getByUsername(username, true);
-    if(!user) return next(new APIUnauthorizedError('Invalid credentials.'))
-
-    const match = await bcrypt.compare(password, user.password);
-    if(!match) return next(new APIUnauthorizedError('Invalid credentials.'))
-
-    const token = createAuthToken(user.id);
-
-    const userWithoutPassword = await People.getById(user.id);
-
-    res.send({ token, user: userWithoutPassword });
-})
 router.get('/people', authHandler, async (req, res, next) => {
     const people = await People.all();
     res.send(people);

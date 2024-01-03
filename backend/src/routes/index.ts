@@ -8,6 +8,7 @@ import inspiration from './inspiration';
 import categories from './categories';
 import images from './images';
 import people from './people';
+import login from './login';
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.use('', inspiration);
 router.use('', categories);
 router.use('', images);
 router.use('', people);
+router.use('', login);
 
 router.use(logError);
 router.use(returnError);

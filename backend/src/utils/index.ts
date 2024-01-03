@@ -102,3 +102,5 @@ export const getUserIdFromHeaders: ((headers: Request['headers']) => Promise<str
         })
     })
 }
+
+export const createAuthToken = (id: string) => jwt.sign({ id }, process.env.JWT_PRIVATE_TOKEN);
